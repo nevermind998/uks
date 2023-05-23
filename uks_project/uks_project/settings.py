@@ -37,6 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'project_management_app',
+    'user_actions_management_app',
+    'users_management_app',
+    'versioning_management_app'
 ]
 
 MIDDLEWARE = [
@@ -78,7 +83,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME':  'uks_database',
         'USER': 'postgres',
-        'PASSWORD': 'root',
+        'PASSWORD': '123',
         'HOST': '127.0.0.1',
         'PORT': '5432',
     }
