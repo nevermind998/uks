@@ -3,7 +3,6 @@ name: Our GitHub App Test
 on: 
   pull_request:
     branches:
-    - feat/git-workflow
     - develop
     - main
 
