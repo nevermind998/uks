@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class UsersmanagementappConfig(AppConfig):
+class ProjectManagementAppConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'usersmanagementapp'
+    name = 'project_management_app'

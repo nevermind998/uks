@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class VersioningmanagementappConfig(AppConfig):
+class UsersManagementAppConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'versioningmanagementapp'
+    name = 'users_management_app'
