@@ -4,15 +4,23 @@ import { SIGN_IN_SCHEMA } from "./signInValidationSchema";
 import { SignInDto } from "../../Types/user.types";
 import { useMutation } from "react-query";
 import { signIn } from "../../api/userAuthentication";
+import { useState } from "react";
+import Toast, { ToastOptions } from "../../Components/Common/Toast";
 
 const SignIn = () => {
+  const [open, setOpen] = useState<boolean>(false);
+  const [toastOptions, setToastOptions] = useState<ToastOptions>({ message: "", type: "info" });
+
   const { mutate, isLoading } = useMutation(signIn, {
     onSuccess: (data) => {
       localStorage.setItem("access-token", data.data.access);
       localStorage.setItem("refresh-token", data.data.refresh);
+      setToastOptions({ message: "Successful login!", type: "success" });
+      setOpen(true);
     },
     onError: () => {
-      alert("there was an error");
+      setToastOptions({ message: "Invalid credentials!", type: "error" });
+      setOpen(true);
     },
   });
 
@@ -34,6 +42,7 @@ const SignIn = () => {
 
   return (
     <div className="sign-in">
+      <Toast open={open} setOpen={setOpen} toastOptions={toastOptions} />
       <div className="sign-in__content-wrapper">
         <img src="/img/logo.png" alt="" />
 
