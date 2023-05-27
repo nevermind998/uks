@@ -3,9 +3,6 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 # Create your models here.
 
-# File for: User, Account
-
-
 class UserManager(BaseUserManager):
     def create_user(
         self, username, given_name, family_name, email, password, **extra_fields
@@ -32,8 +29,8 @@ class User(AbstractBaseUser):
     bio = models.CharField(max_length=100, null=True)
     url = models.CharField(max_length=100, null=True)
 
-    USERNAME_FIELD = "username"
+    USERNAME_FIELD = "email"
     EMAIL_FIELD = "email"
-    REQUIRED_FIELDS = ["email", "given_name", "family_name"]
+    REQUIRED_FIELDS = ["username", "given_name", "family_name"]
 
     objects = UserManager()
