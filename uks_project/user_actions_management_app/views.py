@@ -3,8 +3,8 @@ from django.http import Http404
 from rest_framework.response import Response
 from .models import Comment
 from .serializers import CommentSerializer
-
 from rest_framework.decorators import api_view
+from rest_framework import status
 
 # Create your views here.
 
@@ -34,12 +34,30 @@ def get_issue_comments(request,issue_id):
 
 @api_view(['POST'])
 def add_new_comment(request,id=None):
-    return
+    serializer = CommentSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['DELETE'])
 def delete_comment_by_id(request,id):
-    return
+    try:
+        reaction = Comment.objects.get(comment=id)
+        reaction.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    except Comment.DoesNotExist:
+        reaction = None
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
-@api_view(['UPDATE'])
+@api_view(['PUT'])
 def edit_comment_by_id(request,id):
-    return
+    try:
+        snippet = Comment.objects.get(pk=id)
+    except Comment.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    serializer = Comment(snippet, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
