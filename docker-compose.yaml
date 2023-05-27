@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  frontend:
+    container_name: frontend
+    build:
+      context: ./uks_front/
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000  # Map host port to React frontend port
+
+  backend:
+    container_name: backend
+    build:
+      context: ./uks_project/
+      dockerfile: Dockerfile
+    ports:
+      - 8000:8000  # Map host port to Django backend port
+    depends_on:
+      - db
+    command: python manage.py makemigrations; python manage.py migrate; python manage.py runserver
+
+  db:
+    image: postgres:15.1
+    container_name: db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123
+      - POSTGRES_DB=uks_database
+      - POSTGRES_HOST=db
+    ports:
+      - 5432:5432
