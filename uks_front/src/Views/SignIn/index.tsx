@@ -15,7 +15,7 @@ const SignIn = () => {
 
   const { mutate, isLoading } = useMutation(signIn, {
     onSuccess: (res) => {
-      localStorage.setItem('access-token', res.data.access_token);
+      localStorage.setItem('access_token', res.data.access_token);
       setToastOptions({ message: 'Successful login!', type: 'success' });
       setOpen(true);
       dispatch(addAuth(res.data.user));
@@ -57,7 +57,7 @@ const SignIn = () => {
             onChange={formik.handleChange}
             name="email"
             error={formik.touched.email && Boolean(formik.errors.email)}
-            helperText={formik.errors.email}
+            helperText={formik.errors.email && formik.errors.email}
             required
             className="sign-in__form--field"
             size="small"
@@ -72,7 +72,7 @@ const SignIn = () => {
             required
             type="password"
             error={formik.touched.password && Boolean(formik.errors.password)}
-            helperText={formik.errors.password}
+            helperText={formik.errors.password && formik.errors.password}
             className="sign-in__form--field"
             size="small"
           />
