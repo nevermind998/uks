@@ -1,38 +1,40 @@
-import { Button, TextField } from "@mui/material";
-import { useFormik } from "formik";
-import { SIGN_IN_SCHEMA } from "./signInValidationSchema";
-import { SignInDto } from "../../Types/user.types";
-import { useMutation } from "react-query";
-import { signIn } from "../../api/userAuthentication";
-import { useState } from "react";
-import Toast, { ToastOptions } from "../../Components/Common/Toast";
+import { Button, TextField } from '@mui/material';
+import { useFormik } from 'formik';
+import { SIGN_IN_SCHEMA } from './signInValidationSchema';
+import { SignInDto } from '../../Types/user.types';
+import { useMutation } from 'react-query';
+import { signIn } from '../../api/userAuthentication';
+import { useState } from 'react';
+import Toast, { ToastOptions } from '../../Components/Common/Toast';
+import { dispatch } from '../../Store';
+import { addAuth } from '../../Store/slices/auth.slice';
 
 const SignIn = () => {
   const [open, setOpen] = useState<boolean>(false);
-  const [toastOptions, setToastOptions] = useState<ToastOptions>({ message: "", type: "info" });
+  const [toastOptions, setToastOptions] = useState<ToastOptions>({ message: '', type: 'info' });
 
   const { mutate, isLoading } = useMutation(signIn, {
-    onSuccess: (data) => {
-      localStorage.setItem("access-token", data.data.access);
-      localStorage.setItem("refresh-token", data.data.refresh);
-      setToastOptions({ message: "Successful login!", type: "success" });
+    onSuccess: (res) => {
+      localStorage.setItem('access-token', res.data.access_token);
+      setToastOptions({ message: 'Successful login!', type: 'success' });
       setOpen(true);
+      dispatch(addAuth(res.data.user));
     },
     onError: () => {
-      setToastOptions({ message: "Invalid credentials!", type: "error" });
+      setToastOptions({ message: 'Invalid credentials!', type: 'error' });
       setOpen(true);
     },
   });
 
   const formik = useFormik({
     initialValues: {
-      username: "",
-      password: "",
+      email: '',
+      password: '',
     },
     validationSchema: SIGN_IN_SCHEMA,
     onSubmit: (values) => {
       const body: SignInDto = {
-        username: values.username,
+        email: values.email,
         password: values.password,
       };
 
@@ -44,19 +46,20 @@ const SignIn = () => {
     <div className="sign-in">
       <Toast open={open} setOpen={setOpen} toastOptions={toastOptions} />
       <div className="sign-in__content-wrapper">
-        <img src="/img/logo.png" alt="" />
-
+        <img src="/img/logo1.png" alt="" />
+        <h3>Sign in to your account</h3>
         <form onSubmit={formik.handleSubmit} className="sign-in__form">
           <TextField
-            id="username"
-            label="Username"
+            id="email"
+            label="Email"
             variant="outlined"
-            value={formik.values.username}
+            value={formik.values.email}
             onChange={formik.handleChange}
-            name="username"
-            error={formik.touched.username && Boolean(formik.errors.username)}
-            helperText={formik.errors.username}
+            name="email"
+            error={formik.touched.email && Boolean(formik.errors.email)}
+            helperText={formik.errors.email}
             required
+            className="sign-in__form--field"
           />
           <TextField
             id="password"
@@ -69,11 +72,18 @@ const SignIn = () => {
             type="password"
             error={formik.touched.password && Boolean(formik.errors.password)}
             helperText={formik.errors.password}
+            className="sign-in__form--field"
           />
 
-          <Button type="submit" className="button" variant="contained">
+          <Button type="submit" className="sign-in__button" variant="contained">
             Log In
           </Button>
+          <p>
+            Don't have an account?{' '}
+            <a className="sign-in__link" href="/sign-up">
+              Create one here
+            </a>
+          </p>
         </form>
       </div>
     </div>

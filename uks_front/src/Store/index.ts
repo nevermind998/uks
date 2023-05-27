@@ -1,10 +1,12 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import exampleSlice from './slices/example.slice';
+import authSlice from './slices/auth.slice';
 
 export const store = configureStore({
     reducer: {
-        example: exampleSlice
+        example: exampleSlice,
+        auth: authSlice
     },
 });
 
