@@ -9,6 +9,10 @@ const theme = createTheme({
       main: '#bfc0c0',
     },
   },
+  typography: {
+    // Use a smaller font size for input fields
+    fontSize: 14,
+  },
 });
 
 export default theme;

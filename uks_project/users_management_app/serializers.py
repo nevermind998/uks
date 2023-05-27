@@ -5,6 +5,8 @@ from rest_framework_simplejwt.tokens import AccessToken
 from django.contrib.auth.hashers import check_password
 
 class UserSerializer(serializers.ModelSerializer):
+    bio = serializers.CharField(required=False, allow_blank=True)
+    url = serializers.CharField(required=False, allow_blank=True)
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'given_name', 'family_name', 'bio', 'url', 'password']

@@ -3,6 +3,16 @@ export type SignInDto = {
   password: string;
 };
 
+export type SignUpDto = {
+  username: string;
+  email: string;
+  password: string;
+  family_name: string;
+  given_name: string;
+  bio?: string;
+  url?: string;
+};
+
 export type UserProfileDto = {
   id: number;
   username: string;

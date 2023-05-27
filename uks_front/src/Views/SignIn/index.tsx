@@ -60,6 +60,7 @@ const SignIn = () => {
             helperText={formik.errors.email}
             required
             className="sign-in__form--field"
+            size="small"
           />
           <TextField
             id="password"
@@ -73,6 +74,7 @@ const SignIn = () => {
             error={formik.touched.password && Boolean(formik.errors.password)}
             helperText={formik.errors.password}
             className="sign-in__form--field"
+            size="small"
           />
 
           <Button type="submit" className="sign-in__button" variant="contained">
