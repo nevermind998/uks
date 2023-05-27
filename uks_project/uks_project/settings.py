@@ -73,6 +73,8 @@ SIMPLE_JWT = {
      'BLACKLIST_AFTER_ROTATION': True
 }
 
+LOGIN_URL = '/user/sign-in'
+
 ROOT_URLCONF = 'uks_project.urls'
 
 TEMPLATES = [

@@ -1,8 +1,9 @@
 from django.http import HttpResponse
 from rest_framework.permissions import AllowAny
-from rest_framework import generics
+from rest_framework import generics, permissions
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from .models import User
 from .serializers import UserSerializer, CustomTokenObtainPairSerializer
@@ -11,6 +12,13 @@ from .serializers import UserSerializer, CustomTokenObtainPairSerializer
 
 def main(request):
     return HttpResponse("Users Management")
+
+# example of an authorized route, if only the admin can access it use permissions.IsAdminUser
+class HelloView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        return Response("Hello")
 
 class UserRegistrationView(generics.CreateAPIView):
     queryset = User.objects.all()
