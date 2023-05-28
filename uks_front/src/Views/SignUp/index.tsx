@@ -3,7 +3,7 @@ import { useFormik } from 'formik';
 import { useState } from 'react';
 import Toast, { ToastOptions } from '../../Components/Common/Toast';
 import TextareaAutosize from '@mui/base/TextareaAutosize';
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useMutation } from 'react-query';
 import { signUp } from '../../api/userAuthentication';
 import { SignUpDto } from '../../Types/user.types';
@@ -12,12 +12,13 @@ import { SIGN_UP_SCHEMA } from './signUpValidationSchema';
 const SignUp = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [toastOptions, setToastOptions] = useState<ToastOptions>({ message: '', type: 'info' });
+  const navigate = useNavigate();
 
   const { mutate, isLoading } = useMutation(signUp, {
     onSuccess: (res) => {
       setToastOptions({ message: 'Successfully created account!', type: 'success' });
       setOpen(true);
-      <Navigate to="/sign-in" replace={true} />;
+      navigate('/sign-in')
     },
     onError: () => {
       setToastOptions({ message: 'Something went wrong!', type: 'error' });
@@ -129,7 +130,7 @@ const SignUp = () => {
               size="small"
             />
             <TextField
-              id="confirmPassword"
+              id="confirm_password"
               label="Confirm Password"
               variant="outlined"
               value={formik.values.confirm_password}
@@ -150,8 +151,6 @@ const SignUp = () => {
             value={formik.values.url}
             onChange={formik.handleChange}
             name="url"
-            error={formik.touched.url && Boolean(formik.errors.url)}
-            helperText={formik.errors.url && formik.touched.url}
             className="sign-up__form--field"
             size="small"
           />

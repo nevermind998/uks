@@ -8,10 +8,12 @@ import { useState } from 'react';
 import Toast, { ToastOptions } from '../../Components/Common/Toast';
 import { dispatch } from '../../Store';
 import { addAuth } from '../../Store/slices/auth.slice';
+import { useNavigate } from 'react-router-dom';
 
 const SignIn = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [toastOptions, setToastOptions] = useState<ToastOptions>({ message: '', type: 'info' });
+  const navigate = useNavigate();
 
   const { mutate, isLoading } = useMutation(signIn, {
     onSuccess: (res) => {
@@ -19,6 +21,7 @@ const SignIn = () => {
       setToastOptions({ message: 'Successful login!', type: 'success' });
       setOpen(true);
       dispatch(addAuth(res.data.user));
+      navigate('/');
     },
     onError: () => {
       setToastOptions({ message: 'Invalid credentials!', type: 'error' });
