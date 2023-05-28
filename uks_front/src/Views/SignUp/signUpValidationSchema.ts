@@ -7,6 +7,6 @@ export const SIGN_UP_SCHEMA = Yup.object().shape({
   given_name: Yup.string().required('You need to provide your first name!'),
   family_name: Yup.string().required('You need to provide your last name!'),
   confirm_password: Yup.string()
-    .oneOf([Yup.ref('password')], 'Passwords must match')
+    .oneOf([Yup.ref('password')], 'Passwords must match!')
     .required('You need to confirm your password!'),
 });
