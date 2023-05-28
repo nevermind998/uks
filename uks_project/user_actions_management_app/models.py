@@ -11,13 +11,16 @@ from versioning_management_app.models import Repository
 
 REACTION = [
     ("LIKE", "Like"),
+    ("DISLIKE", "Dislike"),
     ("Love", "Love"),
-    ("HAPPY", "Happy")
+    ("HAPPY", "Happy"),
+    ("SAD", "Sad")
 ]
 
 ACTION = [
     ("FORK", "Fork"),
-    ("STAR", "Star")
+    ("STAR", "Star"),
+    ("WATCH", "Watch")
 ]
 
 class Action(models.Model):
