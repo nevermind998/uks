@@ -18,7 +18,7 @@ services:
       - 8000:8000  # Map host port to Django backend port
     depends_on:
       - db
-    command: python manage.py makemigrations; python manage.py migrate; python manage.py runserver
+    command: sh -c "/bin/bash ./wait-for-it.sh && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
 
   db:
     image: postgres:15.1
@@ -30,3 +30,8 @@ services:
       - POSTGRES_HOST=db
     ports:
       - 5432:5432
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:

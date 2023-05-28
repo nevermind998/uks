@@ -1,5 +1,5 @@
 # Specify the base image
-FROM node:16
+FROM node:16-alpine
 
 # Set the working directory
 WORKDIR /frontend
@@ -9,7 +9,7 @@ COPY . /frontend
 
 # Install dependencies
 COPY ./package*.json  /frontend/
-RUN yarn install
+RUN npm ci
 
 # Specify the command to run the application
 CMD ["npm", "start"]
