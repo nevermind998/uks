@@ -3,14 +3,15 @@ from django.http import Http404
 from rest_framework.response import Response
 from .models import Comment
 from .serializers import CommentSerializer
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
-
+from rest_framework.permissions import IsAuthenticated
 # Create your views here.
 
 #Comments Handling 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_all_comments(request):
     comments= Comment.objects.all()
     if(len(comments) == 0): raise Http404('No comments found that matches the given query.')
@@ -18,6 +19,7 @@ def get_all_comments(request):
     return Response(serializers.data)
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_pr_comments(request,pr_id):
     comments= Comment.objects.filter(pull_request=pr_id)
     if(len(comments) == 0): raise Http404('No comments found that matches the given query.')
@@ -25,6 +27,7 @@ def get_pr_comments(request,pr_id):
     return Response(serializers.data)
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_issue_comments(request,issue_id):
     comments= Comment.objects.filter(issue=issue_id)
     if(len(comments) == 0): raise Http404('No comments found that matches the given query.')
@@ -33,6 +36,7 @@ def get_issue_comments(request,issue_id):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def add_new_comment(request,id=None):
     serializer = CommentSerializer(data=request.data)
     if serializer.is_valid():
@@ -41,6 +45,7 @@ def add_new_comment(request,id=None):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['DELETE', 'PUT'])
+@permission_classes([IsAuthenticated])
 def delete_or_edit_comment(request,id):
     if request.method == 'DELETE':
         try:
