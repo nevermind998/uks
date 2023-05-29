@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Comment, Reaction
+from .models import Comment, Reaction, Action
 
 # File to define Serializers for user_actions_management_app
 
@@ -13,4 +13,10 @@ class ReactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reaction
         fields = [ "id", "author", "comment", "type"]
+        read_only_field = ['id']
+
+class ActionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Action
+        fields = [ "id", "author", "repository", "type", "forked_repo"]
         read_only_field = ['id']
