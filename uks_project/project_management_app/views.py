@@ -1,9 +1,9 @@
 from django.shortcuts import render
-from .models import Milestone, Label
+from .models import Milestone, Label, Issue
 from django.http import Http404
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
-from .serializers import LabelSerializer, MilestoneSerializer
+from .serializers import IssueSerializer, LabelSerializer, MilestoneSerializer
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 
@@ -113,3 +113,57 @@ def delete_label(request,id):
     except Label.DoesNotExist:
         label = None
         return Response(status=status.HTTP_404_NOT_FOUND)
+    
+#Issue Handling
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_issue(request,id):
+    try:
+        issue= Issue.objects.get(id=id)
+        serializers = IssueSerializer(issue)
+        return Response(serializers.data)
+    except Issue.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+        
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_all_issue(request,id=None):
+    issues = Issue.objects.all()
+    if(len(issues) == 0): raise Http404('No issues found that matches the given query.')
+    serializers = IssueSerializer(issues,many=True)
+    return Response(serializers.data)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def add_new_issue(request,id=None):
+    serializer = IssueSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def update_issue(request,id):
+    try:
+        issue= Issue.objects.get(id=id)
+    except Issue.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    serializer = IssueSerializer(issue, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+     
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_issue(request,id):
+    try:
+        issue = Issue.objects.get(id=id)
+        issue.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    except Issue.DoesNotExist:
+        issue = None
+        return Response(status=status.HTTP_404_NOT_FOUND)
+

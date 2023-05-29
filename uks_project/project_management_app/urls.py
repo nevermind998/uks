@@ -14,5 +14,12 @@ urlpatterns = [
     path('labels/', views.get_all_label, name='labels'),
     path('new-label', views.add_new_label, name='new-label'),
     path('update_label/<int:id>', views.update_label, name='update_label'),
-    path('delete_label/<int:id>', views.delete_label, name='delete_label')
+    path('delete_label/<int:id>', views.delete_label, name='delete_label'),
+
+    #issue
+    path('issue/<int:id>', views.get_issue, name='issue'),
+    path('issues/', views.get_all_issue, name='issues'),
+    path('new-issue', views.add_new_issue, name='new-issue'),
+    path('update_issue/<int:id>', views.update_issue, name='update_issue'),
+    path('delete_issue/<int:id>', views.delete_issue, name='delete_issue'),
 ]
