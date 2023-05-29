@@ -44,6 +44,11 @@ jobs:
         run: |
           pip install -r requirements.txt
       - name: Test App Code
+        env:
+          POSTGRES_DB: test_db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: 123
+          POSTGRES_HOST: localhost
         run: |
           python manage.py migrate
           python manage.py test --noinput
