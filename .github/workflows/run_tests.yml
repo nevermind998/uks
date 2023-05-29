@@ -16,20 +16,20 @@ jobs:
           POSTGRES_DB: test_db
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: 123
-          options: >-
-            --health-cmd pg_isready
-            --health-interval 10s
-            --health-timeout 5s
-            --health-retries 5
           ports:
             - 5432:5432
+          options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     defaults: 
       run: 
         working-directory: ./uks_project/
     
     strategy:
       matrix:
+        db: [postgres]
         python-version: [3.9]
+        include:
+          - db: postgres
+            db_port: 5432
     
     steps:
       - uses: actions/checkout@v3
