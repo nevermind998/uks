@@ -45,7 +45,6 @@ jobs:
           pip install -r requirements.txt
       - name: Test App Code
         env:
-          env:
           DB: ${{ matrix.db }}
           DB_HOST: 127.0.0.1
           DB_PORT: ${{ matrix.db_port }}
