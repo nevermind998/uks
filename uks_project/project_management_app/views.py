@@ -69,7 +69,14 @@ def get_label(request,id):
         serializers = LabelSerializer(label)
         return Response(serializers.data)
     except Label.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(status=status.HTTP_404_NOT_FOUND)    
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def label_by_color(request,color):
+    label = Label.objects.filter(color=color)
+    if(len(label) == 0): raise Http404('No label found that matches the given query.')
+    serializers = LabelSerializer(label,many=True)
+    return Response(serializers.data)
         
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -132,6 +139,46 @@ def get_all_issue(request,id=None):
     serializers = IssueSerializer(issues,many=True)
     return Response(serializers.data)
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def issues_by_status(request,status):
+    isuess = Issue.objects.filter(status=status)
+    if(len(isuess) == 0): raise Http404('No isuess found that matches the given query.')
+    serializers = IssueSerializer(isuess,many=True)
+    return Response(serializers.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def issues_by_author(request,author):
+    isuess = Issue.objects.filter(author=author)
+    if(len(isuess) == 0): raise Http404('No isuess found that matches the given query.')
+    serializers = IssueSerializer(isuess,many=True)
+    return Response(serializers.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def issues_by_label(request,label):
+    isuess = Issue.objects.filter(labels=label)
+    if(len(isuess) == 0): raise Http404('No isuess found that matches the given query.')
+    serializers = IssueSerializer(isuess,many=True)
+    return Response(serializers.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def issues_by_milestone(request,milestone):
+    isuess = Issue.objects.filter(milestone=milestone)
+    if(len(isuess) == 0): raise Http404('No isuess found that matches the given query.')
+    serializers = IssueSerializer(isuess,many=True)
+    return Response(serializers.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def issues_by_assignee(request,assignee):
+    isuess = Issue.objects.filter(assignees=assignee)
+    if(len(isuess) == 0): raise Http404('No isuess found that matches the given query.')
+    serializers = IssueSerializer(isuess,many=True)
+    return Response(serializers.data)
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def add_new_issue(request,id=None):
@@ -181,6 +228,54 @@ def get_pull_request(request,id):
 @permission_classes([IsAuthenticated])
 def get_all_pull_request(request,id=None):
     pull_requests = PullRequest.objects.all()
+    if(len(pull_requests) == 0): raise Http404('No pull requests found that matches the given query.')
+    serializers = PullRequestSerializer(pull_requests,many=True)
+    return Response(serializers.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_pull_request_by_status(request,status):
+    pull_requests = PullRequest.objects.filter(status=status)
+    if(len(pull_requests) == 0): raise Http404('No pull requests found that matches the given query.')
+    serializers = PullRequestSerializer(pull_requests,many=True)
+    return Response(serializers.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_pull_request_by_review(request,review):
+    pull_requests = PullRequest.objects.filter(review=review)
+    if(len(pull_requests) == 0): raise Http404('No pull requests found that matches the given query.')
+    serializers = PullRequestSerializer(pull_requests,many=True)
+    return Response(serializers.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def pull_requests_by_author(request,author):
+    pull_requests = PullRequest.objects.filter(author=author)
+    if(len(pull_requests) == 0): raise Http404('No pull requests found that matches the given query.')
+    serializers = PullRequestSerializer(pull_requests,many=True)
+    return Response(serializers.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def pull_requests_by_label(request,label):
+    pull_requests = PullRequest.objects.filter(labels=label)
+    if(len(pull_requests) == 0): raise Http404('No pull requests found that matches the given query.')
+    serializers = PullRequestSerializer(pull_requests,many=True)
+    return Response(serializers.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def pull_requests_by_milestone(request,milestone):
+    pull_requests = PullRequest.objects.filter(milestone=milestone)
+    if(len(pull_requests) == 0): raise Http404('No pull requests found that matches the given query.')
+    serializers = PullRequestSerializer(pull_requests,many=True)
+    return Response(serializers.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def pull_requests_by_assignee(request,assignee):
+    pull_requests = PullRequest.objects.filter(assignees=assignee)
     if(len(pull_requests) == 0): raise Http404('No pull requests found that matches the given query.')
     serializers = PullRequestSerializer(pull_requests,many=True)
     return Response(serializers.data)
