@@ -26,7 +26,7 @@ ACTION = [
 class Action(models.Model):
      author = models.ForeignKey(User, on_delete=models.CASCADE, null=False, related_name="action_author")
      type = models.CharField(max_length=6, choices=ACTION, null=False)
-     repository = models.ForeignKey(Repository, on_delete=models.CASCADE, null=False, related_name="repo_action")
+     repository = models.ForeignKey(Repository, on_delete=models.CASCADE, null=True, related_name="repo_action")
      forked_repo = models.ForeignKey(Repository, on_delete=models.CASCADE, null=True, related_name="forked_repo") #if fork action 
 
 class Comment(models.Model):
@@ -40,6 +40,6 @@ class Comment(models.Model):
 class Reaction(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, null=False, related_name="reaction_author")
     comment =  models.ForeignKey(Comment, on_delete=models.CASCADE, null=True)
-    type = models.CharField(max_length=6, choices=REACTION, null=False)
+    type = models.CharField(max_length=10, choices=REACTION, null=False)
 
 
