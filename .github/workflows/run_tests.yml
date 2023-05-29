@@ -13,7 +13,7 @@ jobs:
       postgres:
         image: postgres:15.1
         env:
-          POSTGRES_DB: test_db
+          POSTGRES_DB: postgres
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: 123
           POSTGRES_HOST: localhost
@@ -45,10 +45,11 @@ jobs:
           pip install -r requirements.txt
       - name: Test App Code
         env:
-          POSTGRES_DB: test_db
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: 123
-          POSTGRES_HOST: localhost
+          env:
+          DB: ${{ matrix.db }}
+          DB_HOST: 127.0.0.1
+          DB_PORT: ${{ matrix.db_port }}
+          DB_PASSWORD: 123
         run: |
           python manage.py migrate
           python manage.py test --noinput
