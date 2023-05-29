@@ -45,10 +45,10 @@ jobs:
           pip install -r requirements.txt
       - name: Test App Code
         env:
-          POSTGRES_DB: ${{ service.postgres.env.POSGRES_DB }}
-          POSTGRES_USER: ${{ service.postgres.env.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ service.postgres.env.POSTGRES_PASSWORD }}
-          POSTGRES_HOST: ${{ service.postgres.env.POSTGRES_HOST }}
+          POSTGRES_DB: test_db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: 123
+          POSTGRES_HOST: 127.0.0.1
         run: |
           python manage.py migrate
           python manage.py test --noinput
