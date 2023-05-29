@@ -5,8 +5,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from uks_project.versioning_management_app.models import Repository
-from uks_project.versioning_management_app.serializers import RepositorySerializer
+from uks_project.versioning_management_app.models import Repository, Branch
+from uks_project.versioning_management_app.serializers import RepositorySerializer, BranchSerializer
 
 
 # Repo handling
@@ -33,8 +33,8 @@ def get_repo_by_name(request, name):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def get_repos_by_owner(request, owner_id):
-    repositories = Repository.objects.filter(owner=owner_id)
+def get_repos_by_owner(request, id):
+    repositories = Repository.objects.filter(owner=id)
     if len(repositories) == 0:
         raise Http404('No repositories found with that owner.')
     serializer = RepositorySerializer(repositories, many=True)
@@ -43,9 +43,9 @@ def get_repos_by_owner(request, owner_id):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def get_repository_collaborators(request, repository_id):
+def get_repository_collaborators(request, id):
     try:
-        repository = Repository.objects.get(id=repository_id)
+        repository = Repository.objects.get(id=id)
         collaborators = repository.collaborators.all()
         serializer = RepositorySerializer(collaborators, many=True)
         return Response(serializer.data)
@@ -88,3 +88,72 @@ def delete_or_edit_repository(request, id):
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_all_branches(request):
+    branches = Branch.objects.all()
+    if len(branches) == 0:
+        raise Http404('No branches found that matches the given query.')
+    serializer = BranchSerializer(branches, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_branch_by_name(request, name):
+    branch = Branch.objects.filter(name=name)
+    if len(branch) == 0:
+        raise Http404('No branch found with that name.')
+    serializer = BranchSerializer(branch, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_repository_branches(request, id):
+    branches = Branch.objects.filter(repository=id)
+    if len(branches) == 0:
+        raise Http404('No branch found that matches the given query.')
+    serializer = BranchSerializer(branches, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def add_new_branch(request):
+    serializer = BranchSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_branch(request, id):
+    try:
+        branch = Branch.objects.get(id=id)
+        branch.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    except Branch.DoesNotExist:
+        branch = None
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def rename_branch(request, id):
+    try:
+        branch = Branch.objects.get(id=id)
+    except Branch.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    serializer = BranchSerializer(branch, data=request.data)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
