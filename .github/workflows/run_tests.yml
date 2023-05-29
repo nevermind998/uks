@@ -31,7 +31,4 @@ jobs:
       
       - name: Test App Code
         run: |
-          python project_management_app/tests.py
-          python user_actions_management_app/tests.py
-          python users_management_app/tests.py
-          python versioning_management_app/tests.py
+          python manage.py test --noinput
