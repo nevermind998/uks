@@ -63,6 +63,7 @@ def delete_milestone(request,id):
     
 #Label Handling
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_label(request,id):
     try:
         label= Label.objects.get(id=id)
@@ -72,6 +73,7 @@ def get_label(request,id):
         return Response(status=status.HTTP_404_NOT_FOUND)
         
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_all_label(request,id=None):
     labels = Label.objects.all()
     if(len(labels) == 0): raise Http404('No labels found that matches the given query.')
@@ -79,6 +81,7 @@ def get_all_label(request,id=None):
     return Response(serializers.data)
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def add_new_label(request,id=None):
     serializer = LabelSerializer(data=request.data)
     if serializer.is_valid():
@@ -87,6 +90,7 @@ def add_new_label(request,id=None):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def update_label(request,id):
     try:
         label= Label.objects.get(id=id)
@@ -100,6 +104,7 @@ def update_label(request,id):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
      
 @api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
 def delete_label(request,id):
     try:
         label = Label.objects.get(id=id)
