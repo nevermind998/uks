@@ -22,4 +22,11 @@ urlpatterns = [
     path('new-issue', views.add_new_issue, name='new-issue'),
     path('update_issue/<int:id>', views.update_issue, name='update_issue'),
     path('delete_issue/<int:id>', views.delete_issue, name='delete_issue'),
+
+    #pull request
+    path('pull_request/<int:id>', views.get_pull_request, name='pull_request'),
+    path('pull_requests/', views.get_all_pull_request, name='pull_requests'),
+    path('new-pull_request', views.add_new_pull_request, name='new-pull_request'),
+    path('update_pull_request/<int:id>', views.update_pull_request, name='update_pull_request'),
+    path('delete_pull_request/<int:id>', views.delete_pull_request, name='delete_pull_request'),
 ]
