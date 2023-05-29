@@ -13,7 +13,6 @@ jobs:
       postgres:
         image: postgres:15.1
         env:
-          POSTGRES_DB: postgres
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: 123
           POSTGRES_HOST: localhost
@@ -45,7 +44,6 @@ jobs:
           pip install -r requirements.txt
       - name: Test App Code
         env:
-          POSTGRES_DB: uks_test_db
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: 123
           POSTGRES_HOST: 127.0.0.1
