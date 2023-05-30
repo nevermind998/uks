@@ -14,3 +14,10 @@ class BranchSerializer(serializers.ModelSerializer):
         model = Branch
         fields = ['id', 'name', 'repository']
         read_only_field = ['id']
+
+
+class CommitSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Branch
+        fields = ['id', 'author', 'hash', 'message', 'created_at', 'branch']
+        read_only_field = ['id']
