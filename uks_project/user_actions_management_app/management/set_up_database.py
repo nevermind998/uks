@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from ..models import User, Repository, Issue, PullRequest, Comment
+from ..models import User, Repository, Issue, PullRequest, Comment, Reaction
 
 
 class Command(BaseCommand):
@@ -9,6 +9,7 @@ class Command(BaseCommand):
         Repository.objects.all().delete()
         Issue.objects.all().delete()
         Comment.objects.all().delete()
+        Reaction.objects.all().delete()
 
         user1 = User.objects.create_user(
             given_name="John",
@@ -30,6 +31,8 @@ class Command(BaseCommand):
         issue.save()
         comment = Comment(author=user1, content="Jane please finish this issue by this Friday. Thanks.",  issue=issue)
         comment.save()
+        reaction = Reaction(author=user2, comment=comment, type="LIKE")
+        reaction.save()
 
 
     def handle(self, *args, **options):
