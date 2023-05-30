@@ -14,5 +14,11 @@ urlpatterns = [
     path('new-branch', views.add_new_branch, name='add_branch'),
     path('branch/<int:id>', views.delete_branch, name='delete_branch'),
     path('branch/<int:id>/edit', views.rename_branch, name='rename_branch'),
+    path('commits/', views.get_all_commits, name='all_commits'),
+    path('commit/<str:message>', views.get_commit_message, name='commit_message'),
+    path('commit/<int:id>/branch', views.get_commit_branch, name='commit_branch'),
+    path('add-new-commit', views.add_new_commit, name='add-new-commit'),
+    path('commit/<int:id>/hash', views.get_commit_hash, name='commit_hash'),
+    path('commits/author/<int:user_id>', views.get_all_commits_by_author, name='all_commits_by_author'),
 
 ]

@@ -5,8 +5,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import Repository, Branch
-from .serializers import RepositorySerializer, BranchSerializer
+from .models import Repository, Branch, Commit
+from .serializers import RepositorySerializer, BranchSerializer, CommitSerializer
 
 
 # Repo handling
@@ -157,3 +157,67 @@ def rename_branch(request, id):
         return Response(serializer.data)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_all_commits(request):
+    commits = Commit.objects.all()
+    if len(commits) == 0:
+        raise Http404('No commits found that matches the given query.')
+    serializer = CommitSerializer(commits, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_commit_message(request, message):
+    commit = Commit.objects.filter(message=message)
+    if len(commit) == 0:
+        raise Http404('No commit found with that name.')
+    serializer = CommitSerializer(commit, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_commit_branch(request, commit_id):
+    commit = Commit.objects.filter(commit=commit_id)
+    if len(commit) == 0:
+        raise Http404('No commit found that matches given query.')
+    serializer = CommitSerializer(commit, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def add_new_commit(request):
+    serializer = CommitSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_commit_hash(request, commit_id):
+    commit = Commit.objects.filter(commit=commit_id)
+    if len(commit) == 0:
+        raise Http404('No commit found with that hash.')
+    serializer = CommitSerializer(commit, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_all_commits_by_author(request, user_id):
+    commits = Commit.objects.filter(author=user_id)
+    if len(commits) == 0:
+        raise Http404('No commits found by that author.')
+
+    author_commits = []
+    for commit in commits:
+        author_commits.append(commit.branch)
+    serializer = CommitSerializer(commits, many=True)
+    return Response(serializer.data)
