@@ -5,8 +5,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from uks_project.versioning_management_app.models import Repository, Branch
-from uks_project.versioning_management_app.serializers import RepositorySerializer, BranchSerializer
+from .models import Repository, Branch
+from .serializers import RepositorySerializer, BranchSerializer
 
 
 # Repo handling
