@@ -1,3 +1,4 @@
+import datetime
 from django.core.management.base import BaseCommand
 
 from ..models import Milestone, Repository, User, Issue, Label
@@ -26,12 +27,14 @@ class Command(BaseCommand):
 
         repository = Repository(name="Project Repository", owner=user1, description="This is our repository.", visibility="PUBLIC", default_branch="main")
         repository.save()
-        label = Label(name="Label",description="Description label",color="red",repository=repository,)
+        label = Label(name="Label",description="Description label",color="red",repository=repository)
         label.save()
-        issue = Issue(title="First Issue", status="OPEN", repository=repository, author=user1)
-        issue.save()
-        milestone = Milestone(title="Milestone",due_date='2022-02-12', description='Milestone description', status='OPEN', repository=repository)
+        milestone = Milestone(title="Milestone",due_date=datetime.datetime(2022, 6, 13), description='Milestone description', status='OPEN', repository=repository)
         milestone.save()
-
+        issue = Issue(title="First Issue", status="OPEN", repository=repository, author=user1,milestone=milestone,created_at=datetime.datetime(2022, 6, 13))
+        issue.save()
+        issue.labels.set([label])
+        issue.assignees.set([user2])
+        
     def handle(self, *args, **options):
         self.insert_data()
