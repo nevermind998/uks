@@ -1,6 +1,6 @@
 from django.test import Client, TestCase
 from django.urls import reverse
-from ..models import Milestone, User, Issue, Repository, Label
+from ..models import Milestone, User, Issue, Repository, Label, Branch, PullRequest
 from ..management.set_up_database import Command
 import json
 
@@ -416,6 +416,193 @@ class IssueApiTests(TestCase):
     def test_delete_issue_fail(self):
         response = self.client.delete(
             '/project/delete-issue/98',
+            HTTP_AUTHORIZATION=self.token,
+            content_type=JSON
+        )       
+        self.assertEqual(response.status_code, 404)
+
+class PullRequestApiTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        c = Command()
+        c.handle()
+
+    def setUp(self) -> None:
+        self.client = Client()
+        self.token = f'Bearer {get_jwt_token()}'
+
+    def test_get_all_pull_request(self):
+        response = self.client.get('/project/pull_requests/', HTTP_AUTHORIZATION=self.token, content_type=JSON)
+        res_obj = json.loads(response.content)
+        self.assertEqual(len(res_obj),1)
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_all_pull_request_wrong_path(self):
+        response = self.client.get('/project/pull_requests/all', HTTP_AUTHORIZATION=self.token, content_type=JSON)
+        self.assertEqual(response.status_code, 404)
+
+    def test_get_all_pull_request_unauth(self):
+        response = self.client.get('/project/pull_requests/', HTTP_AUTHORIZATION="", content_type=JSON)
+        self.assertEqual(response.status_code, 401)
+
+    def test_get_pull_request_by_status(self):
+        response = self.client.get('/project/pull_requests/OPEN/status', HTTP_AUTHORIZATION=self.token, content_type=JSON)
+        res_obj = json.loads(response.content)
+        self.assertEqual(response.status_code, 200)
+        self.assertGreaterEqual(len(res_obj),1)
+
+    def test_get_pull_request_by_status_fail(self):
+        response = self.client.get('/project/pull_requests/APPROVED/status', HTTP_AUTHORIZATION=self.token, content_type=JSON)
+        self.assertEqual(response.status_code, 404)
+
+    def test_get_pull_request_by_author(self):
+        author = User.objects.get(given_name='John')
+        response = self.client.get('/project/pull_requests/'+str(author.id)+'/author', HTTP_AUTHORIZATION=self.token, content_type=JSON)
+        res_obj = json.loads(response.content)
+        self.assertEqual(response.status_code, 200)
+        self.assertGreaterEqual(len(res_obj),1)
+
+    def test_get_pull_request_by_author_fail(self):
+        response = self.client.get('/project/pull_requests/55/author', HTTP_AUTHORIZATION=self.token, content_type=JSON)
+        self.assertEqual(response.status_code, 404)
+
+    def test_get_pull_request_by_label(self):
+        label = Label.objects.get(name='Label')
+        response = self.client.get('/project/pull_requests/'+str(label.id)+'/label', HTTP_AUTHORIZATION=self.token, content_type=JSON)
+        res_obj = json.loads(response.content)
+        self.assertEqual(response.status_code, 200)
+        self.assertGreaterEqual(len(res_obj),1)
+
+    def test_get_pull_request_by_label_fail(self):
+        response = self.client.get('/project/pull_requests/55/label', HTTP_AUTHORIZATION=self.token, content_type=JSON)
+        self.assertEqual(response.status_code, 404)
+    
+    def test_get_pull_request_by_milestone(self):
+        milestone = Milestone.objects.get(title='Milestone')
+        response = self.client.get('/project/pull_requests/'+str(milestone.id)+'/milestone', HTTP_AUTHORIZATION=self.token, content_type=JSON)
+        res_obj = json.loads(response.content)
+        self.assertEqual(response.status_code, 200)
+        self.assertGreaterEqual(len(res_obj),1)
+
+    def test_get_pull_request_by_milestone_fail(self):
+        response = self.client.get('/project/pull_requests/55/milestone', HTTP_AUTHORIZATION=self.token, content_type=JSON)
+        self.assertEqual(response.status_code, 404)
+
+    def test_get_pull_request_by_assignee(self):
+        assignee = User.objects.get(given_name='Jane')
+        response = self.client.get('/project/pull_requests/'+str(assignee.id)+'/assignee', HTTP_AUTHORIZATION=self.token, content_type=JSON)
+        res_obj = json.loads(response.content)
+        self.assertEqual(response.status_code, 200)
+        self.assertGreaterEqual(len(res_obj),1)
+
+    def test_get_pull_request_by_assignee_fail(self):
+        response = self.client.get('/project/pull_requests/55/assignee', HTTP_AUTHORIZATION=self.token, content_type=JSON)
+        self.assertEqual(response.status_code, 404)
+
+    def test_post_create_pull_request(self):
+        repository = Repository.objects.get(name='Project Repository').id
+        assignee = User.objects.get(given_name='Jane').id
+        milestone = Milestone.objects.get(title='Milestone').id
+        author = User.objects.get(given_name='John').id
+        label = Label.objects.get(name='Label').id
+        base_branch = Branch.objects.get(name='Base branch').id
+        compare_branch = Branch.objects.get(name='Compare branch').id
+        issue = Issue.objects.get(title='First Issue').id
+        request = { 
+            "author":author,
+            "repository":repository,
+            "title":"New pull request",
+            "description":"Pull request description",
+            "base_branch":base_branch,
+            "compare_branch":compare_branch,
+            "issues":[issue],
+            "milestone":milestone,
+            "labels":[label],
+            "assignees":[assignee],
+            "status":"OPEN",
+            "review":"APPROVED",
+            "created_at":"2022-12-29"
+        }
+
+        response = self.client.post(
+            '/project/new-pull_request',
+            data=json.dumps(request),
+            HTTP_AUTHORIZATION=self.token,
+            content_type=JSON
+        )
+
+        res_obj = json.loads(response.content)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(res_obj['title'], 'New pull request')
+
+    def test_post_create_pull_request_fail(self):
+        request = {
+            "name": "Fail pull request",
+            }
+
+        response = self.client.post(
+            '/project/new-pull_request',
+            data=json.dumps(request),
+            HTTP_AUTHORIZATION=self.token,
+            content_type=JSON
+        )       
+        self.assertEqual(response.status_code, 400)
+
+    def test_update_pull_request(self):
+        repository = Repository.objects.get(name='Project Repository').id
+        author = User.objects.get(given_name='John').id
+        base_branch = Branch.objects.get(name='Base branch').id
+        compare_branch = Branch.objects.get(name='Compare branch').id
+        pull_request = PullRequest.objects.get(title='Pull request')
+        request = {
+            "author":author,
+            "repository":repository,
+            "title":"Updated pull request",
+            "description":"Pull request description",
+            "base_branch":base_branch,
+            "compare_branch":compare_branch,
+            "status":"OPEN",
+            "review":"APPROVED"
+            }
+        
+        response = self.client.put(
+            '/project/update-pull_request/'+str(pull_request.id),
+            data=json.dumps(request),
+            HTTP_AUTHORIZATION=self.token,
+            content_type=JSON
+        )       
+        res_obj = json.loads(response.content)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(res_obj['title'], 'Updated pull request')
+
+    def test_upate_pull_request_fail(self):
+        pull_request = PullRequest.objects.get(title='Pull request')
+        repository = Repository.objects.get(name='Project Repository').id
+        request = {
+            "repository": repository,
+            "title": "Update pull request",
+        }
+        response = self.client.put(
+            '/project/update-pull_request/'+str(pull_request.id),
+            data=json.dumps(request),
+            HTTP_AUTHORIZATION=self.token,
+            content_type=JSON
+        )       
+        self.assertEqual(response.status_code, 400)
+
+    def test_delete_pull_request(self):
+        pull_request = PullRequest.objects.get(title='Pull request')
+        response = self.client.delete(
+            '/project/delete-pull_request/'+str(pull_request.id),
+            HTTP_AUTHORIZATION=self.token,
+            content_type=JSON
+        )       
+        self.assertEqual(response.status_code, 204)
+
+    def test_delete_pull_request_fail(self):
+        response = self.client.delete(
+            '/project/delete-pull_request/98',
             HTTP_AUTHORIZATION=self.token,
             content_type=JSON
         )       

@@ -1,7 +1,7 @@
 import datetime
 from django.core.management.base import BaseCommand
 
-from ..models import Milestone, Repository, User, Issue, Label
+from ..models import Milestone, Repository, User, Issue, Label, PullRequest, Branch
 
 class Command(BaseCommand):
     def insert_data(self):
@@ -35,6 +35,15 @@ class Command(BaseCommand):
         issue.save()
         issue.labels.set([label])
         issue.assignees.set([user2])
-        
+        compare_branch = Branch(name="Compare branch", repository = repository)
+        compare_branch.save()
+        base_branch = Branch(name="Base branch", repository = repository)
+        base_branch.save()
+        pullRequest = PullRequest(title="Pull request", description="Pull request description", author=user1, repository=repository, base_branch=base_branch, compare_branch=compare_branch,milestone=milestone,status="OPEN",review="APPROVED",created_at=datetime.datetime(2022, 9, 13))
+        pullRequest.save()
+        pullRequest.labels.set([label])
+        pullRequest.assignees.set([user2])
+        pullRequest.issues.set([issue])
+ 
     def handle(self, *args, **options):
         self.insert_data()
