@@ -17,6 +17,16 @@ def get_milestone(request,id):
         return Response(serializers.data)
     except Milestone.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
+    
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_milestone_by_repository(request,repository):
+    try:
+        milestone= Milestone.objects.get(repository=repository)
+        serializers = MilestoneSerializer(milestone)
+        return Response(serializers.data)
+    except Milestone.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
         
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
