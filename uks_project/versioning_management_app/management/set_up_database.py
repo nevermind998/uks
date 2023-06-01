@@ -27,10 +27,16 @@ class Command(BaseCommand):
 
         repository = Repository(name="UKS", owner=user1, description="This is our repository.", visibility="PUBLIC", default_branch="main")
         repository.save()
+        repository2 = Repository(name="UKS2", owner=user1, description="Second repository.", visibility="PUBLIC", default_branch="main")
+        repository2.save()
         branch = Branch(name="Test branch", repository=repository)
         branch.save()
-        commit = Commit(author=user1, hash="56wh123", message="This is commit message", created_at="2023-05-05", branch=branch)
+        branch2 = Branch(name="New", repository=repository)
+        branch2.save()
+        commit = Commit(author=user1, hash="56wh123", message="New entity added", created_at="2023-05-05", branch=branch)
         commit.save()
+        commit2 = Commit(author=user1, hash="56wh123", message="Bug fixed", created_at="2023-05-05", branch=branch2)
+        commit2.save()
 
     def handle(self, *args, **options):
         self.insert_values()
