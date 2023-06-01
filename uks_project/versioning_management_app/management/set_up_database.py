@@ -33,8 +33,10 @@ class Command(BaseCommand):
         branch.save()
         branch2 = Branch(name="New", repository=repository)
         branch2.save()
-        commit = Commit(author=user1, hash="56wh123", message="This is commit message", created_at="2023-05-05", branch=branch)
+        commit = Commit(author=user1, hash="56wh123", message="New entity added", created_at="2023-05-05", branch=branch)
         commit.save()
+        commit2 = Commit(author=user1, hash="56wh123", message="Bug fixed", created_at="2023-05-05", branch=branch2)
+        commit2.save()
 
     def handle(self, *args, **options):
         self.insert_values()

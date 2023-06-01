@@ -1,6 +1,6 @@
 from django.test import TestCase
 from ..management.set_up_database import Command
-from ..models import User, Repository, Branch
+from ..models import User, Repository, Branch, Commit
 
 
 class RepositoryTests(TestCase):
@@ -52,3 +52,23 @@ class BranchTests(TestCase):
         self.assertEqual(new_branch.name, "Test branch")
         self.assertEqual(new_branch.repository.name, "UKS")
 
+class CommitTests(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        c = Command()
+        c.handle()
+
+    def test_get_commits_successful(self):
+        commits = Commit.objects.all()
+        self.assertEqual(len(commits), 2)
+        self.assertEqual(commits[0].message, "New entity added")
+        self.assertEqual(commits[1].message, "Bug fixed")
+
+    def test_add_new_commit(self):
+        author = User.objects.filter(username="johndoe").first()
+        branch = Branch.objects.filter(name="Test branch").first()
+        new_commit = Commit.objects.create(author=author, message='New entity added', hash="ddd33", branch=branch)
+        new_commit.save()
+
+        self.assertEqual(new_commit.message, "New entity added")

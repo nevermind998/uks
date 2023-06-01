@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Repository, Branch
+from .models import Repository, Branch, Commit
 
 
 class RepositorySerializer(serializers.ModelSerializer):
@@ -18,6 +18,6 @@ class BranchSerializer(serializers.ModelSerializer):
 
 class CommitSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Branch
+        model = Commit
         fields = ['id', 'author', 'hash', 'message', 'created_at', 'branch']
         read_only_field = ['id']
