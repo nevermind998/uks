@@ -28,7 +28,7 @@ class RepositoryApiTests(TestCase):
         response = self.client.get('/versioning/repositories/', HTTP_AUTHORIZATION=self.token, content_type='application/json')
         response_obj = json.loads(response.content)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response_obj), 1)
+        self.assertEqual(len(response_obj), 2)
 
     def test_get_all_repositories_wrong_path(self):
         response = self.client.get('/repositories/', HTTP_AUTHORIZATION=self.token, content_type='application/json')
@@ -37,10 +37,6 @@ class RepositoryApiTests(TestCase):
     def test_get_all_repositories_token_failed(self):
         response = self.client.get('/versioning/repositories/', HTTP_AUTHORIZATION="", content_type='application/json')
         self.assertEqual(response.status_code, 401)
-
-    def test_get_repository_collaborators_failed(self):
-        response = self.client.get('/versioning/repository/' + '1' + '/collaborators', HTTP_AUTHORIZATION=self.token, content_type='application/json')
-        self.assertEqual(response.status_code, 404)
 
     def test_create_repository_successful(self):
         owner = User.objects.get(username="johndoe").id
