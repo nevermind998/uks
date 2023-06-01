@@ -2,7 +2,7 @@ from django.test import Client, TestCase
 from django.urls import reverse
 
 from ..management.set_up_database import Command
-from ..models import Comment, User, Issue, Reaction
+from ..models import Comment, User, Issue, Reaction, Action, Repository
 
 #Unit Tests
 
@@ -39,3 +39,19 @@ class CommentsTests(TestCase):
         reactions = Reaction.objects.all()
         self.assertEqual(len(reactions), 1)  
         self.assertEqual(reactions[0].type, "LIKE")  
+    
+    def test_add_new_action(self):
+        author = User.objects.filter(username="johndoe").first()
+        repository = Repository.objects.filter(name="Forked Repository").first()
+        new_action = Action.objects.create(author=author, repository=repository,  type="WATCH")
+        new_action.save()
+        self.assertEqual(new_action.type,"WATCH")
+        self.assertEqual(new_action.author.given_name,"John")
+        self.assertEqual(new_action.repository.id, repository.id)
+
+    def test_successful_get_actions(self):
+        actions = Action.objects.all()
+        self.assertEqual(len(actions), 3)  
+        self.assertEqual(actions[0].type, "STAR")
+        self.assertEqual(actions[1].type, "WATCH")
+        self.assertEqual(actions[2].type, "FORK")
