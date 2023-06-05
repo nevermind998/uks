@@ -7,6 +7,8 @@ import { AuthState } from './Store/slices/auth.slice';
 import { useSelector } from 'react-redux';
 import Dashboard from './Views/Dashboard';
 import Milestone from './Views/ProjectManagement/MilestoneForm';
+import Label from './Views/ProjectManagement/LabelForm';
+
 
 export const IsSignedIn = () => {
   const user = useSelector<RootState, AuthState>((state) => state.auth);
@@ -31,6 +33,8 @@ function App() {
           <Route element={<IsSignedIn />}>
             <Route path="/" element={<Dashboard />} />
             <Route path="/milestone/new/:id" element={<Milestone />} />
+            <Route path="/label/new/:id" element={<Label />} />
+
           </Route>
         </Routes>
       </BrowserRouter>
