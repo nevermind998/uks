@@ -54,11 +54,12 @@ const Label = () => {
 
 
   return (
-    <div className="add-update-form">
+    <div className="label-form">
       <Toast open={open} setOpen={setOpen} toastOptions={toastOptions} />
-      <div className="add-update-form__content-wrapper">
+      <div className="label-form__content-wrapper">
         <h3>Create a new label</h3>
-        <form onSubmit={formik.handleSubmit} className="add-update-form__form">
+        <form onSubmit={formik.handleSubmit} className="label-form__form">
+        <div className="label-form__group">
             <TextField
               id="name"
               label="Name"
@@ -69,7 +70,7 @@ const Label = () => {
               error={formik.touched.name && Boolean(formik.errors.name)}
               helperText={formik.errors.name && formik.touched.name}
               required
-              className="add-update-form__form--field"
+              className="label-form__form--field"
               size="small"
             />
             <TextField
@@ -82,14 +83,15 @@ const Label = () => {
               required
               error={formik.touched.description && Boolean(formik.errors.description)}
               helperText={formik.errors.description && formik.touched.description}
-              className="add-update-form__form--field"
+              className="label-form__form--field"
               size="small"
             />
+            </div>
             <ChromePicker
               color={selectedColor}
               onChange={handleColorChange}
             />
-            <Button type="submit" className="add-update__button" variant="contained">
+            <Button type="submit" className="label-form__button" variant="contained">
               Create label
             </Button>
         </form>
