@@ -1,14 +1,28 @@
-import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
+import { configureStore, ThunkAction, Action, combineReducers } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import exampleSlice from './slices/example.slice';
 import authSlice from './slices/auth.slice';
+import storage from 'redux-persist/lib/storage';
+import { persistReducer, persistStore } from 'redux-persist';
+
+const persistConfig = {
+    key: 'root',
+    storage,
+};
+
+const persistedReducer = persistReducer(
+    persistConfig,
+    combineReducers({
+        example: exampleSlice,
+        auth: authSlice,
+    })
+);
 
 export const store = configureStore({
-    reducer: {
-        example: exampleSlice,
-        auth: authSlice
-    },
+    reducer: persistedReducer,
 });
+
+export const persistor = persistStore(store);
 
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof store.getState>;
