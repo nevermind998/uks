@@ -32,4 +32,12 @@ export const createLabel = async (body: LabelDto) => {
   }
 };
 
-
+export const createIssue = async (body: IssuesDto) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/project/new-issue`, body, config);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating milestone:', error);
+    throw error;
+  }
+};

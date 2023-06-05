@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 import Dashboard from './Views/Dashboard';
 import Milestone from './Views/ProjectManagement/MilestoneForm';
 import Label from './Views/ProjectManagement/LabelForm';
-
+import Issue from './Views/ProjectManagement/IssuesForm';
 
 export const IsSignedIn = () => {
   const user = useSelector<RootState, AuthState>((state) => state.auth);
@@ -34,7 +34,7 @@ function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/milestone/new/:id" element={<Milestone />} />
             <Route path="/label/new/:id" element={<Label />} />
-
+            <Route path="/issue/new/" element={<Issue />} />
           </Route>
         </Routes>
       </BrowserRouter>
