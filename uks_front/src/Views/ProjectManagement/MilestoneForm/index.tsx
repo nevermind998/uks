@@ -93,7 +93,6 @@ const Milestone = () => {
               name="description"
               error={formik.touched.description && Boolean(formik.errors.description)}
               helperText={formik.errors.description && formik.touched.description}
-              required
               className="add-update-form__form--field"
               size="small"
             />
