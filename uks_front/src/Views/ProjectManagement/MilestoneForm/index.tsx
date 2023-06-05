@@ -26,8 +26,8 @@ const Milestone = () => {
 
   const { mutate, isLoading } = useMutation(createMilestone, {
     onSuccess: (res) => {
-      var token = localStorage.getItem('access_token');
-      console.log(token)
+      setToastOptions({ message: 'Milestone successfully created', type: 'success'});
+      setOpen(true);
     },
     onError: () => {
       setToastOptions({ message: 'Error creating milestone', type: 'error' });
