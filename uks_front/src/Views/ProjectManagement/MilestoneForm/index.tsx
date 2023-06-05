@@ -2,7 +2,7 @@ import { Button, TextField } from '@mui/material';
 import { useFormik } from 'formik';
 import { useState } from 'react';
 import Toast, { ToastOptions } from '../../../Components/Common/Toast';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { MILESTONE_SCHEMA } from './milestoneSchema';
 import { MilestoneDto } from '../../../Types/user.types';
 import { createMilestone } from '../../../api/projectManagement';
@@ -15,7 +15,9 @@ const Milestone = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [toastOptions, setToastOptions] = useState<ToastOptions>({ message: '', type: 'info' });
   const [selectedDate, setSelectedDate] = useState(null);
-  const navigate = useNavigate();
+  const { id } = useParams();
+  const repositoryId = id ?  parseInt(id, 10) : 0;
+
 
   const handleDateChange = (date:any) => {
     formik.setFieldValue('due_date', date);
@@ -39,7 +41,7 @@ const Milestone = () => {
       due_date: null,
       description:'',
       status:'',
-      repository: 1,
+      repository:0
     },
     validationSchema: MILESTONE_SCHEMA,
     onSubmit: (values) => {
@@ -48,7 +50,7 @@ const Milestone = () => {
         due_date: values.due_date,
         description:values.description,
         status:values.status,
-        repository: values.repository,
+        repository: repositoryId,
       };
 
       mutate(body);

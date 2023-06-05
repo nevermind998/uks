@@ -30,7 +30,7 @@ function App() {
           <Route path="sign-up" element={<SignUp />}></Route>
           <Route element={<IsSignedIn />}>
             <Route path="/" element={<Dashboard />} />
-            <Route path="/milestone/new" element={<Milestone />} />
+            <Route path="/milestone/new/:id" element={<Milestone />} />
           </Route>
         </Routes>
       </BrowserRouter>
