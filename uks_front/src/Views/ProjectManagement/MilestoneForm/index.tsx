@@ -2,7 +2,7 @@ import { Button, TextField } from '@mui/material';
 import { useFormik } from 'formik';
 import { useState } from 'react';
 import Toast, { ToastOptions } from '../../../Components/Common/Toast';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { MILESTONE_SCHEMA } from './milestoneSchema';
 import { MilestoneDto } from '../../../Types/user.types';
 import { createMilestone } from '../../../api/projectManagement';
@@ -76,30 +76,30 @@ const Milestone = () => {
               className="add-update-form__form--field"
               size="small"
             />
-         <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <DatePicker
-          label="Due date (optional)"
-          value={selectedDate}
-          onChange={handleDateChange}
-          renderInput={(params) => <TextField className="add-update-form__form--field" {...params} />}
-         />
-         </LocalizationProvider>
-          <TextField
-            id="description"
-            label="Description"
-            variant="outlined"
-            value={formik.values.description}
-            onChange={formik.handleChange}
-            name="description"
-            error={formik.touched.description && Boolean(formik.errors.description)}
-            helperText={formik.errors.description && formik.touched.description}
-            required
-            className="add-update-form__form--field"
-            size="small"
-          />
-          <Button type="submit" className="sign-up__button" variant="contained">
-            Create milestone
-          </Button>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DatePicker
+              label="Due date (optional)"
+              value={selectedDate}
+              onChange={handleDateChange}
+              renderInput={(params) => <TextField className="add-update-form__form--field" {...params} />}
+            />
+            </LocalizationProvider>
+            <TextField
+              id="description"
+              label="Description"
+              variant="outlined"
+              value={formik.values.description}
+              onChange={formik.handleChange}
+              name="description"
+              error={formik.touched.description && Boolean(formik.errors.description)}
+              helperText={formik.errors.description && formik.touched.description}
+              required
+              className="add-update-form__form--field"
+              size="small"
+            />
+            <Button type="submit" className="add-update__button" variant="contained">
+              Create milestone
+            </Button>
         </form>
       </div>
     </div>
