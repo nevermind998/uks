@@ -1,4 +1,3 @@
-import bcrypt as bcrypt
 from django.shortcuts import render
 from django.http import HttpResponse, Http404
 from rest_framework import status
@@ -205,6 +204,7 @@ def add_new_commit(request):
     serializer = CommitSerializer(data=request.data)
     if serializer.is_valid():
         hash_value = serializer.validated_data.get('hash')
+        import bcrypt
         hashed_hash = bcrypt.hashpw(hash_value.encode('utf-8'), bcrypt.gensalt())
         serializer.validated_data['hash'] = hashed_hash.decode('utf-8')
         serializer.save()
