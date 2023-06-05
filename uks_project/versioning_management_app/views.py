@@ -1,3 +1,4 @@
+import bcrypt as bcrypt
 from django.shortcuts import render
 from django.http import HttpResponse, Http404
 from rest_framework import status
@@ -109,6 +110,15 @@ def get_branch_by_name(request, name):
     serializer = BranchSerializer(branch, many=True)
     return Response(serializer.data)
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_branch_by_id(request, id):
+    branch = Branch.objects.filter(id=id)
+    if len(branch) == 0:
+        raise Http404('No branch found with that id.')
+    serializer = BranchSerializer(branch, many=True)
+    return Response(serializer.data)
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -194,6 +204,9 @@ def get_commit_branch(request, commit_id):
 def add_new_commit(request):
     serializer = CommitSerializer(data=request.data)
     if serializer.is_valid():
+        hash_value = serializer.validated_data.get('hash')
+        hashed_hash = bcrypt.hashpw(hash_value.encode('utf-8'), bcrypt.gensalt())
+        serializer.validated_data['hash'] = hashed_hash.decode('utf-8')
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
