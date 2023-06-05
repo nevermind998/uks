@@ -33,8 +33,8 @@ def get_repo_by_name(request, name):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def get_repos_by_owner(request, owner):
-    repositories = Repository.objects.filter(id=owner)
+def get_repos_by_owner(request, id):
+    repositories = Repository.objects.filter(owner=id)
     if len(repositories) == 0:
         raise Http404('No repositories found with that owner.')
     serializer = RepositorySerializer(repositories, many=True)

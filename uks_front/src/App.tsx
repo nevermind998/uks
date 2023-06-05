@@ -8,22 +8,28 @@ import { useSelector } from 'react-redux';
 import Dashboard from './Views/Dashboard';
 import Milestone from './Views/ProjectManagement/MilestoneForm';
 import Label from './Views/ProjectManagement/LabelForm';
+<<<<<<< HEAD
 import Issue from './Views/ProjectManagement/IssuesForm';
+=======
+import Layout from './Components/Layout';
+
+>>>>>>> feat/new-label-form
 
 export const IsSignedIn = () => {
-  const user = useSelector<RootState, AuthState>((state) => state.auth);
+    const user = useSelector<RootState, AuthState>(state => state.auth);
 
-  const token = localStorage.getItem('access_token');
-  const condition = !!user.data.email || token;
+    const token = localStorage.getItem('access_token');
+    const condition = user.data.email !== '' && user.data.email !== undefined && token;
 
-  if (!condition) {
-    return <Navigate to={'/sign-in'} />;
-  }
+    if (!condition) {
+        return <Navigate to={'/sign-in'} />;
+    }
 
-  return <Outlet />;
+    return <Outlet />;
 };
 
 function App() {
+<<<<<<< HEAD
   return (
     <div className="App">
       <BrowserRouter>
@@ -40,6 +46,26 @@ function App() {
       </BrowserRouter>
     </div>
   );
+=======
+    return (
+        <div className="App">
+            <BrowserRouter>
+                <Routes>
+                    <Route path="sign-in" element={<SignIn />} />
+                    <Route path="sign-up" element={<SignUp />}></Route>
+                    <Route element={<IsSignedIn />}>
+                        <Route element={<Layout />}>
+                            <Route path="/" element={<Dashboard />} />
+                            <Route path="/milestone/new/:id" element={<Milestone />} />
+                            <Route path="/label/new/:id" element={<Label />} />
+                        </Route>
+                    </Route>
+                </Routes>
+            </BrowserRouter>
+        </div>
+    );
+
+>>>>>>> feat/new-label-form
 }
 
 export default App;
