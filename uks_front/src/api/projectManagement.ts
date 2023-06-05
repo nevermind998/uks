@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { MilestoneDto } from '../Types/user.types';
+import { IssuesDto, LabelDto, MilestoneDto } from '../Types/user.types';
 
 export const BASE_URL = 'http://localhost:8000';
 
@@ -21,3 +21,15 @@ export const createMilestone = async (body: MilestoneDto) => {
     throw error;
   }
 };
+
+export const createLabel = async (body: LabelDto) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/project/new-label`, body, config);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating label:', error);
+    throw error;
+  }
+};
+
+
