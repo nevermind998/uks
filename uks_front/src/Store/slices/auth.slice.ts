@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { UserProfileDto } from '../../Types/user.types';
+import { RootState } from '..';
 
 export interface AuthState {
     data: UserProfileDto;
@@ -14,7 +15,7 @@ const initialState: AuthState = {
         given_name: '',
         bio: '',
         url: '',
-      }
+    },
 };
 
 export const authSlice = createSlice({
@@ -23,9 +24,15 @@ export const authSlice = createSlice({
     reducers: {
         addAuth: (state, action) => {
             state.data = action.payload;
-        }
+        },
+        clearUser: state => {
+            state.data = initialState.data;
+        },
     },
 });
 
-export const { addAuth } = authSlice.actions;
+export const { addAuth, clearUser } = authSlice.actions;
+
+export const selectAuth = (state: RootState) => state.auth.data;
+
 export default authSlice.reducer;
