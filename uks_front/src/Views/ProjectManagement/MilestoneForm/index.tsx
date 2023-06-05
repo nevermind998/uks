@@ -1,4 +1,4 @@
-import { Button, TextField } from '@mui/material';
+import { Button, TextField, TextFieldProps } from '@mui/material';
 import { useFormik } from 'formik';
 import { useState } from 'react';
 import Toast, { ToastOptions } from '../../../Components/Common/Toast';
@@ -81,7 +81,7 @@ const Milestone = () => {
               label="Due date (optional)"
               value={selectedDate}
               onChange={handleDateChange}
-              renderInput={(params) => <TextField className="add-update-form__form--field" {...params} />}
+              renderInput={(params: JSX.IntrinsicAttributes & TextFieldProps) => <TextField className="add-update-form__form--field" {...params} />}
             />
             </LocalizationProvider>
             <TextField
