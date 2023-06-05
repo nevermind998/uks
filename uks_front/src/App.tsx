@@ -6,6 +6,7 @@ import { RootState } from './Store';
 import { AuthState } from './Store/slices/auth.slice';
 import { useSelector } from 'react-redux';
 import Dashboard from './Views/Dashboard';
+import Milestone from './Views/ProjectManagement/MilestoneForm';
 
 export const IsSignedIn = () => {
   const user = useSelector<RootState, AuthState>((state) => state.auth);
@@ -29,6 +30,7 @@ function App() {
           <Route path="sign-up" element={<SignUp />}></Route>
           <Route element={<IsSignedIn />}>
             <Route path="/" element={<Dashboard />} />
+            <Route path="/milestone/new/:id" element={<Milestone />} />
           </Route>
         </Routes>
       </BrowserRouter>

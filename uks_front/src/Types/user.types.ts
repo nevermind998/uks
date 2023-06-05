@@ -22,3 +22,11 @@ export type UserProfileDto = {
   bio: string;
   url: string;
 };
+
+export type MilestoneDto = {
+  title:string;
+  due_date: Date | null ;
+  description:string;
+  status:string;
+  repository: number;
+};
