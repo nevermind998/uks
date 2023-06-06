@@ -54,7 +54,7 @@ class ActionsApiTests(TestCase):
         user = User.objects.get(username="johndoe").id
         repository = Repository.objects.get(name="Project Repository").id
         response = self.client.get('/user-actions/repository/'+str(repository)+'/user/'+str(user)+'/star', HTTP_AUTHORIZATION=self.token, content_type=JSON)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
     
     def test_get_repo_stargazers(self):
         repository = Repository.objects.get(name="Project Repository").id
@@ -65,7 +65,7 @@ class ActionsApiTests(TestCase):
     
     def test_get_repo_stargazers_fail(self):
         response = self.client.get('/user-actions/repository/89/stargazers', HTTP_AUTHORIZATION=self.token, content_type=JSON)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.data, [])
     
     def test_get_repo_watchers(self):
         repository = Repository.objects.get(name="Project Repository").id
@@ -76,7 +76,7 @@ class ActionsApiTests(TestCase):
     
     def test_get_repo_watchers_fail(self):
         response = self.client.get('/user-actions/repository/89/watchers', HTTP_AUTHORIZATION=self.token, content_type=JSON)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.data, [])
     
     def test_get_repo_forks(self):
         repository = Repository.objects.get(name="Project Repository").id
@@ -89,7 +89,7 @@ class ActionsApiTests(TestCase):
     
     def test_get_repo_forks_fail(self):
         response = self.client.get('/user-actions/repository/89/forked-repos', HTTP_AUTHORIZATION=self.token, content_type=JSON)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.data, [])
 
     def test_post_create_action(self):
         author = User.objects.get(username="johndoe").id
