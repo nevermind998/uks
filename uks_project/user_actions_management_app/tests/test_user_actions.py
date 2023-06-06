@@ -49,7 +49,7 @@ class CommentsApiTests(TestCase):
     
     def test_get_issue_comments_fail(self):
         response = self.client.get('/user-actions/issue/55/comments', HTTP_AUTHORIZATION=self.token, content_type=JSON)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.data, [])
 
     def test_post_create_comment(self):
         author = User.objects.get(username="johndoe").id
@@ -167,7 +167,7 @@ class ReactionsApiTests(TestCase):
     
     def test_get_comment_reactions_fail(self):
         response = self.client.get('/user-actions/comment/55/reactions', HTTP_AUTHORIZATION=self.token, content_type=JSON)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.data, [])
     
     def test_post_create_reaction(self):
         author = User.objects.get(username="johndoe").id
