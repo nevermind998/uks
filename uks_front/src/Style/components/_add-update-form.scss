@@ -78,9 +78,13 @@
         #{$self}__button {
             width: 180px;
         }
+        #{$self}__commit_button {
+            width: 100%;
+        }
     }
 }
 
 .css-ugtpnh-MuiFormLabel    -root-MuiInputLabel-root {
     font-size: 14px !important;
+
 }

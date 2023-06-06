@@ -20,5 +20,6 @@ urlpatterns = [
     path('add-new-commit', views.add_new_commit, name='add-new-commit'),
     path('commit/<int:id>/hash', views.get_commit_hash, name='commit_hash'),
     path('commits/author/<int:user_id>', views.get_all_commits_by_author, name='all_commits_by_author'),
+    path('get-branch/<int:id>', views.get_branch_by_id, name='branch_by_id'),
 
 ]

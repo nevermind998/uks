@@ -12,6 +12,7 @@ import Label from './Views/ProjectManagement/LabelForm';
 import Issue from './Views/ProjectManagement/IssuesForm';
 =======
 import Layout from './Components/Layout';
+import Commit from './Views/Commit';
 
 >>>>>>> feat/new-label-form
 
@@ -57,6 +58,7 @@ function App() {
                         <Route element={<Layout />}>
                             <Route path="/" element={<Dashboard />} />
                             <Route path="/milestone/new/:id" element={<Milestone />} />
+                            <Route path="/new-commit" element={<Commit />} />
                             <Route path="/label/new/:id" element={<Label />} />
                         </Route>
                     </Route>
