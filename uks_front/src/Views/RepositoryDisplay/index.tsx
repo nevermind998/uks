@@ -3,6 +3,8 @@ import {
   Badge,
   Box,
   Breadcrumbs,
+  Button,
+  ButtonGroup,
   Chip,
   Divider,
   Grid,
@@ -25,8 +27,11 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ActionDto } from '../../Types/action.types';
 import { useState } from 'react';
 import Toast, { ToastOptions } from '../../Components/Common/Toast';
+import { useSelector } from 'react-redux';
+import { selectAuth } from '../../Store/slices/auth.slice';
 
 const Repository = () => {
+  const user = useSelector(selectAuth);
   const navigate = useNavigate();
   const { id } = useParams();
   const [toastOptions, setToastOptions] = useState<ToastOptions>({
@@ -38,31 +43,45 @@ const Repository = () => {
   const { data: repo } = useQuery({
     queryKey: ['FETCH_REPO'],
     queryFn: async () => {
-      const data: RepositoryDto = await getRepositoryById(id ? parseInt(id) : 0);
-      return data;
+      if (id) {
+        const data: RepositoryDto = await getRepositoryById(id ? parseInt(id) : 0);
+        return data;
+      } else {
+        setToastOptions({ message: 'Error happened!', type: 'error' });
+        setOpen(true);
+      }
     },
   });
 
   const { data: stargazers } = useQuery({
     queryKey: ['FETCH_STARGAZERS'],
     queryFn: async () => {
-      const data: ActionDto[] = await getRepositoryStargazers(id ? parseInt(id) : 0);
-      return data;
+      if (id) {
+        const data: ActionDto[] = await getRepositoryStargazers(id ? parseInt(id) : 0);
+        return data;
+      } else {
+        setToastOptions({ message: 'Error happened!', type: 'error' });
+        setOpen(true);
+      }
     },
   });
 
   const { data: watchers } = useQuery({
     queryKey: ['FETCH_WATCHERS'],
     queryFn: async () => {
-      const data: ActionDto[] = await getRepositoryWatchers(id ? parseInt(id) : 0);
-      return data;
+      if (id) {
+        const data: ActionDto[] = await getRepositoryWatchers(id ? parseInt(id) : 0);
+        return data;
+      } else {
+        setToastOptions({ message: 'Error happened!', type: 'error' });
+        setOpen(true);
+      }
     },
   });
 
   const { data: forks } = useQuery({
     queryKey: ['FETCH_FORKS'],
     queryFn: async () => {
-      console.log('ID ======> ', id);
       if (id) {
         const data: ActionDto[] = await getRepositoryForks(parseInt(id));
         return data;
@@ -78,24 +97,46 @@ const Repository = () => {
       <div className="repository">
         <Toast open={open} setOpen={setOpen} toastOptions={toastOptions} />
         <div className="repository__content-wrapper">
-          <Breadcrumbs aria-label="breadcrumb">
-            <Link underline="hover" color="inherit" href="">
-              {repo?.owner}
-            </Link>
-            <Typography color="text.primary">{repo?.name}</Typography>
-            <Chip label={repo?.visibility} variant="outlined" />
-          </Breadcrumbs>
+          <Grid container spacing={2}>
+            <Grid item xs={9}>
+              <Breadcrumbs className="repository__breadcrumbs" aria-label="breadcrumb">
+                <Link underline="hover" color="inherit" href="">
+                  {user?.username}
+                </Link>
+                <Typography color="text.primary">
+                  {repo?.name} <Chip label={repo?.visibility} variant="outlined" />
+                </Typography>
+              </Breadcrumbs>
+            </Grid>
+            <Grid item xs={3}>
+              <ButtonGroup className="repository__action-buttons" variant="outlined" aria-label="outlined button group">
+                <Button>
+                  <StarIcon color="action" /> star
+                </Button>
+                <Button>
+                  <VisibilityIcon color="action" />
+                  watch
+                </Button>
+                <Button>
+                  <GitHubIcon color="action" />
+                  fork
+                </Button>
+              </ButtonGroup>
+            </Grid>
+          </Grid>
           <TabContext value="">
             <Box sx={{ borderBottom: 1, borderTop: 1, borderColor: 'divider' }}>
               <TabList aria-label="lab API tabs example">
                 <Tab label="Code" value="1" />
                 <Tab label="Issues" value="2" />
                 <Tab label="Pull Requests" value="3" />
+                <Tab label="Settings" value="3" />
               </TabList>
             </Box>
             <TabPanel value="1">Code</TabPanel>
             <TabPanel value="2">Issues</TabPanel>
             <TabPanel value="3">Pull Requests</TabPanel>
+            <TabPanel value="3">Settings</TabPanel>
           </TabContext>
 
           <Grid container spacing={2}>
@@ -105,15 +146,17 @@ const Repository = () => {
               </div>
             </Grid>
             <Grid item xs={4}>
-              <p>About</p>
+              <h3>About</h3>
               <Divider light />
-              <p>{repo?.description}</p>
+              <p>
+                <i>No description, website, or topics provided.</i>
+              </p>
               <Divider light />
               <List>
                 <ListItem disablePadding>
                   <ListItemButton>
                     <ListItemIcon>
-                      <Badge badgeContent={stargazers ? stargazers.length : 0} color="primary">
+                      <Badge badgeContent={stargazers?.length} color="primary">
                         <StarIcon color="action" />
                       </Badge>
                     </ListItemIcon>
@@ -123,7 +166,7 @@ const Repository = () => {
                 <ListItem disablePadding>
                   <ListItemButton>
                     <ListItemIcon>
-                      <Badge badgeContent={watchers ? watchers.length : 0} color="primary">
+                      <Badge badgeContent={watchers?.length} color="primary">
                         <VisibilityIcon color="action" />
                       </Badge>
                     </ListItemIcon>
@@ -133,7 +176,7 @@ const Repository = () => {
                 <ListItem disablePadding>
                   <ListItemButton>
                     <ListItemIcon>
-                      <Badge badgeContent={forks ? forks.length : 0} color="primary">
+                      <Badge badgeContent={forks?.length} color="primary">
                         <GitHubIcon color="action" />
                       </Badge>
                     </ListItemIcon>
@@ -149,3 +192,7 @@ const Repository = () => {
   );
 };
 export default Repository;
+
+const AboutRepository = () => {
+  return ();
+}

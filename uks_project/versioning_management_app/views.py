@@ -61,9 +61,13 @@ def add_new_repository(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['DELETE', 'PUT'])
+@api_view(['DELETE', 'PUT', 'GET'])
 @permission_classes([IsAuthenticated])
 def delete_or_edit_repository(request, id):
+    if request.method == 'GET':
+        repository = Repository.objects.get(id=id)
+        serializer = RepositorySerializer(repository)
+        return Response(serializer.data)
     if request.method == 'DELETE':
         try:
             repository = Repository.objects.get(id=id)
