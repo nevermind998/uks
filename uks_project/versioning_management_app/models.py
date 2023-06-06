@@ -23,6 +23,9 @@ class Repository(models.Model):
     default_branch = models.CharField(max_length=100, default="main")
     collaborators = models.ManyToManyField(User, null=True, related_name="collaborators")
 
+    class Meta:
+        unique_together = ('owner', 'name')
+
 
 class Branch(models.Model):
     name = models.CharField(max_length=100, null=False)

@@ -6,7 +6,6 @@ export const api: AxiosInstance = axios.create({
 });
 
 const token = localStorage.getItem('access_token');
-console.log(token);
 
 api.interceptors.request.use(
     config => {

@@ -81,7 +81,7 @@ const Milestone = () => {
               label="Due date (optional)"
               value={selectedDate}
               onChange={handleDateChange}
-              renderInput={(params) => <TextField className="add-update-form__form--field" {...params} />} disableHighlightToday={undefined} showDaysOutsideCurrentMonth={undefined} allowSameDateSelection={undefined}            />
+              renderInput={(params: any) => <TextField className="add-update-form__form--field" {...params} />} disableHighlightToday={undefined} showDaysOutsideCurrentMonth={undefined} allowSameDateSelection={undefined}            />
             </LocalizationProvider>
             <TextField
               id="description"
