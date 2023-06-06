@@ -5,6 +5,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from uks_project.users_management_app.serializers import UserSerializer
+
 from .models import Repository, Branch, Commit
 from .serializers import RepositorySerializer, BranchSerializer, CommitSerializer
 
@@ -20,7 +22,7 @@ def get_all_repositories(request):
     serializer = RepositorySerializer(repositories, many=True)
     return Response(serializer.data)
 
-
+  
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_repo_by_name(request, name):
@@ -39,7 +41,6 @@ def get_repos_by_owner(request, id):
         raise Http404('No repositories found with that owner.')
     serializer = RepositorySerializer(repositories, many=True)
     return Response(serializer.data)
-
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])

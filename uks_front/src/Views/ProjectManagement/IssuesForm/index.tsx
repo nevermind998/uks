@@ -1,12 +1,13 @@
-import { Button, TextField } from '@mui/material';
+import { Autocomplete, Button, TextField } from '@mui/material';
 import { useFormik } from 'formik';
-import { useState } from 'react';
+import { SetStateAction, useEffect, useState } from 'react';
 import Toast, { ToastOptions } from '../../../Components/Common/Toast';
 import { useParams } from 'react-router-dom';
 import { IssuesDto } from '../../../Types/user.types';
-import { createIssue } from '../../../api/projectManagement';
+import { createIssue, fetchDropdownRepositoryOption } from '../../../api/projectManagement';
 import { useMutation } from 'react-query';
 import { ISSUES_SCHEMA } from './issuesSchema';
+
 
 const Issue = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -29,7 +30,7 @@ const Issue = () => {
   const formik = useFormik({
     initialValues: {
       title:'',
-      created_at:new Date(),//NA BEKU HANDLAJ!!
+      created_at:new Date(),
       status:'',
       milestone:0,
       labels:0,
@@ -45,7 +46,7 @@ const Issue = () => {
         status:values.status,
         milestone:1, //FORGINE KEY,SEE HOW FIX IT
         labels:1,
-        repository:1,
+        repository:repositoryId,
         author:1,
         assignees:values.assignees
       };
@@ -57,7 +58,35 @@ const Issue = () => {
 
   //treba videti za autora, neki dropdown??
   //kako da handlamo label, repo, assignes
+/*
+  const options = [
+    { value: 'option1', label: 'Option 1' },
+    { value: 'option2', label: 'Option 2' },
+    { value: 'option3', label: 'Option 3' },
+    // Add more options as needed
+  ];
+*/
+  const [options, setOptions] = useState([]);
 
+  const [selectedOption, setSelectedOption] = useState(null);
+
+  const handleOptionChange = (event: any, selectedOption: any) => {
+    setSelectedOption(selectedOption);
+  };
+
+  useEffect(() => {
+    const fetchOptions = async () => {
+      const options = await fetchDropdownRepositoryOption(repositoryId);
+      const formattedOptions = options.map((o: { id: any; name: any; }) => ({
+        value: o.id,
+        label: o.name,
+      }));
+      setOptions(formattedOptions);
+    };
+  
+    fetchOptions();
+  }, []);
+  
   return (
     <div className="add-update-form">
       <Toast open={open} setOpen={setOpen} toastOptions={toastOptions} />
@@ -77,7 +106,22 @@ const Issue = () => {
               className="add-update-form__form--field"
               size="small"
             />
-     
+          <div>
+          <Autocomplete
+            value={selectedOption}
+            onChange={handleOptionChange}
+            options={options}
+            getOptionLabel={(option) => option}
+            renderInput={(params) => (
+              <TextField {...params} 
+              label="Select an author" 
+              variant="outlined" 
+              value='selectedOption.value'
+              className="add-update-form__dropdown"
+            />
+            )}
+          />
+        </div>  
            
             <Button type="submit" className="add-update__button" variant="contained">
               Create issue
