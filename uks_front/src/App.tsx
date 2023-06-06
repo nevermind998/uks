@@ -9,6 +9,7 @@ import Dashboard from './Views/Dashboard';
 import Milestone from './Views/ProjectManagement/MilestoneForm';
 import Label from './Views/ProjectManagement/LabelForm';
 import Layout from './Components/Layout';
+import Commit from './Views/Commit';
 
 
 export const IsSignedIn = () => {
@@ -35,6 +36,7 @@ function App() {
                         <Route element={<Layout />}>
                             <Route path="/" element={<Dashboard />} />
                             <Route path="/milestone/new/:id" element={<Milestone />} />
+                            <Route path="/new-commit" element={<Commit />} />
                             <Route path="/label/new/:id" element={<Label />} />
                         </Route>
                     </Route>
