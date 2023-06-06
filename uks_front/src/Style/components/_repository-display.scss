@@ -34,4 +34,11 @@
     display: flex;
     margin-left: 20%;
   }
+
+  &__action-button {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }
