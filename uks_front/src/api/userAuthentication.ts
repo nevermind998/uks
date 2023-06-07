@@ -14,3 +14,9 @@ export const getUserById = async (id: number) => {
     return user.data;
 };
 
+export const fetchAssignees = async (id:number) => {
+    const collaborators = await api.get(`/user/get-assignees/${id}`);
+    return collaborators.data;
+};
+
+

@@ -49,18 +49,6 @@ def get_repos_by_owner(request, id):
     serializer = RepositorySerializer(repositories, many=True)
     return Response(serializer.data)
 
-
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def get_repository_collaborators(request, collaborator):
-    try:
-        repository = Repository.objects.filter(collaborators=collaborator)
-        serializer = RepositorySerializer(repository, many=True)
-        return Response(serializer.data)
-    except Repository.DoesNotExist:
-        raise Http404('No repositories found that match the given query.')
-
-
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def add_new_repository(request):

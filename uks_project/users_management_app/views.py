@@ -8,6 +8,8 @@ from rest_framework.views import APIView
 
 from .models import User
 from .serializers import UserSerializer, CustomTokenObtainPairSerializer
+from versioning_management_app.models import Repository
+
 
 # Create your views here.
 
@@ -45,3 +47,14 @@ def get_user_by_id(request, id):
         raise Http404('No repositories found with that id.')
     serializer = UserSerializer(user, many=True)
     return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_pr_assignees(request, id):
+    try:
+        repository = Repository.objects.get(id=id)
+        assignees = repository.collaborators.all()
+        serializer = UserSerializer(assignees, many=True)
+        return Response(serializer.data)
+    except Repository.DoesNotExist:
+        raise Http404('No repository found with that id.')

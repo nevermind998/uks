@@ -12,11 +12,9 @@ import { useSelector } from "react-redux";
 import { RootState } from '../../../Store';
 import { AuthState } from '../../../Store/slices/auth.slice';
 import {useQuery} from 'react-query'
-import { fetchBranches, getBranchById, getBranchByName } from '../../../api/commits';
+import { fetchBranches } from '../../../api/commits';
 import Autocomplete from '@mui/material/Autocomplete';
-import { RepositoryDto } from '../../../Types/repository.types';
-import { getRepositoriesById, getRepositoriesForOwner } from '../../../api/repositories';
-import { getUserById } from '../../../api/userAuthentication';
+import { fetchAssignees } from '../../../api/userAuthentication';
 
 const PullRequest = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -42,25 +40,14 @@ const PullRequest = () => {
   const allBranchesQuery = useQuery(['FETCH_BRANCH'], async() => await fetchBranches());
   const firstBranch = allBranchesQuery.data && allBranchesQuery.data.length > 0 ? allBranchesQuery.data[0] : null;
 
-  const repositoryQuery = useQuery({
-    queryFn: async () => {
-        const repo: RepositoryDto = await getRepositoriesById(repositoryId);
-        return repo;
-    },
-  });
-
-  let coll: AssigneesDto[] = [];
-  if (repositoryQuery.data && Array.isArray(repositoryQuery.data) && repositoryQuery.data.length > 0) {
-      repositoryQuery.data.forEach(async (item) => {
-        for (const collaborator of item.collaborators) {
-          const users = await getUserById(collaborator);
-          for(const u of users)
-            coll.push(u);
-          }
-      });
-  }
+  const assignees = useQuery(['FETCH_REPOSITORY'], async() => await fetchAssignees(repositoryId));
   const allLabelsQuery = useQuery(['FETCH_LABELS'], async() => await fetchLabels());
   const allIssuesQuery = useQuery(['FETCH_ISSUES'], async() => await fetchIssues());
+
+  function isOptionEqualToValue(option: any, value: any) {
+    if (value.value === '') return true;
+    return option.value === value.value;
+  }
 
   const formik = useFormik({
     initialValues: {
@@ -107,25 +94,27 @@ const PullRequest = () => {
         <h3>Open pull request</h3>
         <form onSubmit={formik.handleSubmit} className="add-pull-request-form__form">
             <div className="add-pull-request-form__form--autocomplete">
-                <Autocomplete
-                    disablePortal
-                    id="base-branch"
-                    options={allBranchesQuery.data ? allBranchesQuery.data.map((b:any) => ({ value: b.id, label: b.name })) : 0}
-                    value={ formik.values.base_branch}
-                    onChange={(event, value:any) => formik.setFieldValue("base_branch", value)}
-                    sx={{ width: 490 }}
-                    renderInput={(params:any) => <TextField {...params} label="Base branch" />}
-                    />
-                  <img src="/img/comparing-branch.png" alt="User icon" style={{width:"5%"}}/>
-                <Autocomplete
-                    disablePortal
-                    id="compare-branch"
-                    options={allBranchesQuery.data?.map((c:any) => ({ value: c.id, label: c.name })) || []}
-                    value={formik.values.compare_branch}
-                    onChange={(event, value:any) => formik.setFieldValue("compare_branch", value)}
-                    sx={{ width: 490 }}
-                    renderInput={(params:any) => <TextField {...params} label="Compare branch" />}
-                    />
+              <Autocomplete
+                disablePortal
+                id="base-branch"
+                options={allBranchesQuery?.data?.map((b: any) => ({ value: b.id, label: b.name })) || []}
+                isOptionEqualToValue={isOptionEqualToValue}
+                getOptionLabel={(option: any) => option.label}
+                onChange={(event, value: any) => formik.setFieldValue('base_branch', value)}
+                sx={{ width: 490 }}
+                renderInput={(params: any) => <TextField {...params} label="Base branch" />}
+              />
+              <img src="/img/comparing-branch.png" alt="User icon" style={{ width: '5%' }} />
+              <Autocomplete
+                disablePortal
+                id="compare-branch"
+                options={allBranchesQuery?.data?.map((b: any) => ({ value: b.id, label: b.name })) || []}
+                isOptionEqualToValue={isOptionEqualToValue}
+                getOptionLabel={(option: any) => option.label}
+                onChange={(event, value: any) => formik.setFieldValue('compare_branch', value)}
+                sx={{ width: 490 }}
+                renderInput={(params: any) => <TextField {...params} label="Compare branch" />}
+              />
             </div>
             <TextField
               id="title"
@@ -156,44 +145,35 @@ const PullRequest = () => {
             />
             <div className="add-pull-request-form__form--autocomplete">
               <Autocomplete
-                multiple
-                disablePortal
-                id="issues"
-                options={allIssuesQuery.data?.map((i:any) => ({ value: i.id, label: i.title })) || []}
-                value={formik.values.issues}
-                onChange={(event,value) => formik.setFieldValue("issues", value)}
-                sx={{ width: 495 }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Issues"
-                    placeholder="Select issues"
-                  />
-                )}
-              />
-                 <Autocomplete
-                multiple
-                disablePortal
-                id="assignees"
-                options={coll.map((a:any) => ({ value: a.id, label: a.username })) || []}
-                value={formik.values.assignees}
-                onChange={(event,value) => formik.setFieldValue("assignees", value)}
-                sx={{ width: 495 }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Assignees"
-                    placeholder="Select assignees"
-                  />
-                )}
-              />
+                  disablePortal
+                  multiple
+                  id="issues"
+                  options={allIssuesQuery.data?.map((i:any) => ({ value: i.id, label: i.title })) || []}
+                  isOptionEqualToValue={isOptionEqualToValue}
+                  getOptionLabel={(option: any) => option.label}
+                  onChange={(event, value: any) => formik.setFieldValue('issues', value)}
+                  sx={{ width: 495 }}
+                  renderInput={(params: any) => <TextField {...params} label="Select issues" />}
+                />
+              <Autocomplete
+                  disablePortal
+                  multiple
+                  id="assignees"
+                  options={assignees.data?.map((b: any) => ({ value: b.id, label: b.given_name + " " + b.family_name })) || []}
+                  isOptionEqualToValue={isOptionEqualToValue}
+                  getOptionLabel={(option: any) => option.label}
+                  onChange={(event, value: any) => formik.setFieldValue('assignees', value)}
+                  sx={{ width: 490 }}
+                  renderInput={(params: any) => <TextField {...params} label="Select assignees" />}
+                />
             </div>
             <div className="add-pull-request-form__form--autocomplete">
               <Autocomplete
                       disablePortal
                       id="milestone"
                       options={allMilestonesQuery.data?.map((m:any) => ({ value: m.id, label: m.title })) || []}
-                      value={formik.values.milestone}
+                      isOptionEqualToValue={isOptionEqualToValue}
+                      getOptionLabel={(option: any) => option.label}
                       onChange={(event,value:any) => formik.setFieldValue("milestone", value)}
                       sx={{ width: 495 }}
                       renderInput={(params:any) => <TextField {...params} label="Milestone" />}
@@ -203,15 +183,11 @@ const PullRequest = () => {
                       disablePortal
                       id="labels"
                       options={allLabelsQuery.data?.map((label:any) => ({ value: label.id, label: label.name })) || []}
-                      value={formik.values.labels}
+                      isOptionEqualToValue={isOptionEqualToValue}
+                      getOptionLabel={(option: any) => option.label} 
                       sx={{ width: 495 }}
                       onChange={(event,value) => formik.setFieldValue("labels", value)}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Labels"
-                          placeholder="Select labels"
-                        />
+                      renderInput={(params) => (<TextField {...params} label="Labels"/>
                 )}
               />
             </div>

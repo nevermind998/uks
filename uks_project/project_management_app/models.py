@@ -46,7 +46,7 @@ class PullRequest(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, null=False, related_name="pr_author")
     repository = models.ForeignKey(Repository, on_delete=models.CASCADE, null=False)
     title = models.CharField(max_length=250, null=False)
-    description = models.CharField(max_length=500, null=False)
+    description = models.CharField(max_length=500)
     base_branch = models.ForeignKey(Branch, on_delete=models.CASCADE, null=False, related_name="base_branch")
     compare_branch = models.ForeignKey(Branch, on_delete=models.CASCADE, null=False, related_name="compare_branch")
     issues = models.ManyToManyField(Issue, null=True)
