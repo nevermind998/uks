@@ -43,14 +43,14 @@ class BranchApiTests(TestCase):
     def test_create_branch_successful(self):
         repository_id = Repository.objects.get(name="UKS").id
         branch_data = {
-            'name': 'Test branch',
+            'name': 'test_branch_1',
             'repository': repository_id
         }
         response = self.client.post(reverse("add_branch"), data=json.dumps(branch_data), HTTP_AUTHORIZATION=self.token, content_type='application/json')
         response_obj = json.loads(response.content)
         self.assertEqual(response.status_code, 201)
-        self.assertTrue(Branch.objects.filter(name='Test branch').exists())
-        self.assertEqual(response_obj['name'], 'Test branch')
+        self.assertTrue(Branch.objects.filter(name='test_branch_1').exists())
+        self.assertEqual(response_obj['name'], 'test_branch_1')
         self.assertEqual(response_obj['repository'], repository_id)
 
     def test_create_branch_failed(self):
