@@ -120,7 +120,7 @@ const AboutRepository = ({ repo, setToastOptions, setOpen }: any) => {
       )}
       {tab === 'stargazers' && <Stargazers stargazers={stargazers}></Stargazers>}
       {tab === 'watchers' && <Watchers watchers={watchers}></Watchers>}
-      {tab === 'forks' && <Forks></Forks>}
+      {tab === 'forks' && <Forks forks={forks}></Forks>}
     </>
   );
 };
