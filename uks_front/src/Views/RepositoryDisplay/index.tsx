@@ -5,7 +5,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { useQuery } from 'react-query';
 import { RepositoryDto } from '../../Types/repository.types';
-import { createNewRepositoryAction, deleteAction, getRepositoryById, getStarActionForUser } from '../../api/repositories';
+import { createNewRepositoryAction, deleteAction, getRepositoryById, getStarActionForUser, getWatchActionForUser } from '../../api/repositories';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SyntheticEvent, useState } from 'react';
 import Toast, { ToastOptions } from '../../Components/Common/Toast';
@@ -42,6 +42,16 @@ const Repository = () => {
 
   const handleWatchClick = () => {
     setWatching(!watching);
+    if (watch?.id) {
+      deleteAction(watch.id);
+    } else if (repo?.id) {
+      const body: ActionDto = {
+        author: user.id,
+        type: 'WATCH',
+        repository: repo.id,
+      };
+      createNewRepositoryAction(body);
+    }
   };
 
   const handleChange = (event: SyntheticEvent, newTab: string) => {
@@ -68,6 +78,22 @@ const Repository = () => {
         const data: ActionDto = await getStarActionForUser(parseInt(id), user.id);
         if (data.id != null) {
           setStarred(true);
+        }
+        return data;
+      } else {
+        setToastOptions({ message: 'Error happened!', type: 'error' });
+        setOpen(true);
+      }
+    },
+  });
+
+  const { data: watch } = useQuery({
+    queryKey: ['FETCH_WATCH'],
+    queryFn: async () => {
+      if (id && user.id) {
+        const data: ActionDto = await getWatchActionForUser(parseInt(id), user.id);
+        if (data.id != null) {
+          setWatching(true);
         }
         return data;
       } else {

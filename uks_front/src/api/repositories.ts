@@ -37,6 +37,11 @@ export const getStarActionForUser = async (repository: number, user: number) => 
   return repo.data;
 };
 
+export const getWatchActionForUser = async (repository: number, user: number) => {
+  const repo = await api.get(`/user-actions/repository/${repository}/user/${user}/watch`);
+  return repo.data;
+};
+
 export const createNewRepositoryAction = async (body: ActionDto) => {
   const action = await api.post(`/user-actions/new-action`, body);
   return action.data;
