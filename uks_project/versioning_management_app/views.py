@@ -44,8 +44,6 @@ def get_repo_by_id(request, id):
 @permission_classes([IsAuthenticated])
 def get_repos_by_owner(request, id):
     repositories = Repository.objects.filter(owner=id)
-    if len(repositories) == 0:
-        raise Http404('No repositories found with that owner.')
     serializer = RepositorySerializer(repositories, many=True)
     return Response(serializer.data)
 
@@ -59,9 +57,13 @@ def add_new_repository(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['DELETE', 'PUT'])
+@api_view(['DELETE', 'PUT', 'GET'])
 @permission_classes([IsAuthenticated])
 def delete_or_edit_repository(request, id):
+    if request.method == 'GET':
+        repository = Repository.objects.get(id=id)
+        serializer = RepositorySerializer(repository)
+        return Response(serializer.data)
     if request.method == 'DELETE':
         try:
             repository = Repository.objects.get(id=id)

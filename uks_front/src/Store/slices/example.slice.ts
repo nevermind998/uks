@@ -14,7 +14,6 @@ export const exampleSlice = createSlice({
     initialState,
     reducers: {
         addExample: (state, action) => {
-            console.log('hehehehe');
             state.data.push(action.payload);
         }
     },

@@ -14,7 +14,6 @@ from versioning_management_app.serializers import RepositorySerializer
 @permission_classes([IsAuthenticated])
 def get_all_comments(request):
     comments = Comment.objects.all()
-    if(len(comments) == 0): raise Http404('No comments found that matches the given query.')
     serializers = CommentSerializer(comments,many=True)
     return Response(serializers.data)
 
@@ -22,7 +21,6 @@ def get_all_comments(request):
 @permission_classes([IsAuthenticated])
 def get_pr_comments(request,pr_id):
     comments = Comment.objects.filter(pull_request=pr_id)
-    if(len(comments) == 0): raise Http404('No comments found that matches the given query.')
     serializers = CommentSerializer(comments,many=True)
     return Response(serializers.data)
 
@@ -30,7 +28,6 @@ def get_pr_comments(request,pr_id):
 @permission_classes([IsAuthenticated])
 def get_issue_comments(request,issue_id):
     comments = Comment.objects.filter(issue=issue_id)
-    if(len(comments) == 0): raise Http404('No comments found that matches the given query.')
     serializers = CommentSerializer(comments,many=True)
     return Response(serializers.data)
 
@@ -77,7 +74,6 @@ def delete_or_edit_comment(request,id):
 @permission_classes([IsAuthenticated])
 def get_all_reactions(request):
     reactions = Reaction.objects.all()
-    if(len(reactions) == 0): raise Http404('No reactions found that matches the given query.')
     serializers = ReactionSerializer(reactions,many=True)
     return Response(serializers.data)
 
@@ -85,7 +81,6 @@ def get_all_reactions(request):
 @permission_classes([IsAuthenticated])
 def get_comment_reactions(request,comment_id):
     reactions = Reaction.objects.filter(comment=comment_id)
-    if(len(reactions) == 0): raise Http404('No reactions found that matches the given query.')
     serializers = ReactionSerializer(reactions,many=True)
     return Response(serializers.data)
 
@@ -115,7 +110,6 @@ def remove_reaction(request,id):
 @permission_classes([IsAuthenticated])
 def get_repo_stargazers(request,repo_id):
     star_actions = Action.objects.filter(repository=repo_id, type="STAR")
-    if(len(star_actions) == 0): raise Http404('No stargazers found that matches the given query.')
     stargazers = []
     for action in star_actions:
         stargazers.append(action.author)
@@ -126,7 +120,6 @@ def get_repo_stargazers(request,repo_id):
 @permission_classes([IsAuthenticated])
 def get_repo_watchers(request,repo_id):
     watch_actions = Action.objects.filter(repository=repo_id, type="WATCH")
-    if(len(watch_actions) == 0): raise Http404('No watchers found that matches the given query.')
     watchers = []
     for action in watch_actions:
         watchers.append(action.author)
@@ -137,7 +130,6 @@ def get_repo_watchers(request,repo_id):
 @permission_classes([IsAuthenticated])
 def get_repo_forks(request,repo_id):
     fork_actions = Action.objects.filter(repository=repo_id, type="FORK")
-    if(len(fork_actions) == 0): raise Http404('No forks found that matches the given query.')
     forked_repos = []
     for action in fork_actions:
         forked_repos.append(action.forked_repo)
@@ -148,7 +140,6 @@ def get_repo_forks(request,repo_id):
 @permission_classes([IsAuthenticated])
 def get_users_stars(request,user_id):
     star_actions = Action.objects.filter(author=user_id, type="STAR")
-    if(len(star_actions) == 0): raise Http404('No stars found that matches the given query.')
     starred_repos = []
     for action in star_actions:
         starred_repos.append(action.repository)
@@ -159,7 +150,6 @@ def get_users_stars(request,user_id):
 @permission_classes([IsAuthenticated])
 def get_action_for_user(request,repo_id, user_id, action_type):
     action = Action.objects.filter(repository=repo_id,author=user_id,type=action_type.upper())
-    if(len(action) == 0): raise Http404('No action found that matches the given query.')
     serializers = ActionSerializer(action.first())
     return Response(serializers.data)
 

@@ -45,20 +45,26 @@
 
     &__repositories {
         padding: 20px;
-        display: flex;
-        align-items: flex-start;
-        gap: 20px;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 20px;
 
         &--card {
             background-color: $light-gray !important;
             box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.12);
-            width: 400px;
+            width: 450px;
+            min-height: 100px;
         }
 
         &--card-title {
             display: flex;
             justify-content: space-between;
         }
+    }
+
+    &__create-repo {
+        margin-left: 20px !important;
+        border-radius: 20px !important;
     }
 }
 
