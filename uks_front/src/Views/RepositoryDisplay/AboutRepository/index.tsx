@@ -10,6 +10,7 @@ import { useState } from 'react';
 import Watchers from '../Watchers';
 import Forks from '../Forks';
 import { UserProfileDto } from '../../../Types/user.types';
+import Branch from '../../Branch';
 
 const AboutRepository = ({ repo, setToastOptions, setOpen }: any) => {
   const [tab, setTab] = useState('about');
@@ -58,8 +59,9 @@ const AboutRepository = ({ repo, setToastOptions, setOpen }: any) => {
       {tab === 'about' && (
         <Grid container spacing={2}>
           <Grid item xs={8}>
-            <div>
+            <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
               <p>Repository</p>
+              <Branch />
             </div>
           </Grid>
           <Grid item xs={4}>

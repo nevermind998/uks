@@ -28,9 +28,9 @@ export const IsSignedIn = () => {
 };
 
 function App() {
-<<<<<<< HEAD
   return (
     <div className="App">
+      <BrowserRouter>
         <Routes>
           <Route path="sign-in" element={<SignIn />} />
           <Route path="sign-up" element={<SignUp />}></Route>
@@ -49,6 +49,6 @@ function App() {
       </BrowserRouter>
     </div>
   );
-=======
-    return (
-        <div className="App">
+}
+
+export default App;
