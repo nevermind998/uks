@@ -12,6 +12,7 @@ import Layout from './Components/Layout';
 import Commit from './Views/Commit';
 import CreateRepository from './Views/CreateRepository';
 import Repository from './Views/RepositoryDisplay';
+import Branch from './Views/Branch';
 
 export const IsSignedIn = () => {
   const user = useSelector<RootState, AuthState>((state) => state.auth);
@@ -41,6 +42,7 @@ function App() {
               <Route path="/new-commit" element={<Commit />} />
               <Route path="/label/new/:id" element={<Label />} />
               <Route path="/new-repository" element={<CreateRepository />} />
+              <Route path="/repository/:id/new-branch" element={<Branch />} />
             </Route>
           </Route>
         </Routes>
