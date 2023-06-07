@@ -26,3 +26,14 @@ export const getBranchById = async (id: number) => {
     const branch = await api.get(`/versioning/get-branch/${id}`);
     return branch.data;
 };
+
+export const getBranchByName = async (name: string) => {
+  const branches = await api.get(`/versioning/branch/${name}`);
+  return branches.data;
+};
+
+export const fetchBranches = async () => {
+  const response = await api.get(`/versioning/branches/`);
+  const branches = response.data;
+  return branches;
+};

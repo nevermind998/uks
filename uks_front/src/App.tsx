@@ -10,6 +10,7 @@ import Milestone from './Views/ProjectManagement/MilestoneForm';
 import Label from './Views/ProjectManagement/LabelForm';
 import Layout from './Components/Layout';
 import Commit from './Views/Commit';
+import PullRequest from './Views/ProjectManagement/PullRequestForm';
 
 
 export const IsSignedIn = () => {
@@ -38,6 +39,7 @@ function App() {
                             <Route path="/milestone/new/:id" element={<Milestone />} />
                             <Route path="/new-commit" element={<Commit />} />
                             <Route path="/label/new/:id" element={<Label />} />
+                            <Route path="/repository/:id/new-pull-request" element={<PullRequest />} />
                         </Route>
                     </Route>
                 </Routes>

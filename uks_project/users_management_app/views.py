@@ -1,5 +1,6 @@
-from django.http import HttpResponse
-from rest_framework.permissions import AllowAny
+from django.http import HttpResponse, Http404
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import generics, permissions
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
@@ -34,3 +35,13 @@ class CustomTokenObtainPairView(TokenObtainPairView):
         serializer.is_valid(raise_exception=True)
 
         return Response(serializer.validated_data, status=200)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user_by_id(request, id):
+    user = User.objects.filter(id=id)
+    if len(user) == 0:
+        raise Http404('No repositories found with that id.')
+    serializer = UserSerializer(user, many=True)
+    return Response(serializer.data)
