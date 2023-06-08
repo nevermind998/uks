@@ -12,7 +12,7 @@ const Watchers = ({ watchers }: any) => {
           watchers.map((x: any) => (
             <>
               <ListItem className="repository__list-item" disablePadding>
-                <AccountCircleIcon></AccountCircleIcon>
+                <AccountCircleIcon color="action"></AccountCircleIcon>
                 {x.username}
               </ListItem>
               <Divider light />

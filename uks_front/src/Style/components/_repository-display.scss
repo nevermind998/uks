@@ -32,7 +32,6 @@
   &__action-buttons {
     padding: 20px;
     display: flex;
-    margin-left: 20%;
   }
 
   &__action-button {
@@ -62,5 +61,49 @@
   &__stargazers {
     width: 100%;
     text-align: center;
+  }
+
+  &__btn {
+    padding-top: 20px;
+    width: 100%;
+    justify-content: center;
+    display: flex;
+  }
+
+  &__field {
+    padding-top: 40px;
+    padding-bottom: 40px;
+    width: 100%;
+    justify-content: center;
+    display: flex;
+    gap: 20px;
+  }
+
+  &__textarea {
+    width: 100%;
+    padding: 10px;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.4375em;
+    letter-spacing: 0.00938em;
+    color: $primary-gray;
+    box-sizing: border-box;
+    position: relative;
+    cursor: text;
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+    border-radius: 4px;
+    border-color: $secondary-gray;
+
+    &:hover {
+      border-color: $primary-gray;
+    }
+
+    &:focus {
+      border-color: $primary-gray;
+      box-shadow: 0 0 0 3px $secondary-gray;
+    }
   }
 }
