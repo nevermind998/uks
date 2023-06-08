@@ -13,6 +13,7 @@ import { useSelector } from 'react-redux';
 import { selectAuth } from '../../Store/slices/auth.slice';
 import AboutRepository from './AboutRepository';
 import { ActionDto } from '../../Types/action.types';
+import CreateFork from './CreateFork';
 
 const Repository = () => {
   const user = useSelector(selectAuth);
@@ -26,10 +27,20 @@ const Repository = () => {
   const [starred, setStarred] = useState(false);
   const [watching, setWatching] = useState(false);
 
-  const handleStarClick = () => {
+  const handleForkClick = () => {
+    setTab('5');
+  };
+
+  const handleStarClick = async () => {
     setStarred(!starred);
-    if (star?.id) {
-      deleteAction(star.id);
+    if (starred) {
+      if (star?.id) {
+        const data: any = await deleteAction(star.id);
+        return data;
+      } else {
+        setToastOptions({ message: 'Error happened!', type: 'error' });
+        setOpen(true);
+      }
     } else if (repo?.id) {
       const body: ActionDto = {
         author: user.id,
@@ -136,7 +147,7 @@ const Repository = () => {
                 >
                   {watching ? 'Unwatch' : 'Watch'}
                 </Button>
-                <Button className="repository__action-button" startIcon={<GitHubIcon />}>
+                <Button className="repository__action-button" startIcon={<GitHubIcon />} onClick={handleForkClick}>
                   fork
                 </Button>
               </ButtonGroup>
@@ -156,7 +167,10 @@ const Repository = () => {
             </TabPanel>
             <TabPanel value="2">Issues</TabPanel>
             <TabPanel value="3">Pull Requests</TabPanel>
-            <TabPanel value="4">Settings</TabPanel>
+            <TabPanel value="4"></TabPanel>
+            <TabPanel value="5">
+              <CreateFork repo={repo} user={user}></CreateFork>
+            </TabPanel>
           </TabContext>
         </div>
       </div>

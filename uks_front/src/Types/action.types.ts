@@ -3,5 +3,5 @@ export type ActionDto = {
   author: number;
   type: string;
   repository: number;
-  forked_repo?: number;
+  forked_repo?: any;
 };
