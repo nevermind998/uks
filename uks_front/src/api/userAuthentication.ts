@@ -8,3 +8,15 @@ export const signIn = async (body: SignInDto) => {
 export const signUp = async (body: SignUpDto) => {
     return await api.post(`/user/register`, body);
 };
+
+export const getUserById = async (id: number) => {
+    const user = await api.get(`/user/get-user/${id}`);
+    return user.data;
+};
+
+export const fetchAssignees = async (id:number) => {
+    const collaborators = await api.get(`/user/get-assignees/${id}`);
+    return collaborators.data;
+};
+
+

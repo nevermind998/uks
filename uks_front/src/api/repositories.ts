@@ -30,3 +30,10 @@ export const getRepositoryForks = async (repository: number) => {
     const repo = await api.get(`/user-actions/repository/${repository}/forked-repos`);
     return repo.data;
 };
+
+export const getRepositoriesById = async (id: number) => {
+    const repos = await api.get(`/versioning/get-repository/${id}`);
+    return repos.data;
+};
+
+

@@ -50,3 +50,14 @@ export type IssuesDto = {
   author: number,
   assignees: number[]
 }
+
+export type AssigneesDto = {
+  id: number;
+  username: string;
+  email: string;
+  family_name: string;
+  given_name: string;
+  bio: string;
+  url: string;
+  password: string;
+};

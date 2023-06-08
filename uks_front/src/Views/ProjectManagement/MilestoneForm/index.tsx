@@ -43,7 +43,7 @@ const Milestone = () => {
       repository: 0,
     },
     validationSchema: MILESTONE_SCHEMA,
-    onSubmit: (values) => {
+    onSubmit: (values:any) => {
       const body: MilestoneDto = {
         title: values.title,
         due_date: values.due_date,
@@ -80,12 +80,9 @@ const Milestone = () => {
               label="Due date (optional)"
               value={selectedDate}
               onChange={handleDateChange}
-              renderInput={(params: any) => <TextField className="add-update-form__form--field" {...params} />}
               disableHighlightToday={undefined}
               showDaysOutsideCurrentMonth={undefined}
-              allowSameDateSelection={undefined}
-            />
-          </LocalizationProvider>
+              allowSameDateSelection={undefined} />
           <TextField
             id="description"
             label="Description"
@@ -99,6 +96,7 @@ const Milestone = () => {
             className="add-update-form__form--field"
             size="small"
           />
+          </LocalizationProvider>
           <Button type="submit" className="add-update__button" variant="contained">
             Create milestone
           </Button>

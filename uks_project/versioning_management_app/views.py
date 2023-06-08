@@ -30,6 +30,15 @@ def get_repo_by_name(request, name):
     serializer = RepositorySerializer(repository, many=True)
     return Response(serializer.data)
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_repo_by_id(request, id):
+    repository = Repository.objects.filter(id=id)
+    if len(repository) == 0:
+        raise Http404('No repositories found with that id.')
+    serializer = RepositorySerializer(repository, many=True)
+    return Response(serializer.data)
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -37,19 +46,6 @@ def get_repos_by_owner(request, id):
     repositories = Repository.objects.filter(owner=id)
     serializer = RepositorySerializer(repositories, many=True)
     return Response(serializer.data)
-
-
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def get_repository_collaborators(request, repo_id):
-    try:
-        repository = Repository.objects.get(id=repo_id)
-        collaborators = repository.collaborators.all()
-        serializer = RepositorySerializer(collaborators, many=True)
-        return Response(serializer.data)
-    except Repository.DoesNotExist:
-        raise Http404('No repositories found that match the given query.')
-
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
