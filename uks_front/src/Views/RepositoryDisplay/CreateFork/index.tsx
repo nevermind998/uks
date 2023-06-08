@@ -37,6 +37,10 @@ const NewFork = ({ repo, user }: any) => {
           forked_repo: forkedRepo.id,
         };
         const forkAction = await createNewRepositoryAction(body);
+        formik.values.name = '';
+        formik.values.description = '';
+        setToastOptions({ message: 'Successfully forked repository!', type: 'success' });
+        setOpen(true);
       } catch (error) {
         setToastOptions({ message: 'An error happened while forking a repository!', type: 'error' });
         setOpen(true);
