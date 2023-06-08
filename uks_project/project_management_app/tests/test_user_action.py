@@ -165,7 +165,9 @@ class LabelApiTests(TestCase):
 
     def test_get_label_by_repository_fail(self):
         response = self.client.get('/project/label/black/color', HTTP_AUTHORIZATION=self.token, content_type=JSON)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
+        res_obj = json.loads(response.content)
+        self.assertEqual(len(res_obj), 0)
 
     def test_post_create_label(self):
         repository = Repository.objects.get(name='Project Repository').id
@@ -281,7 +283,9 @@ class IssueApiTests(TestCase):
 
     def test_get_issue_by_status_fail(self):
         response = self.client.get('/project/issues/APPROVED/status', HTTP_AUTHORIZATION=self.token, content_type=JSON)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
+        res_obj = json.loads(response.content)
+        self.assertEqual(len(res_obj), 0)
 
     def test_get_issue_by_author(self):
         author = User.objects.get(given_name='John')
@@ -292,7 +296,9 @@ class IssueApiTests(TestCase):
 
     def test_get_issue_by_author_fail(self):
         response = self.client.get('/project/issues/55/author', HTTP_AUTHORIZATION=self.token, content_type=JSON)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
+        res_obj = json.loads(response.content)
+        self.assertEqual(len(res_obj), 0)
 
     def test_get_issue_by_label(self):
         label = Label.objects.get(name='Label')
@@ -303,7 +309,9 @@ class IssueApiTests(TestCase):
 
     def test_get_issue_by_label_fail(self):
         response = self.client.get('/project/issues/55/label', HTTP_AUTHORIZATION=self.token, content_type=JSON)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
+        res_obj = json.loads(response.content)
+        self.assertEqual(len(res_obj), 0)
     
     def test_get_issue_by_milestone(self):
         milestone = Milestone.objects.get(title='Milestone')
@@ -314,7 +322,9 @@ class IssueApiTests(TestCase):
 
     def test_get_issue_by_milestone_fail(self):
         response = self.client.get('/project/issues/55/milestone', HTTP_AUTHORIZATION=self.token, content_type=JSON)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
+        res_obj = json.loads(response.content)
+        self.assertEqual(len(res_obj), 0)
 
     def test_get_issue_by_assignee(self):
         assignee = User.objects.get(given_name='Jane')
@@ -325,7 +335,9 @@ class IssueApiTests(TestCase):
 
     def test_get_issue_by_assignee_fail(self):
         response = self.client.get('/project/issues/55/assignee', HTTP_AUTHORIZATION=self.token, content_type=JSON)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
+        res_obj = json.loads(response.content)
+        self.assertEqual(len(res_obj), 0)
 
     def test_post_create_issue(self):
         repository = Repository.objects.get(name='Project Repository').id
@@ -453,7 +465,9 @@ class PullRequestApiTests(TestCase):
 
     def test_get_pull_request_by_status_fail(self):
         response = self.client.get('/project/pull_requests/APPROVED/status', HTTP_AUTHORIZATION=self.token, content_type=JSON)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
+        res_obj = json.loads(response.content)
+        self.assertEqual(len(res_obj), 0)
 
     def test_get_pull_request_by_author(self):
         author = User.objects.get(given_name='John')
@@ -464,7 +478,9 @@ class PullRequestApiTests(TestCase):
 
     def test_get_pull_request_by_author_fail(self):
         response = self.client.get('/project/pull_requests/55/author', HTTP_AUTHORIZATION=self.token, content_type=JSON)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
+        res_obj = json.loads(response.content)
+        self.assertEqual(len(res_obj), 0)
 
     def test_get_pull_request_by_label(self):
         label = Label.objects.get(name='Label')
@@ -475,7 +491,9 @@ class PullRequestApiTests(TestCase):
 
     def test_get_pull_request_by_label_fail(self):
         response = self.client.get('/project/pull_requests/55/label', HTTP_AUTHORIZATION=self.token, content_type=JSON)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
+        res_obj = json.loads(response.content)
+        self.assertEqual(len(res_obj), 0)
     
     def test_get_pull_request_by_milestone(self):
         milestone = Milestone.objects.get(title='Milestone')
@@ -486,7 +504,9 @@ class PullRequestApiTests(TestCase):
 
     def test_get_pull_request_by_milestone_fail(self):
         response = self.client.get('/project/pull_requests/55/milestone', HTTP_AUTHORIZATION=self.token, content_type=JSON)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
+        res_obj = json.loads(response.content)
+        self.assertEqual(len(res_obj), 0)
 
     def test_get_pull_request_by_assignee(self):
         assignee = User.objects.get(given_name='Jane')
@@ -497,7 +517,9 @@ class PullRequestApiTests(TestCase):
 
     def test_get_pull_request_by_assignee_fail(self):
         response = self.client.get('/project/pull_requests/55/assignee', HTTP_AUTHORIZATION=self.token, content_type=JSON)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
+        res_obj = json.loads(response.content)
+        self.assertEqual(len(res_obj), 0)
 
     def test_post_create_pull_request(self):
         repository = Repository.objects.get(name='Project Repository').id
