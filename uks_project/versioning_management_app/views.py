@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .models import Repository, Branch, Commit
-from .serializers import RepositorySerializer, BranchSerializer, CommitSerializer
+from .serializers import GetFullRepository, RepositorySerializer, BranchSerializer, CommitSerializer
 
 
 # Repo handling
@@ -34,7 +34,7 @@ def get_repo_by_id(request, id):
     repository = Repository.objects.filter(id=id)
     if len(repository) == 0:
         raise Http404('No repositories found with that id.')
-    serializer = RepositorySerializer(repository, many=True)
+    serializer = GetFullRepository(repository, many=True)
     return Response(serializer.data)
 
 
@@ -63,7 +63,7 @@ def add_new_repository(request):
 def delete_or_edit_repository(request, id):
     if request.method == 'GET':
         repository = Repository.objects.get(id=id)
-        serializer = RepositorySerializer(repository)
+        serializer = GetFullRepository(repository)
         return Response(serializer.data)
     if request.method == 'DELETE':
         try:

@@ -17,6 +17,7 @@ import PullRequestDisplay from './PullRequestDisplay';
 import { ActionDto } from '../../Types/action.types';
 import CreateFork from './CreateFork';
 import CommentsDisplay from '../CommentsDisplay';
+import ManageAccess from './ManageAccessSettings';
 
 const Repository = () => {
     const user = useSelector(selectAuth);
@@ -61,7 +62,7 @@ const Repository = () => {
     } else if (repo?.id) {
       const body: ActionDto = {
         author: user.id,
-        type: 'WATCH',
+        type: "WATCH",
         repository: repo.id,
       };
       createNewRepositoryAction(body);
@@ -174,7 +175,9 @@ const Repository = () => {
                         <TabPanel value="3">
                             <PullRequestDisplay setOpen={setOpen} setToastOptions={setToastOptions}></PullRequestDisplay>
                         </TabPanel>
-                        <TabPanel value="4">Settings</TabPanel>
+                        <TabPanel value="4">
+                          <ManageAccess repo={repo} />
+                        </TabPanel>
                         <TabPanel value="5">
                             <CreateFork repo={repo} user={user}></CreateFork>
                         </TabPanel>

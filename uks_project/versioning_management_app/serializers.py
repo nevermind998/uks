@@ -1,8 +1,18 @@
 from rest_framework import serializers
+
+from users_management_app.serializers import UserProfileSerializer
 from .models import Repository, Branch, Commit
 
 class RepositorySerializer(serializers.ModelSerializer):
     description = serializers.CharField(required=False, allow_blank=True)
+    class Meta:
+        model = Repository
+        fields = ['id', 'name', 'owner', 'description', 'created_at', 'visibility', 'default_branch', 'collaborators']
+        read_only_field = ['id']
+
+class GetFullRepository(serializers.ModelSerializer):
+    description = serializers.CharField(required=False, allow_blank=True)
+    collaborators = UserProfileSerializer(many=True)
     class Meta:
         model = Repository
         fields = ['id', 'name', 'owner', 'description', 'created_at', 'visibility', 'default_branch', 'collaborators']
