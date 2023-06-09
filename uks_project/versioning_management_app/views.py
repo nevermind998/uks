@@ -5,7 +5,9 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import Repository, Branch, Commit
+from users_management_app.models import User
+
+from .models import Collaboration, Repository, Branch, Commit
 from .serializers import GetFullRepository, RepositorySerializer, BranchSerializer, CommitSerializer
 
 
@@ -53,7 +55,10 @@ def get_repos_by_owner(request, id):
 def add_new_repository(request):
     serializer = RepositorySerializer(data=request.data)
     if serializer.is_valid():
-        serializer.save()
+        repository = serializer.save()
+        default_branch = request.data.get('default_branch')
+        Branch.objects.create(name=default_branch, repository=repository)
+            
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -84,6 +89,13 @@ def delete_or_edit_repository(request, id):
 
         if serializer.is_valid():
             serializer.save()
+
+            collaborators_data = request.data.get('collaborators', [])
+            for collaborator_data in collaborators_data:
+                collaborator = User.objects.get(id=collaborator_data['id'])
+                role = collaborator_data['role']
+                Collaboration.objects.create(user=collaborator, repository=repository, role=role)
+
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -43,11 +43,17 @@ const ManageAccess = ({ repo, refetch }: any) => {
   });
 
   const handleAdd = () => {
-    console.log(selectedCollaborators.map((x: any) => x.value));
+    console.log(
+      selectedCollaborators.map((x: any) => {
+        return { id: x.value, role: "READ" };
+      })
+    );
 
     const body = {
       ...repo,
-      collaborators: selectedCollaborators.map((x: any) => x.value),
+      collaborators: selectedCollaborators.map((x: any) => {
+        return { id: x.value, role: "READ" };
+      }),
     };
 
     addCollaborators(body);
@@ -73,7 +79,7 @@ const ManageAccess = ({ repo, refetch }: any) => {
         <Table aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>Default Branch</TableCell>
+              <TableCell>Username</TableCell>
               <TableCell>Role</TableCell>
             </TableRow>
           </TableHead>
@@ -93,28 +99,27 @@ const ManageAccess = ({ repo, refetch }: any) => {
       <Dialog open={openModal} onClose={() => setOpenModal(false)}>
         <div className="modal-dialog-form__content-wrapper">
           <h3>Add Collaborators</h3>
-          <div className="modal-dialog-form__form">
-            <DialogContent>
-              <Autocomplete
-                disablePortal
-                id="branches"
-                options={possibleCollaborators?.map((b: any) => ({ value: b.id, label: `${b.family_name} ${b.given_name}` })) || []}
-                isOptionEqualToValue={isOptionEqualToValue}
-                onChange={(event, value: any) => {
-                  setSelectedCollaborators([...selectedCollaborators, { value: value.value, label: value.label }]);
-                }}
-                sx={{ width: 180 }}
-                size="small"
-                renderInput={(params: any) => <TextField {...params} />}
-              />
-            </DialogContent>
+          <DialogContent style={{ width: "90%", display: "flex", justifyContent: "center" }}>
+            <Autocomplete
+              style={{ width: "100%" }}
+              disablePortal
+              id="branches"
+              options={possibleCollaborators?.map((b: any) => ({ value: b.id, label: `${b.family_name} ${b.given_name}` })) || []}
+              isOptionEqualToValue={isOptionEqualToValue}
+              onChange={(event, value: any) => {
+                setSelectedCollaborators([...selectedCollaborators, { value: value.value, label: value.label }]);
+              }}
+              sx={{ width: 180 }}
+              size="small"
+              renderInput={(params: any) => <TextField {...params} />}
+            />
+          </DialogContent>
 
-            <DialogActions>
-              <Button type="submit" className="add-update__button" variant="contained" onClick={handleAdd}>
-                Add
-              </Button>
-            </DialogActions>
-          </div>
+          <DialogActions>
+            <Button type="submit" className="add-update__button" variant="contained" onClick={handleAdd}>
+              Add
+            </Button>
+          </DialogActions>
         </div>
       </Dialog>
     </div>
