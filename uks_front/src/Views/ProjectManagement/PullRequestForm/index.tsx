@@ -16,7 +16,7 @@ import { fetchBranches } from '../../../api/commits';
 import Autocomplete from '@mui/material/Autocomplete';
 import { fetchAssignees } from '../../../api/userAuthentication';
 
-const PullRequest = () => {
+const PullRequest = ({ setCreatePR }: any) => {
   const [open, setOpen] = useState<boolean>(false);
   const [toastOptions, setToastOptions] = useState<ToastOptions>({ message: '', type: 'info' });
   const { id } = useParams();
@@ -87,13 +87,15 @@ const PullRequest = () => {
     },
   });
 
-  return (
-    <div className="add-pull-request-form">
+  return (      
+      <div className='add-pull-request-form'>
       <Toast open={open} setOpen={setOpen} toastOptions={toastOptions} />
-      <div className="add-pull-request-form__content-wrapper">
-        <h3>Open pull request</h3>
+          <button onClick={() => setCreatePR(false)} className="create-repository__back-button">
+            &#60; Back
+          </button>
+          <h3 style={{textAlign:'center'}}>Open pull request</h3>
         <form onSubmit={formik.handleSubmit} className="add-pull-request-form__form">
-            <div className="add-pull-request-form__form--autocomplete">
+            <div className="add-pull-request-form__form--autocomplete_branch">
               <Autocomplete
                 disablePortal
                 id="base-branch"
@@ -101,7 +103,7 @@ const PullRequest = () => {
                 isOptionEqualToValue={isOptionEqualToValue}
                 getOptionLabel={(option: any) => option.label}
                 onChange={(event, value: any) => formik.setFieldValue('base_branch', value)}
-                sx={{ width: 490 }}
+                sx={{ width: 475}}
                 renderInput={(params: any) => <TextField {...params} label="Base branch" />}
               />
               <img src="/img/comparing-branch.png" alt="User icon" style={{ width: '5%' }} />
@@ -111,8 +113,8 @@ const PullRequest = () => {
                 options={allBranchesQuery?.data?.map((b: any) => ({ value: b.id, label: b.name })) || []}
                 isOptionEqualToValue={isOptionEqualToValue}
                 getOptionLabel={(option: any) => option.label}
+                sx={{ width: 475 }}
                 onChange={(event, value: any) => formik.setFieldValue('compare_branch', value)}
-                sx={{ width: 490 }}
                 renderInput={(params: any) => <TextField {...params} label="Compare branch" />}
               />
             </div>
@@ -126,7 +128,7 @@ const PullRequest = () => {
               error={formik.touched.title && Boolean(formik.errors.title)}
               helperText={formik.errors.title && formik.touched.title}
               required
-              className="add-update-form__form--field"
+              className="add-pull-request-form__form--field"
               size="small"
             />
             <TextField
@@ -138,7 +140,7 @@ const PullRequest = () => {
               name="description"
               error={formik.touched.description && Boolean(formik.errors.description)}
               helperText={formik.errors.description && formik.touched.description}
-              className="add-update-form__form--field"
+              className="add-pull-request-form__form--field"
               size="medium"
               multiline
               rows={4}
@@ -152,7 +154,7 @@ const PullRequest = () => {
                   isOptionEqualToValue={isOptionEqualToValue}
                   getOptionLabel={(option: any) => option.label}
                   onChange={(event, value: any) => formik.setFieldValue('issues', value)}
-                  sx={{ width: 495 }}
+                  sx={{ width: 500 }}
                   renderInput={(params: any) => <TextField {...params} label="Select issues" />}
                 />
               <Autocomplete
@@ -163,7 +165,7 @@ const PullRequest = () => {
                   isOptionEqualToValue={isOptionEqualToValue}
                   getOptionLabel={(option: any) => option.label}
                   onChange={(event, value: any) => formik.setFieldValue('assignees', value)}
-                  sx={{ width: 490 }}
+                  sx={{ width: 500 }}
                   renderInput={(params: any) => <TextField {...params} label="Select assignees" />}
                 />
             </div>
@@ -175,7 +177,7 @@ const PullRequest = () => {
                       isOptionEqualToValue={isOptionEqualToValue}
                       getOptionLabel={(option: any) => option.label}
                       onChange={(event,value:any) => formik.setFieldValue("milestone", value)}
-                      sx={{ width: 495 }}
+                      sx={{ width: 500 }}
                       renderInput={(params:any) => <TextField {...params} label="Milestone" />}
                       />
               <Autocomplete
@@ -185,7 +187,7 @@ const PullRequest = () => {
                       options={allLabelsQuery.data?.map((label:any) => ({ value: label.id, label: label.name })) || []}
                       isOptionEqualToValue={isOptionEqualToValue}
                       getOptionLabel={(option: any) => option.label} 
-                      sx={{ width: 495 }}
+                      sx={{ width: 500 }}
                       onChange={(event,value) => formik.setFieldValue("labels", value)}
                       renderInput={(params) => (<TextField {...params} label="Labels"/>
                 )}
@@ -196,7 +198,6 @@ const PullRequest = () => {
             </Button>
         </form>
       </div>
-    </div>
   );
 };
 

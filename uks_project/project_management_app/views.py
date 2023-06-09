@@ -244,9 +244,10 @@ def get_all_pull_request(request,id=None):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def get_pull_request_by_status(request,status):
-    pull_requests = PullRequest.objects.filter(status=status)
-    if(len(pull_requests) == 0): raise Http404('No pull requests found that matches the given query.')
+def get_pull_request_by_status(request, repository, status):
+    pull_requests = PullRequest.objects.filter(repository=repository, status=status)
+    print(pull_requests)
+    if(len(pull_requests) == 0): return Response([])
     serializers = PullRequestSerializer(pull_requests,many=True)
     return Response(serializers.data)
 

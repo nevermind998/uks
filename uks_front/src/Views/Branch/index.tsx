@@ -7,7 +7,7 @@ import Toast, { ToastOptions } from '../../Components/Common/Toast';
 import { createBranch } from '../../api/branches';
 import { BRANCH_SCHEMA } from './branchValidationSchema';
 import { BranchDto } from '../../Types/branch.types';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import {AddCircleOutline} from '@mui/icons-material';
 
 const Branch = () => {
   const [toastOptions, setToastOptions] = useState<ToastOptions>({ message: '', type: 'info' });
@@ -55,7 +55,7 @@ const Branch = () => {
   return (
     <>
       <Toast open={openToast} setOpen={setOpenToast} toastOptions={toastOptions} />
-      <Button onClick={handleClickOpen} className="modal-dialog-form__button" variant="contained" startIcon={<AddCircleOutlineIcon />}>
+      <Button onClick={handleClickOpen} className="modal-dialog-form__button" variant="contained" startIcon={<AddCircleOutline />}>
         Create Branch
       </Button>
       <Dialog open={isOpen} onClose={handleClose}>

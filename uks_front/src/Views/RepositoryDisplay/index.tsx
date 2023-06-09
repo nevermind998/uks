@@ -12,6 +12,8 @@ import Toast, { ToastOptions } from '../../Components/Common/Toast';
 import { useSelector } from 'react-redux';
 import { selectAuth } from '../../Store/slices/auth.slice';
 import AboutRepository from './AboutRepository';
+import PullRequest from '../ProjectManagement/PullRequestForm';
+import PullRequestDisplay from './PullRequestDisplay';
 
 const Repository = () => {
   const user = useSelector(selectAuth);
@@ -84,7 +86,9 @@ const Repository = () => {
               {repo?.id !== undefined && <AboutRepository repo={repo} setOpen={setOpen} setToastOptions={setToastOptions}></AboutRepository>}
             </TabPanel>
             <TabPanel value="2">Issues</TabPanel>
-            <TabPanel value="3">Pull Requests</TabPanel>
+            <TabPanel value="3">
+              {repo?.id !== undefined && <PullRequestDisplay  setOpen={setOpen} setToastOptions={setToastOptions}></PullRequestDisplay>}
+            </TabPanel>
             <TabPanel value="4">Settings</TabPanel>
           </TabContext>
         </div>
