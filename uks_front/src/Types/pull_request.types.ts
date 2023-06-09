@@ -9,6 +9,7 @@ export enum ReviewStatusEnum {
 }
 
 export type PullRequestDto = {
+    id?: number;
     author: number;
     repository: number;
     title: string;
