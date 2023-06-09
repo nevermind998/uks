@@ -6,7 +6,7 @@ import { useQuery } from 'react-query';
 import { ActionDto } from '../../../Types/action.types';
 import { getRepositoryStargazers, getRepositoryWatchers, getRepositoryForks } from '../../../api/repositories';
 import Stargazers from '../Stargazers';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Watchers from '../Watchers';
 import Forks from '../Forks';
 import { UserProfileDto } from '../../../Types/user.types';
@@ -120,7 +120,7 @@ const AboutRepository = ({ repo, setToastOptions, setOpen }: any) => {
       )}
       {tab === 'stargazers' && <Stargazers stargazers={stargazers}></Stargazers>}
       {tab === 'watchers' && <Watchers watchers={watchers}></Watchers>}
-      {tab === 'forks' && <Forks></Forks>}
+      {tab === 'forks' && <Forks forks={forks}></Forks>}
     </>
   );
 };
