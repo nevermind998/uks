@@ -1,120 +1,68 @@
 .pr {
-    $self: &;
-    width: 100%;
+  $self: &;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  background-color: $light-gray;
+  position: absolute;
+  top: 60px;
+  bottom: 0;
+  padding-top: 50px;
+
+  &__button-header {
     display: flex;
-    justify-content: center;
-    background-color: $light-gray;
-    position: absolute;
-    top: 60px;
-    bottom: 0;
-    padding-top: 50px;
+    width: 100%;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+  }
 
-    &__sidebar {
-        height: 100%;
-        border-right: 1px solid $gray;
-        padding: 0 20px;
-
-        &--user {
-            width: 200px;
-        }
-
-        p {
-            margin-bottom: 0;
-        }
-
-        &--label {
-            margin: 5px 0;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        &--url {
-            font-weight: 400;
-            margin: 0 5px;
-            width: 100%;
-        }
-
-        h3 {
-            margin-top: 15px;
-        }
-
-        &--name {
-            margin: 0;
-        }
-    }
-
-    &__pr-display {
-        padding: 20px;
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        grid-gap: 20px;
-
-        &--card {
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.12);
-            width: 1670px;
-            height: 80px;
-            border-radius: 20px !important;
-        }
-
-        &--card-title {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        &--create-pr {
-            margin-right: 20px !important;
-            border-radius: 20px !important;
-        }
-
-        &__content-wrapper {
-            border-radius: 30px;
-            height: 50px;
-            box-shadow: 0 4px 8px 0 $gray;
-            display: flex;
-            flex-direction: row;
-            align-items: start;
-            gap: 100px;
-            padding: 5px;
-
-            &--button{
-                padding: 2px;
-            }
-        }
-
-        &__content-wrapper-display {
-            border-radius: 30px;
-            box-shadow: 0 4px 8px 0 $gray;
-            display: flex;
-            flex-direction: column;
-            align-items: start;
-            gap: 10px;
-            padding: 5px;
-        }
-
-
-        
-    }
-
-    &__commit {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        grid-gap: 20px;
-
-        &--card {
-            width: 1670px;
-            height: 80px;
-            border-radius: 20px !important;
-        }
-    }
-
-    &__create-repo {
-        margin-left: 20px !important;
-        border-radius: 20px !important;
-    }
-}
-
-.layout-wrapper {
+  &__pr-display {
+    padding: 20px;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    width: 100%;
+
+    &--card {
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.12);
+      width: 80%;
+      height: 80px;
+      border-radius: 20px !important;
+    }
+  }
+
+  &__card-content {
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+    gap: 15px;
+
+    img {
+      max-height: 50px;
+    }
+  }
+
+  &__card-title {
+    letter-spacing: 1px !important;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  &__single-pr-display {
+    display: flex;
     gap: 20px;
+    width: 100%;
+  }
+
+  &__more-info {
+    margin-top: 30px;
+    width: 70%;
+    height: fit-content;
+  }
+
+  &__assignees {
+    font-size: 12px;
+    width: 50%;
+  }
 }

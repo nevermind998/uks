@@ -6,6 +6,7 @@ from rest_framework.decorators import api_view, permission_classes
 from .serializers import IssueSerializer, LabelSerializer, MilestoneSerializer, PullRequestSerializer
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from django.db.models import Q
 
 #Milestone Handling
 @api_view(['GET'])
@@ -264,9 +265,9 @@ def get_all_pull_request(request,id=None):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def get_pull_request_by_status(request,status):
+def get_pull_request_by_status(request,status,repository):
     try:
-        pull_requests = PullRequest.objects.filter(status=status)
+        pull_requests = PullRequest.objects.filter(Q(status=status) & Q(repository=repository))
         serializers = PullRequestSerializer(pull_requests,many=True)
         return Response(serializers.data)
     except:
