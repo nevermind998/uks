@@ -42,12 +42,12 @@ const DisplaySelecterPR = ({ selectedPr, setDispayPRInfo }: any) => {
         </button>
         <h3>{selectedPr ? selectedPr.title : "No PR info available"}</h3>
 
-        {!isMerged && isApproved &&  
+        {!isMerged && (isApproved || selectedPr.review === ReviewStatusEnum.APPROVED) &&  
             <Button style={{ height: "30px", borderRadius: "20px" }} variant="contained" onClick={handleMerge}>
                <MergeTypeIcon/> Merge and close
             </Button>
         }
-        {!isApproved &&   selectedPr.review === ReviewStatusEnum.CHANGES_REQUESTED && 
+        {!isApproved &&  selectedPr.review === ReviewStatusEnum.CHANGES_REQUESTED && 
             <Button style={{ height: "30px", borderRadius: "20px" }} variant="contained" onClick={handleApprove}>
                 Add review
             </Button>
