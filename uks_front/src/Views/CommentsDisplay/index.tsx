@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { CommentDto } from '../../Types/action.types';
 import { addNewComment, getCommentsForIssue, getCommentsForPr } from '../../api/comments';
 import { useQuery } from 'react-query';
-import { ToastOptions } from '../../Components/Common/Toast';
+import Toast, { ToastOptions } from '../../Components/Common/Toast';
 import Comment from './Comment';
 import { Button, Grid, TextField } from '@mui/material';
 import { useSelector } from 'react-redux';
@@ -67,6 +67,7 @@ const CommentsDisplay = ({ obj_id, isPr }: any) => {
 
   return (
     <div>
+      <Toast open={open} setOpen={setOpen} toastOptions={toastOptions} />
       <div style={{ height: '350px', overflow: 'auto' }}>
         {comments?.length === 0 ? (
           <div>

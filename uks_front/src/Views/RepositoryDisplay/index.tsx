@@ -5,7 +5,16 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { useQuery } from 'react-query';
 import { RepositoryDto } from '../../Types/repository.types';
-import { createNewRepositoryAction, deleteAction, getRepositoryById, getStarActionForUser, getWatchActionForUser } from '../../api/repositories';
+import {
+  createNewRepositoryAction,
+  deleteAction,
+  getRepositoryById,
+  getRepositoryForks,
+  getRepositoryStargazers,
+  getRepositoryWatchers,
+  getStarActionForUser,
+  getWatchActionForUser,
+} from '../../api/repositories';
 import { useParams } from 'react-router-dom';
 import { SyntheticEvent, useState } from 'react';
 import Toast, { ToastOptions } from '../../Components/Common/Toast';
@@ -16,6 +25,7 @@ import PullRequestDisplay from './PullRequestDisplay';
 import { ActionDto } from '../../Types/action.types';
 import CreateFork from './CreateFork';
 import ManageAccess from './ManageAccessSettings';
+import { UserProfileDto } from '../../Types/user.types';
 
 const Repository = () => {
   const user = useSelector(selectAuth);
@@ -35,40 +45,51 @@ const Repository = () => {
 
   const handleStarClick = async () => {
     setStarred(!starred);
-    if (starred) {
+    try {
       if (star?.id) {
-        const data: any = await deleteAction(star.id);
-        return data;
-      } else {
-        setToastOptions({ message: 'Error happened!', type: 'error' });
-        setOpen(true);
+        await deleteAction(star.id);
+      } else if (repo?.id) {
+        const body: ActionDto = {
+          author: user.id,
+          type: 'STAR',
+          repository: repo.id,
+        };
+        const newCction = await createNewRepositoryAction(body);
       }
-    } else if (repo?.id) {
-      const body: ActionDto = {
-        author: user.id,
-        type: 'STAR',
-        repository: repo.id,
-      };
-      createNewRepositoryAction(body);
+      fetchStar();
+      refetchStargazers();
+    } catch {
+      setToastOptions({ message: 'Error happened!', type: 'error' });
+      setOpen(true);
     }
   };
 
   const handleWatchClick = async () => {
     setWatching(!watching);
-    if (watch?.id) {
-      await deleteAction(watch.id);
-    } else if (repo?.id) {
-      const body: ActionDto = {
-        author: user.id,
-        type: 'WATCH',
-        repository: repo.id,
-      };
-      createNewRepositoryAction(body);
+    try {
+      if (watch?.id) {
+        await deleteAction(watch.id);
+      } else if (repo?.id) {
+        const body: ActionDto = {
+          author: user.id,
+          type: 'WATCH',
+          repository: repo.id,
+        };
+        const newCction = await createNewRepositoryAction(body);
+      }
+      fetchWatch();
+      refetchWatchers();
+    } catch {
+      setToastOptions({ message: 'Error happened!', type: 'error' });
+      setOpen(true);
     }
   };
 
   const handleChange = (event: SyntheticEvent, newTab: string) => {
     setTab(newTab);
+    if (newTab === '1') {
+      refatchForks();
+    }
   };
 
   const { data: repo, refetch } = useQuery({
@@ -84,8 +105,8 @@ const Repository = () => {
     },
   });
 
-  const { data: star } = useQuery({
-    queryKey: ['FETCH_STAR'],
+  const { data: star, refetch: fetchStar } = useQuery({
+    queryKey: ['FETCH_STAR', repo],
     queryFn: async () => {
       if (id && user.id) {
         const data: ActionDto = await getStarActionForUser(parseInt(id), user.id);
@@ -100,8 +121,8 @@ const Repository = () => {
     },
   });
 
-  const { data: watch } = useQuery({
-    queryKey: ['FETCH_WATCH'],
+  const { data: watch, refetch: fetchWatch } = useQuery({
+    queryKey: ['FETCH_WATCH', repo],
     queryFn: async () => {
       if (id && user.id) {
         const data: ActionDto = await getWatchActionForUser(parseInt(id), user.id);
@@ -110,6 +131,51 @@ const Repository = () => {
         }
         return data;
       } else {
+        setToastOptions({ message: 'Error happened!', type: 'error' });
+        setOpen(true);
+      }
+    },
+  });
+
+  const { data: stargazers, refetch: refetchStargazers } = useQuery({
+    queryKey: ['FETCH_STARGAZERS', repo],
+    queryFn: async () => {
+      try {
+        if (repo?.id) {
+          const data: UserProfileDto[] = await getRepositoryStargazers(repo.id);
+          return data;
+        }
+      } catch {
+        setToastOptions({ message: 'Error happened!', type: 'error' });
+        setOpen(true);
+      }
+    },
+  });
+
+  const { data: watchers, refetch: refetchWatchers } = useQuery({
+    queryKey: ['FETCH_WATCHERS', repo],
+    queryFn: async () => {
+      try {
+        if (repo?.id) {
+          const data: UserProfileDto[] = await getRepositoryWatchers(repo.id);
+          return data;
+        }
+      } catch {
+        setToastOptions({ message: 'Error happened!', type: 'error' });
+        setOpen(true);
+      }
+    },
+  });
+
+  const { data: forks, refetch: refatchForks } = useQuery({
+    queryKey: ['FETCH_FORKS', repo],
+    queryFn: async () => {
+      try {
+        if (repo?.id) {
+          const data: any[] = await getRepositoryForks(repo.id);
+          return data;
+        }
+      } catch {
         setToastOptions({ message: 'Error happened!', type: 'error' });
         setOpen(true);
       }
@@ -165,7 +231,16 @@ const Repository = () => {
               </TabList>
             </Box>
             <TabPanel value="1">
-              {repo?.id !== undefined && <AboutRepository repo={repo} setOpen={setOpen} setToastOptions={setToastOptions}></AboutRepository>}
+              {repo?.id !== undefined && (
+                <AboutRepository
+                  repo={repo}
+                  setOpen={setOpen}
+                  setToastOptions={setToastOptions}
+                  stargazers={stargazers}
+                  watchers={watchers}
+                  forks={forks}
+                ></AboutRepository>
+              )}
             </TabPanel>
             <TabPanel value="2">Issues</TabPanel>
             <TabPanel value="3">
