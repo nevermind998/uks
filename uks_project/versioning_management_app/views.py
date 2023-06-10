@@ -141,7 +141,8 @@ def get_branch_by_name(request, name):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def get_branch_by_name_and_repository(request, name, repository):
+def get_branch_by_name_and_repository(request, repository):
+    name = request.GET.get('name')
     branch = Branch.objects.get(name=name, repository=repository)
     if not branch:
         raise Http404('No branch found with that name.')

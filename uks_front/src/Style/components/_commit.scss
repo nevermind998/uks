@@ -25,5 +25,10 @@
         }
     }
 
-
+    &__table {
+        border: 1px solid rgba(224, 224, 224, 1);
+        box-shadow: none !important;
+        max-height: 500px;
+        overflow: auto;
+    }
 }

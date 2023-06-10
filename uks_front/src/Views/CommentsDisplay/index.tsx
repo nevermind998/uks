@@ -68,7 +68,7 @@ const CommentsDisplay = ({ obj_id, isPr }: any) => {
   return (
     <div>
       <Toast open={open} setOpen={setOpen} toastOptions={toastOptions} />
-      <div style={{ height: '350px', overflow: 'auto' }}>
+      <div style={{ maxHeight: '350px', overflow: 'auto', marginTop: '30px'}}>
         {comments?.length === 0 ? (
           <div>
             <p>No comments yet.</p>
@@ -77,7 +77,7 @@ const CommentsDisplay = ({ obj_id, isPr }: any) => {
           comments?.map((comment: any) => <Comment comment={comment} refetch={refetch} key={comment.id} />)
         )}
       </div>
-      <Grid container spacing={2} alignItems="flex-end">
+      <Grid container spacing={2} alignItems="flex-end" style={{marginTop: '30px'}}>
         <Grid item xs={10}>
           <TextField label="Write a comment" value={comment} onChange={handleChange} fullWidth multiline rows={4} />
         </Grid>

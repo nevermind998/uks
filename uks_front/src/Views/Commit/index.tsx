@@ -22,6 +22,7 @@ const Commit = ({branch, refetch}) => {
       setToastOptions({ message: 'Commit successfully created', type: 'success'});
       setOpen(true);
       refetch();
+      formik.resetForm()
     },
     onError: () => {
       setToastOptions({ message: 'Error creating commit', type: 'error' });
