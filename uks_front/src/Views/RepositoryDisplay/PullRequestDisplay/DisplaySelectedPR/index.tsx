@@ -21,6 +21,7 @@ import {
   Radio,
   RadioGroup,
   Grid,
+  Popover,
 } from '@mui/material';
 import { useQuery } from 'react-query';
 import { PullRequestDto, ReviewStatusEnum } from '../../../../Types/pull_request.types';
@@ -37,6 +38,34 @@ import CommentsDisplay from '../../../CommentsDisplay';
 const DisplaySelecterPR = ({ selectedPr, setDispayPRInfo }: any) => {
   const [isMerged, setIsMerged] = useState(false);
   const [isApproved, setIsApproved] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [reviewType, setReviewType] = useState('approve');
+  const [comment, setComment] = useState('');
+
+  const handleReviewTypeChange = (event) => {
+    setReviewType(event.target.value);
+  };
+
+  const handleCommentChange = (event) => {
+    setComment(event.target.value);
+  };
+
+  const handleSubmit = () => {
+    if (reviewType === 'approve') {
+      updatePullRequestReviewStatus(selectedPr.id, ReviewStatusEnum.APPROVED).then(() => setIsApproved(true));
+    } else {
+      updatePullRequestReviewStatus(selectedPr.id, ReviewStatusEnum.CHANGES_REQUESTED);
+    }
+    //create comment if needed
+    handleClose();
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const openpop = Boolean(anchorEl);
+  const id = openpop ? 'add-review-popover' : undefined;
 
   const commitsQuery = useQuery({
     queryKey: ['FETCH_PULL_REQUEST'],
@@ -46,8 +75,8 @@ const DisplaySelecterPR = ({ selectedPr, setDispayPRInfo }: any) => {
     },
   });
 
-  const handleApprove = () => {
-    updatePullRequestReviewStatus(selectedPr.id).then(() => setIsApproved(true));
+  const handleApprove = (event) => {
+    setAnchorEl(event.currentTarget);
   };
 
   const handleMerge = () => {
@@ -192,6 +221,36 @@ const DisplaySelecterPR = ({ selectedPr, setDispayPRInfo }: any) => {
         <Divider> </Divider>
         <CommentsDisplay obj_id={selectedPr.id} isPr={true}></CommentsDisplay>
       </Grid>
+      <Popover
+        id={id}
+        open={openpop}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+      >
+        <div style={{ padding: '16px' }}>
+          <Typography variant="h6" marginBottom={2}>
+            Add Review
+          </Typography>
+          <TextField label="Comment" fullWidth multiline rows={3} value={comment} onChange={handleCommentChange} />
+          <RadioGroup sx={{ marginTop: '16px' }} value={reviewType} onChange={handleReviewTypeChange}>
+            <FormControlLabel value="approve" control={<Radio />} label="Approve" />
+            <FormControlLabel value="requestChanges" control={<Radio />} label="Request Changes" />
+          </RadioGroup>
+          <div className="repository__review_btn">
+            <Button variant="contained" color="primary" onClick={handleSubmit}>
+              Submit
+            </Button>
+          </div>
+        </div>
+      </Popover>
     </>
   );
 };

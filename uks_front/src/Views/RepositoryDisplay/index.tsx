@@ -191,7 +191,7 @@ const Repository = () => {
             <Grid item xs={9}>
               <Breadcrumbs className="repository__breadcrumbs" aria-label="breadcrumb">
                 <Link underline="hover" color="inherit" href="/">
-                  {user?.username}
+                  {repo?.owner.username}
                 </Link>
                 <Typography color="text.primary">{repo?.name}</Typography>
                 <Chip label={repo?.visibility} variant="outlined" />
