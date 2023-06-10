@@ -40,6 +40,14 @@ class BranchSerializer(serializers.ModelSerializer):
 
 
 class CommitSerializer(serializers.ModelSerializer):
+    hash = serializers.CharField(required=False, allow_blank=True)
+    class Meta:
+        model = Commit
+        fields = ['id', 'author', 'hash', 'message', 'created_at', 'branch']
+        read_only_field = ['id']
+
+class GetFullCommitSerializer(serializers.ModelSerializer):
+    author = UserProfileSerializer()
     class Meta:
         model = Commit
         fields = ['id', 'author', 'hash', 'message', 'created_at', 'branch']

@@ -1,0 +1,29 @@
+.commit {
+    img {
+        height: 30px;
+    }
+
+    &__form {
+        width: 70%;
+
+        &--wrapper {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+
+            button {
+                border-radius: 20px;
+                font-size: 12px;
+                width: 230px;
+                height: 30px;
+            }
+        }
+
+        &--field {
+            width: 100%;
+        }
+    }
+
+
+}
