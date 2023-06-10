@@ -3,7 +3,7 @@ from .models import Milestone, Label, Issue, PullRequest
 from django.http import Http404
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
-from .serializers import GetFullPullRequestSerializer, IssueSerializer, LabelSerializer, MilestoneSerializer, PullRequestSerializer
+from .serializers import GetFullIssueSerializer, GetFullPullRequestSerializer, IssueSerializer, LabelSerializer, MilestoneSerializer, PullRequestSerializer
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import Q
@@ -97,6 +97,14 @@ def label_by_repository(request,id):
     label = Label.objects.filter(repository=id)
     if(len(label) == 0): raise Http404('No label found that matches the given query.')
     serializers = LabelSerializer(label,many=True)
+    return Response(serializers.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def issues_by_status_repository(request,status,repository):
+    isuess = Issue.objects.filter(Q(status=status) & Q(repository=repository))
+    if(len(isuess) == 0): raise Http404('No label found that matches the given query.')
+    serializers = GetFullIssueSerializer(isuess,many=True)
     return Response(serializers.data)
         
 @api_view(['GET'])
@@ -226,8 +234,10 @@ def add_new_issue(request,id=None):
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def update_issue(request,id):
+    print("Id ejeeee",id)
     try:
         issue= Issue.objects.get(id=id)
+        print(issue)
     except Issue.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     serializer = IssueSerializer(issue, data=request.data)

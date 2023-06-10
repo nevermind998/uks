@@ -4,10 +4,11 @@ export enum StatusEnum {
 }
 
 export type IssuesDto = {
+    id?: number | null,
     title: string,
     created_at: Date | null,
     status: string,
-    milestone: number,
+    milestone: number | any,
     labels: number[],
     repository: number,
     author: number,

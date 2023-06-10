@@ -68,7 +68,7 @@ const Label = () => {
               onChange={formik.handleChange}
               name="name"
               error={formik.touched.name && Boolean(formik.errors.name)}
-              helperText={formik.errors.name && formik.touched.name}
+              helperText={formik.errors.name && formik.touched.name ? "Error": null}
               required
               className="label-form__form--field"
               size="small"
@@ -82,7 +82,7 @@ const Label = () => {
               name="description"
               required
               error={formik.touched.description && Boolean(formik.errors.description)}
-              helperText={formik.errors.description && formik.touched.description}
+              helperText={formik.errors.description && formik.touched.description ? "Error": null}
               className="label-form__form--field"
               size="small"
             />

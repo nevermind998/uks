@@ -23,6 +23,7 @@ urlpatterns = [
     path('issue/<int:id>', views.get_issue, name='issue'),
     path('issues/', views.get_all_issue, name='issues'),
     path('issues/<str:status>/status', views.issues_by_status, name='issues_by_status'),
+    path('issues/<str:status>/status/<int:repository>/repository', views.issues_by_status_repository, name='issues_by_status'),
     path('issues/<int:author>/author', views.issues_by_author, name='issues_by_author'),
     path('issues/<int:label>/label', views.issues_by_label, name='issues_by_label'),
     path('issues/<int:milestone>/milestone', views.issues_by_milestone, name='issues_by_milestone'),

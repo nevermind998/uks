@@ -26,6 +26,7 @@ import { ActionDto } from '../../Types/action.types';
 import CreateFork from './CreateFork';
 import ManageAccess from './ManageAccessSettings';
 import { UserProfileDto } from '../../Types/user.types';
+import IssueDisplay from '../ProjectManagmentDisplay/IssueDisplay';
 
 const Repository = () => {
   const user = useSelector(selectAuth);
@@ -241,7 +242,9 @@ const Repository = () => {
               ></AboutRepository>
             )}
           </TabPanel>
-          <TabPanel value="2">Issues</TabPanel>
+          <TabPanel value="2">
+            <IssueDisplay setOpen={setOpen} setToastOptions={setToastOptions}></IssueDisplay>
+          </TabPanel>
           <TabPanel value="3">
             <PullRequestDisplay setOpen={setOpen} setToastOptions={setToastOptions}></PullRequestDisplay>
           </TabPanel>

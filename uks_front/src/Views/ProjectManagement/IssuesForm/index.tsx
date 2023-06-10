@@ -11,7 +11,7 @@ import { RootState } from '../../../Store';
 import { AuthState } from '../../../Store/slices/auth.slice';
 import { IssuesDto } from '../../../Types/issue.types';
 
-const Issue = () => {
+const Issue = ( {setCreateIssue}: any ) => {
   const [open, setOpen] = useState<boolean>(false);
   const [toastOptions, setToastOptions] = useState<ToastOptions>({ message: '', type: 'info' });
   const { id } = useParams();
@@ -37,21 +37,22 @@ const Issue = () => {
 
   const formik = useFormik({
     initialValues: {
-      title: '',
-      created_at: new Date(),
-      status: '',
-      milestone: 0,
-      labels: [0],
-      repository: 0,
-      author: 0,
-      assignees: [0],
+      id:0,
+      title:'',
+      created_at:new Date(),
+      status:'',
+      milestone:0,
+      labels:[],
+      repository:0,
+      author:0,
+      assignees:[]
     },
     validationSchema: ISSUES_SCHEMA,
     onSubmit: (values) => {
       const body: IssuesDto = {
-        title: values.title,
-        created_at: values.created_at,
-        status: values.status,
+        title:values.title,
+        created_at:values.created_at,
+        status:values.status,
         milestone: milestone ? milestone.id : '',
         labels: values.labels?.map((a: any) => {
           return a.value;
