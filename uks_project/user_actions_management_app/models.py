@@ -12,7 +12,7 @@ from versioning_management_app.models import Repository
 REACTION = [
     ("LIKE", "Like"),
     ("DISLIKE", "Dislike"),
-    ("Love", "Love"),
+    ("LOVE", "Love"),
     ("HAPPY", "Happy"),
     ("SAD", "Sad")
 ]

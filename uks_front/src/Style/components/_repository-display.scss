@@ -13,8 +13,11 @@
     bottom: 0;
 
     &__content-wrapper {
+        position: absolute;
+        top: 60px;
         width: 90%;
-        height: 90%;
+        min-height: 90%;
+        height: fit-content;
         background-color: white;
         padding: 20px;
         padding-right: 20px;
@@ -105,5 +108,18 @@
             border-color: $primary-gray;
             box-shadow: 0 0 0 3px $secondary-gray;
         }
+    }
+
+    &__red {
+        color: lightcoral;
+    }
+
+    &__blue {
+        color: lightblue;
+    }
+
+
+    &__comment-buttons {
+        display: flex;
     }
 }

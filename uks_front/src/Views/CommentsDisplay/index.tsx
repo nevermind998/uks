@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CommentDto } from '../../Types/action.types';
-import { addNewComment, getCommentsForIssue } from '../../api/comments';
+import { addNewComment, getCommentsForIssue, getCommentsForPr } from '../../api/comments';
 import { useQuery } from 'react-query';
 import { ToastOptions } from '../../Components/Common/Toast';
 import Comment from './Comment';
@@ -8,7 +8,7 @@ import { Button, Grid, TextField } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { selectAuth } from '../../Store/slices/auth.slice';
 
-const CommentsDisplay = () => {
+const CommentsDisplay = ({ obj_id, isPr }: any) => {
   const user = useSelector(selectAuth);
   const [open, setOpen] = useState<boolean>(false);
   const [comment, setComment] = useState('');
@@ -21,10 +21,15 @@ const CommentsDisplay = () => {
   const { data: comments, refetch } = useQuery({
     queryKey: ['FETCH_COMMENTS'],
     queryFn: async () => {
-      if (true) {
-        const data: CommentDto[] = await getCommentsForIssue(1);
-        return data;
-      } else {
+      try {
+        if (isPr === false) {
+          const data: CommentDto[] = await getCommentsForIssue(obj_id);
+          return data;
+        } else {
+          const data: CommentDto[] = await getCommentsForPr(obj_id);
+          return data;
+        }
+      } catch {
         setToastOptions({ message: 'Error happened!', type: 'error' });
         setOpen(true);
       }
@@ -38,12 +43,21 @@ const CommentsDisplay = () => {
   const handleSubmit = async () => {
     setComment('');
     try {
-      const body: CommentDto = {
-        author: user.id,
-        content: comment,
-        issue: 1,
-      };
-      const newComment = await addNewComment(body);
+      if (!isPr) {
+        const body: CommentDto = {
+          author: user.id,
+          content: comment,
+          issue: obj_id,
+        };
+        const newComment = await addNewComment(body);
+      } else {
+        const body: CommentDto = {
+          author: user.id,
+          content: comment,
+          pull_request: obj_id,
+        };
+        const newComment = await addNewComment(body);
+      }
       refetch();
     } catch (error) {
       setToastOptions({ message: 'An error happened while commenting!', type: 'error' });
@@ -54,9 +68,13 @@ const CommentsDisplay = () => {
   return (
     <div>
       <div style={{ height: '350px', overflow: 'auto' }}>
-        {comments?.map((comment: any) => (
-          <Comment comment={comment} refetch={refetch} />
-        ))}
+        {comments?.length === 0 ? (
+          <div>
+            <p>No comments yet.</p>
+          </div>
+        ) : (
+          comments?.map((comment: any) => <Comment comment={comment} refetch={refetch} key={comment.id} />)
+        )}
       </div>
       <Grid container spacing={2} alignItems="flex-end">
         <Grid item xs={10}>

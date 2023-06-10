@@ -10,10 +10,17 @@ export type ActionDto = {
 
 export type CommentDto = {
   id?: number;
-  author: number;
-  created_at?: any;
-  updated_at?: any;
+  author: any;
+  created_at?: Date;
+  updated_at?: Date;
   content: string;
   issue?: number;
   pull_request?: number;
+};
+
+export type ReactionDto = {
+  id?: number;
+  author: number;
+  comment: number;
+  type: string;
 };
