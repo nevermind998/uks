@@ -7,6 +7,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { ToastOptions } from '../../../Components/Common/Toast';
 import { deleteComment, editComment } from '../../../api/comments';
+import CommentReactions from '../CommentReactions';
 
 const Comment = ({ comment, refetch }: any) => {
   const CommentContainer = styled(Paper)(({ theme }) => ({
@@ -78,6 +79,7 @@ const Comment = ({ comment, refetch }: any) => {
               </Typography>
               <Typography variant="body1">:{comment.content}</Typography>
             </Box>
+            <CommentReactions comment={comment}></CommentReactions>
           </Grid>
           <Grid item xs={2}>
             <IconButton onClick={handleEdit}>

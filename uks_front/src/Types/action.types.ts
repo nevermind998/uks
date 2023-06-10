@@ -17,3 +17,10 @@ export type CommentDto = {
   issue?: number;
   pull_request?: number;
 };
+
+export type ReactionDto = {
+  id?: number;
+  author: number;
+  comment: number;
+  type: string;
+};

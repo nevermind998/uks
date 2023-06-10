@@ -1,4 +1,4 @@
-import { CommentDto } from '../Types/action.types';
+import { CommentDto, ReactionDto } from '../Types/action.types';
 import { api } from './apiBase';
 
 export const getCommentsForPr = async (pr: number) => {
@@ -23,5 +23,15 @@ export const deleteComment = async (comment: number) => {
 
 export const editComment = async (body: CommentDto, comment: number) => {
   const action = await api.put(`/user-actions/comments/${comment}`, body);
+  return action.data;
+};
+
+export const getCommentReactions = async (comment: number) => {
+  const repos = await api.get(`/user-actions/comment/${comment}/reactions`);
+  return repos.data;
+};
+
+export const addNewReaction = async (body: ReactionDto) => {
+  const action = await api.post(`/user-actions/new-reaction`, body);
   return action.data;
 };
