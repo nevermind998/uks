@@ -61,7 +61,7 @@ export const fetchOptionsForMilestone = async (repositoryId: number) =>{
   return labels.data;
 }
 
-export const fetchIssues = async (issuesId: number) => {
-  const labels = await api.get(`${BASE_URL}/project/issue/${issuesId}`);
-  return labels.data;
-}
+export const fetchIssues = async () => {
+  const issues = await api.get(`${BASE_URL}/project/issues/`);
+  return issues.data;
+};
