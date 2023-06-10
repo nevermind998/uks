@@ -44,6 +44,15 @@ export const fetchLabels = async () => {
     const labels = await api.get(`/project/labels/`);
     return labels.data;
 };
+export const fetchOptionsForLabel = async (repositoryId: number) => {
+  const labels = await api.get(`${BASE_URL}/project/label/${repositoryId}/repository`);
+  return labels.data;
+};
+
+export const fetchOptionsForMilestone = async (repositoryId: number) =>{
+  const labels = await api.get(`${BASE_URL}/project/milestone/${repositoryId}/repository`);
+  return labels.data;
+}
 
 export const fetchIssues = async () => {
     const issues = await api.get(`/project/issues/`);

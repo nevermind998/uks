@@ -22,7 +22,17 @@ def get_all_repositories(request):
     serializer = RepositorySerializer(repositories, many=True)
     return Response(serializer.data)
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_repository_by_id(request,id):
+    try:
+        milestone= Repository.objects.get(id=id)
+        serializers = RepositorySerializer(milestone)
+        return Response(serializers.data)
+    except RepositorySerializer.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
+  
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_repo_by_name(request, name):
@@ -40,7 +50,6 @@ def get_repo_by_id(request, id):
         raise Http404('No repositories found with that id.')
     serializer = GetFullRepository(repository, many=True)
     return Response(serializer.data)
-
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])

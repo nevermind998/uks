@@ -3,11 +3,11 @@ import { useFormik } from 'formik';
 import { useState } from 'react';
 import Toast, { ToastOptions } from '../../../Components/Common/Toast';
 import { useParams } from 'react-router-dom';
-import { LabelDto } from '../../../Types/user.types';
 import { createLabel } from '../../../api/projectManagement';
 import { useMutation } from 'react-query';
 import { LABEL_SCHEMA } from './labelSchema';
 import { ChromePicker } from 'react-color';
+import { LabelDto } from '../../../Types/label.types';
 
 const Label = () => {
   const [open, setOpen] = useState<boolean>(false);

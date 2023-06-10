@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import CustomTokenObtainPairView, HelloView, UserRegistrationView, main
+from .views import CustomTokenObtainPairView, HelloView, UserRegistrationView, GetAllUsers, main
 from . import views
 
 urlpatterns = [
@@ -11,4 +11,5 @@ urlpatterns = [
     path('get-user/<int:id>', views.get_user_by_id, name='user-id'),
     path('get-assignees/<int:id>', views.get_pr_assignees, name='assignees'),
     path('users', views.get_all_users, name='get_all'),
+
 ]

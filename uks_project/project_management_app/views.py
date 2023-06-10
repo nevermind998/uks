@@ -21,10 +21,10 @@ def get_milestone(request,id):
     
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def get_milestone_by_repository(request,repository):
+def get_milestone_by_repository(request,id):
     try:
-        milestone= Milestone.objects.get(repository=repository)
-        serializers = MilestoneSerializer(milestone)
+        milestone= Milestone.objects.filter(repository=id)
+        serializers = MilestoneSerializer(milestone,many=True)
         return Response(serializers.data)
     except Milestone.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
@@ -86,12 +86,18 @@ def get_label(request,id):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def label_by_color(request,color):
-    try:
-        label = Label.objects.filter(color=color)
-        serializers = LabelSerializer(label,many=True)
-        return Response(serializers.data)
-    except:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+    label = Label.objects.filter(color=color)
+    if(len(label) == 0): raise Http404('No label found that matches the given query.')
+    serializers = LabelSerializer(label,many=True)
+    return Response(serializers.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def label_by_repository(request,id):
+    label = Label.objects.filter(repository=id)
+    if(len(label) == 0): raise Http404('No label found that matches the given query.')
+    serializers = LabelSerializer(label,many=True)
+    return Response(serializers.data)
         
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
