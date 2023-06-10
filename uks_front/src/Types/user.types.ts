@@ -25,28 +25,7 @@ export type UserProfileDto = {
   url: string;
 };
 
-export type MilestoneDto = {
-  title: string;
-  due_date: Date | null ;
-  description: string;
-  status: string;
-  repository: number;
-};
 
-export type LabelDto = {
-  name: string;
-  description: string;
-  color: string;
-  repository: number;
-};
 
-export type IssuesDto = {
-  title: string,
-  created_at: Date | null,
-  status: string,
-  milestone: number,
-  labels: number,
-  repository: number,
-  author: number,
-  assignees: number[]
-}
+
+

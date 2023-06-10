@@ -5,8 +5,6 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from uks_project.users_management_app.serializers import UserSerializer
-
 from .models import Repository, Branch, Commit
 from .serializers import RepositorySerializer, BranchSerializer, CommitSerializer
 
@@ -21,6 +19,16 @@ def get_all_repositories(request):
         raise Http404('No repositories found that matches the given query.')
     serializer = RepositorySerializer(repositories, many=True)
     return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_repository_by_id(request,id):
+    try:
+        milestone= Repository.objects.get(id=id)
+        serializers = RepositorySerializer(milestone)
+        return Response(serializers.data)
+    except RepositorySerializer.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
   
 @api_view(['GET'])

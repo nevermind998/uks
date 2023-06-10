@@ -8,13 +8,10 @@ import { useSelector } from 'react-redux';
 import Dashboard from './Views/Dashboard';
 import Milestone from './Views/ProjectManagement/MilestoneForm';
 import Label from './Views/ProjectManagement/LabelForm';
-<<<<<<< HEAD
 import Issue from './Views/ProjectManagement/IssuesForm';
-=======
 import Layout from './Components/Layout';
 import Commit from './Views/Commit';
 
->>>>>>> feat/new-label-form
 
 export const IsSignedIn = () => {
     const user = useSelector<RootState, AuthState>(state => state.auth);
@@ -30,24 +27,6 @@ export const IsSignedIn = () => {
 };
 
 function App() {
-<<<<<<< HEAD
-  return (
-    <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="sign-in" element={<SignIn />} />
-          <Route path="sign-up" element={<SignUp />}></Route>
-          <Route element={<IsSignedIn />}>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/milestone/new/:id" element={<Milestone />} />
-            <Route path="/label/new/:id" element={<Label />} />
-            <Route path="/issue/new/" element={<Issue />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </div>
-  );
-=======
     return (
         <div className="App">
             <BrowserRouter>
@@ -60,14 +39,13 @@ function App() {
                             <Route path="/milestone/new/:id" element={<Milestone />} />
                             <Route path="/new-commit" element={<Commit />} />
                             <Route path="/label/new/:id" element={<Label />} />
+                            <Route path="/issue/new/:id" element={<Issue />} />
                         </Route>
                     </Route>
                 </Routes>
             </BrowserRouter>
         </div>
     );
-
->>>>>>> feat/new-label-form
 }
 
 export default App;

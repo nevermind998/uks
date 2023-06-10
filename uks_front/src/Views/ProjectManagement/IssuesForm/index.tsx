@@ -1,28 +1,36 @@
 import { Autocomplete, Button, TextField } from '@mui/material';
 import { useFormik } from 'formik';
-import { SetStateAction, useEffect, useState } from 'react';
+import { useState } from 'react';
 import Toast, { ToastOptions } from '../../../Components/Common/Toast';
 import { useParams } from 'react-router-dom';
-import { IssuesDto } from '../../../Types/user.types';
-import { createIssue, fetchDropdownRepositoryOption } from '../../../api/projectManagement';
-import { useMutation } from 'react-query';
+import { createIssue,  fetchOptionsForAssigne, fetchOptionsForLabel, fetchOptionsForMilestone } from '../../../api/projectManagement';
+import { useMutation, useQuery } from 'react-query';
 import { ISSUES_SCHEMA } from './issuesSchema';
-
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../Store';
+import { AuthState } from '../../../Store/slices/auth.slice';
+import { IssuesDto } from '../../../Types/issue.types';
 
 const Issue = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [toastOptions, setToastOptions] = useState<ToastOptions>({ message: '', type: 'info' });
-  const [selectedDate, setSelectedDate] = useState(null);
   const { id } = useParams();
   const repositoryId = id ?  parseInt(id, 10) : 0;
 
-  const { mutate, isLoading } = useMutation(createIssue, {
+  const authorUser =  useSelector<RootState, AuthState>(state => state.auth);
+
+  const allMilestonesQuery = useQuery(['FETCH_MILESTONE'], async() => await fetchOptionsForMilestone(repositoryId));
+  const allLabelsQuery = useQuery(['FETCH_LABELS'], async() => await fetchOptionsForLabel(repositoryId));
+  const assignees = useQuery(['FETCH_ASSIGNE_USERS'], async() => await fetchOptionsForAssigne(repositoryId));
+  const milestone = allMilestonesQuery.data  ? allMilestonesQuery.data[0] : null;
+
+  const { mutate } = useMutation(createIssue, {
     onSuccess: (res) => {
-      setToastOptions({ message: 'Label successfully created', type: 'success'});
+      setToastOptions({ message: 'Issue successfully created', type: 'success'});
       setOpen(true);
     },
     onError: () => {
-      setToastOptions({ message: 'Error creating label', type: 'error' });
+      setToastOptions({ message: 'Error creating issue', type: 'error' });
       setOpen(true);
     },
   });
@@ -33,7 +41,7 @@ const Issue = () => {
       created_at:new Date(),
       status:'',
       milestone:0,
-      labels:0,
+      labels:[0],
       repository:0,
       author:0,
       assignees:[0]
@@ -44,54 +52,26 @@ const Issue = () => {
         title:values.title,
         created_at:values.created_at,
         status:values.status,
-        milestone:1, //FORGINE KEY,SEE HOW FIX IT
-        labels:1,
+        milestone: milestone ? milestone.id : '',
+        labels:values.labels?.map((a:any) => {return a.value}),
         repository:repositoryId,
-        author:1,
-        assignees:values.assignees
+        author:authorUser.data.id,
+        assignees:values.assignees?.map((a:any) => {return a.value}),
       };
-
       mutate(body);
     },
   });
 
+  function isOptionEqualToValue(option: any, value: any) {
+    if (value.value === '') return true;
+    return option.value === value.value;
+  }
 
-  //treba videti za autora, neki dropdown??
-  //kako da handlamo label, repo, assignes
-/*
-  const options = [
-    { value: 'option1', label: 'Option 1' },
-    { value: 'option2', label: 'Option 2' },
-    { value: 'option3', label: 'Option 3' },
-    // Add more options as needed
-  ];
-*/
-  const [options, setOptions] = useState([]);
-
-  const [selectedOption, setSelectedOption] = useState(null);
-
-  const handleOptionChange = (event: any, selectedOption: any) => {
-    setSelectedOption(selectedOption);
-  };
-
-  useEffect(() => {
-    const fetchOptions = async () => {
-      const options = await fetchDropdownRepositoryOption(repositoryId);
-      const formattedOptions = options.map((o: { id: any; name: any; }) => ({
-        value: o.id,
-        label: o.name,
-      }));
-      setOptions(formattedOptions);
-    };
-  
-    fetchOptions();
-  }, []);
-  
   return (
     <div className="add-update-form">
       <Toast open={open} setOpen={setOpen} toastOptions={toastOptions} />
       <div className="add-update-form__content-wrapper">
-        <h3>Create a new issues</h3>
+        <h3>Create a new issue</h3>
         <form onSubmit={formik.handleSubmit} className="add-update-form__form">
             <TextField
               id="title"
@@ -106,26 +86,49 @@ const Issue = () => {
               className="add-update-form__form--field"
               size="small"
             />
-          <div>
-          <Autocomplete
-            value={selectedOption}
-            onChange={handleOptionChange}
-            options={options}
-            getOptionLabel={(option) => option}
-            renderInput={(params) => (
-              <TextField {...params} 
-              label="Select an author" 
-              variant="outlined" 
-              value='selectedOption.value'
-              className="add-update-form__dropdown"
+
+            <Autocomplete
+              disablePortal
+              multiple
+              id="assignees"
+              options={assignees.data?.map((b: any) => ({ value: b.id, label: b.given_name + " " + b.family_name })) || []}
+              isOptionEqualToValue={isOptionEqualToValue}
+              getOptionLabel={(option: any) => option.label}
+              onChange={(event, value: any) => formik.setFieldValue('assignees', value)}
+              sx={{ width: 490 }}
+              renderInput={(params: any) => <TextField {...params} label="Select assignees" />}
             />
-            )}
-          />
-        </div>  
-           
-            <Button type="submit" className="add-update__button" variant="contained">
-              Create issue
-            </Button>
+
+            <Autocomplete
+              multiple
+              disablePortal
+              id="labels"
+              options={allLabelsQuery.data?.map((label:any) => ({ value: label.id, label: label.name })) || []}
+              value={formik.values.labels}
+              sx={{ width: 495 }}
+              onChange={(event,value) => formik.setFieldValue("labels", value)}
+              renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Labels"
+                placeholder="Select labels"
+              />
+                )}
+              />
+
+              <Autocomplete
+                  disablePortal
+                  id="milestone"
+                  options={allMilestonesQuery.data?.map((m:any) => ({ value: m.id, label: m.title })) || []}
+                  value={formik.values.milestone}
+                  onChange={(event,value:any) => formik.setFieldValue("milestone", value)}
+                  sx={{ width: 495 }}
+                  renderInput={(params:any) => <TextField {...params} label="Milestone" />}
+              />
+
+              <Button type="submit" className="add-update__button" variant="contained">
+                Create issue
+              </Button>
         </form>
       </div>
     </div>

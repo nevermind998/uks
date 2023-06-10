@@ -4,7 +4,7 @@ from rest_framework import generics, permissions
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from django.http import Http404
 
@@ -38,10 +38,10 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
         return Response(serializer.validated_data, status=200)
     
-    @api_view(['GET'])
-    @permission_classes([IsAuthenticated])
-    def GetAllUsers(request,id=None):
-        pull_requests = User.objects.all()
-        if(len(pull_requests) == 0): raise Http404('No users found that matches the given query.')
-        serializers = UserSerializer(pull_requests,many=True)
-        return Response(serializers.data)
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def GetAllUsers(request,id=None):
+    users = User.objects.all()
+    if(len(users) == 0): raise Http404('No users found that matches the given query.')
+    serializers = UserSerializer(users,many=True)
+    return Response(serializers.data)

@@ -8,6 +8,7 @@ urlpatterns = [
     path('repository/<int:repo_id>/collaborators', views.get_repository_collaborators, name='repository_collaborators'),
     path('new-repository', views.add_new_repository, name='add_repository'),
     path('repository/<int:id>', views.delete_or_edit_repository, name='delete_or_edit_repository'),
+    path('repository/id/<int:id>', views.get_repository_by_id, name='get_repository_by_id'),
     path('branches/', views.get_all_branches, name='get_all_branches'),
     path('branch/<str:name>', views.get_branch_by_name, name='branch_by_name'),
     path('branch/<int:id>/repository', views.get_repository_branches, name='repository_branches'),

@@ -4,7 +4,7 @@ from . import views
 urlpatterns = [
     #milestone
     path('milestone/<int:id>', views.get_milestone, name='milestone'),
-    path('milestone/<int:repository>/repository', views.get_milestone_by_repository, name='milestone_by_repository'),
+    path('milestone/<int:id>/repository', views.get_milestone_by_repository, name='milestone_by_repository'),
     path('milestones/', views.get_all_milestone, name='milestones'),
     path('new-milestone', views.add_new_milestone, name='new-milestone'),
     path('update-milestone/<int:id>', views.update_milestone, name='update-milestone'),
@@ -12,7 +12,8 @@ urlpatterns = [
 
     #label
     path('label/<int:id>', views.get_label, name='label'),
-    path('label/<str:color>/color', views.label_by_color, name='labels'),
+    path('label/<str:color>/color', views.label_by_color, name='label_by_color'),
+    path('label/<int:id>/repository', views.label_by_repository, name='label_by_repository'),
     path('labels/', views.get_all_label, name='labels'),
     path('new-label', views.add_new_label, name='new-label'),
     path('update-label/<int:id>', views.update_label, name='update-label'),

@@ -4,12 +4,12 @@ import { useState } from 'react';
 import Toast, { ToastOptions } from '../../../Components/Common/Toast';
 import { useParams } from 'react-router-dom';
 import { MILESTONE_SCHEMA } from './milestoneSchema';
-import { MilestoneDto } from '../../../Types/user.types';
 import { createMilestone } from '../../../api/projectManagement';
 import { useMutation } from 'react-query';
 import DatePicker from '@mui/lab/DatePicker';
 import { LocalizationProvider } from '@mui/lab';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import { MilestoneDto } from '../../../Types/milestone.types';
 
 const Milestone = () => {
   const [open, setOpen] = useState<boolean>(false);
