@@ -16,6 +16,7 @@ import PullRequest from '../ProjectManagement/PullRequestForm';
 import PullRequestDisplay from './PullRequestDisplay';
 import { ActionDto } from '../../Types/action.types';
 import CreateFork from './CreateFork';
+import CommentsDisplay from '../CommentsDisplay';
 
 const Repository = () => {
     const user = useSelector(selectAuth);
@@ -53,19 +54,19 @@ const Repository = () => {
         }
     };
 
-    const handleWatchClick = () => {
-        setWatching(!watching);
-        if (watch?.id) {
-            deleteAction(watch.id);
-        } else if (repo?.id) {
-            const body: ActionDto = {
-                author: user.id,
-                type: 'WATCH',
-                repository: repo.id,
-            };
-            createNewRepositoryAction(body);
-        }
-    };
+  const handleWatchClick = async () => {
+    setWatching(!watching);
+    if (watch?.id) {
+      await deleteAction(watch.id);
+    } else if (repo?.id) {
+      const body: ActionDto = {
+        author: user.id,
+        type: 'WATCH',
+        repository: repo.id,
+      };
+      createNewRepositoryAction(body);
+    }
+  };
 
     const handleChange = (event: SyntheticEvent, newTab: string) => {
         setTab(newTab);
@@ -182,5 +183,6 @@ const Repository = () => {
             </div>
         </>
     );
+
 };
 export default Repository;
