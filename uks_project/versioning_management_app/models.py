@@ -46,7 +46,7 @@ class Commit(models.Model):
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE, null=False)
 
 class Collaboration(models.Model):
-    role = models.CharField(max_length=50, choices=ACCESS, null=True)
+    role = models.CharField(max_length=50, choices=ACCESS, default='READ')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     repository = models.ForeignKey(Repository, on_delete=models.CASCADE)
 

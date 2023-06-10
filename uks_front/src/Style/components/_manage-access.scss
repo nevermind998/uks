@@ -6,9 +6,54 @@
   align-items: center;
   gap: 20px;
 
+  &__table {
+    width: 70% !important;
+
+    &--wrapper {
+      width: 80%;
+    }
+  }
+
   &__button {
     width: 80%;
     display: flex;
     justify-content: flex-start;
+  }
+
+  &__select-role {
+    width: 100%;
+    border: none;
+    position: unset !important;
+
+    .MuiSvgIcon-root {
+      display: none;
+    }
+  }
+
+  &__general {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+
+    &--form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    &--form-field {
+      width: 350px;
+    }
+
+    &--buttons {
+      display: flex;
+      gap: 10px;
+    }
+  }
+
+  button {
+    border-radius: 20px;
   }
 }

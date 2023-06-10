@@ -21,5 +21,7 @@ urlpatterns = [
     path('commits/author/<int:user_id>', views.get_all_commits_by_author, name='all_commits_by_author'),
     path('get-branch/<int:id>', views.get_branch_by_id, name='branch_by_id'),
     path('get-repository/<int:id>', views.get_repo_by_id, name='repository_by_id'),
-
+    path('role/<int:id>/repository/<int:repository>', views.get_collaborator_role, name='collaborator_role'),
+    path('edit-role/<int:id>/repository/<int:repository>', views.manage_roles, name='manage_roles'),
+    path('delete-collaborator/<int:user_id>/repository/<int:repository>', views.delete_collaborator, name='delete-collaborator'),
 ]

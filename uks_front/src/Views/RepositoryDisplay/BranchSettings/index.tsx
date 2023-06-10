@@ -167,7 +167,7 @@ const BranchSettings = ({ branches, repo, refetch }: any) => {
                                             sx={{ cursor: 'pointer' }}
                                         />
                                     </TableCell>
-                                    <TableCell component="th" scope="row" align="right">
+                                    <TableCell component="th" scope="row" align="right" className='th'>
                                         {pullRequests
                                             ?.filter((x: any) => x.compare_branch === branch.id)
                                             .map(pr => (

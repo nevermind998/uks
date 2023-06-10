@@ -73,7 +73,7 @@ const Repository = () => {
         setTab(newTab);
     };
 
-    const { data: repo } = useQuery({
+    const { data: repo, refetch } = useQuery({
         queryKey: ['FETCH_REPO'],
         queryFn: async () => {
             if (id) {
@@ -176,7 +176,7 @@ const Repository = () => {
                             <PullRequestDisplay setOpen={setOpen} setToastOptions={setToastOptions}></PullRequestDisplay>
                         </TabPanel>
                         <TabPanel value="4">
-                          <ManageAccess repo={repo} />
+                          <ManageAccess repo={repo} refetchRepo={refetch}/>
                         </TabPanel>
                         <TabPanel value="5">
                             <CreateFork repo={repo} user={user}></CreateFork>
