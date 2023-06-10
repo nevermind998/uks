@@ -25,7 +25,3 @@ export type UserProfileDto = {
   url: string;
 };
 
-
-
-
-

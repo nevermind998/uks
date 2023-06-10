@@ -19,7 +19,7 @@ const Commit = () => {
   const user = useSelector<RootState, AuthState>(state => state.auth);
 
   const data = useQuery({
-    queryKey: ['FETCH_COMMITS'],
+    queryKey: ['FETCH_BRANCH'],
     queryFn: async () => {
         const data: BranchDto = await getBranchById(1);
         return data;

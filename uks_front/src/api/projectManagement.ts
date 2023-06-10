@@ -1,6 +1,7 @@
-import { IssuesDto, StatusEnum } from '../Types/issue.types';
+import { IssuesDto } from '../Types/issue.types';
 import { LabelDto } from '../Types/label.types';
 import { MilestoneDto } from '../Types/milestone.types';
+import { PullRequestDto, ReviewStatusEnum, StatusEnum } from '../Types/pull_request.types';
 import { api } from './apiBase';
 
 export const BASE_URL = 'http://localhost:8000';
@@ -34,6 +35,22 @@ export const fetchOptionsForAssigne = async (repositoryId: number) => {
     }
 };
 
+export const createPullRequest = async (body: PullRequestDto) => {
+  body.status = StatusEnum.OPEN;
+  body.review = ReviewStatusEnum.CHANGES_REQUESTED;
+  const response = await api.post(`${BASE_URL}/project/new-pull_request`, body);
+  return response.data;
+};
+
+export const fetchMilestones = async () => {
+  const milestones = await api.get(`${BASE_URL}/project/milestones/`);
+  return milestones.data;
+};
+
+export const fetchLabels = async () => {
+  const labels = await api.get(`${BASE_URL}/project/labels/`);
+  return labels.data;
+};
 export const fetchOptionsForLabel = async (repositoryId: number) => {
   const labels = await api.get(`${BASE_URL}/project/label/${repositoryId}/repository`);
   return labels.data;

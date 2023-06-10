@@ -15,8 +15,6 @@ from .serializers import RepositorySerializer, BranchSerializer, CommitSerialize
 @permission_classes([IsAuthenticated])
 def get_all_repositories(request):
     repositories = Repository.objects.all()
-    if len(repositories) == 0:
-        raise Http404('No repositories found that matches the given query.')
     serializer = RepositorySerializer(repositories, many=True)
     return Response(serializer.data)
 
@@ -40,27 +38,24 @@ def get_repo_by_name(request, name):
     serializer = RepositorySerializer(repository, many=True)
     return Response(serializer.data)
 
-
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def get_repos_by_owner(request, id):
-    repositories = Repository.objects.filter(owner=id)
-    if len(repositories) == 0:
-        raise Http404('No repositories found with that owner.')
-    serializer = RepositorySerializer(repositories, many=True)
+def get_repo_by_id(request, id):
+    repository = Repository.objects.filter(id=id)
+    if len(repository) == 0:
+        raise Http404('No repositories found with that id.')
+    serializer = RepositorySerializer(repository, many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def get_repository_collaborators(request, repo_id):
+def get_repos_by_owner(request, id):
     try:
-        repository = Repository.objects.get(id=repo_id)
-        collaborators = repository.collaborators.all()
-        serializer = RepositorySerializer(collaborators, many=True)
+        repositories = Repository.objects.filter(owner=id)
+        serializer = RepositorySerializer(repositories, many=True)
         return Response(serializer.data)
-    except Repository.DoesNotExist:
-        raise Http404('No repositories found that match the given query.')
-
+    except:
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -72,9 +67,13 @@ def add_new_repository(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['DELETE', 'PUT'])
+@api_view(['DELETE', 'PUT', 'GET'])
 @permission_classes([IsAuthenticated])
 def delete_or_edit_repository(request, id):
+    if request.method == 'GET':
+        repository = Repository.objects.get(id=id)
+        serializer = RepositorySerializer(repository)
+        return Response(serializer.data)
     if request.method == 'DELETE':
         try:
             repository = Repository.objects.get(id=id)
@@ -102,11 +101,12 @@ def delete_or_edit_repository(request, id):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_all_branches(request):
-    branches = Branch.objects.all()
-    if len(branches) == 0:
-        raise Http404('No branches found that matches the given query.')
-    serializer = BranchSerializer(branches, many=True)
-    return Response(serializer.data)
+    try:
+        branches = Branch.objects.all()
+        serializer = BranchSerializer(branches, many=True)
+        return Response(serializer.data)
+    except:
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
 
 @api_view(['GET'])
@@ -131,11 +131,12 @@ def get_branch_by_id(request, id):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_repository_branches(request, id):
-    branches = Branch.objects.filter(repository=id)
-    if len(branches) == 0:
-        raise Http404('No branch found that matches the given query.')
-    serializer = BranchSerializer(branches, many=True)
-    return Response(serializer.data)
+    try:
+        branches = Branch.objects.filter(repository=id)
+        serializer = BranchSerializer(branches, many=True)
+        return Response(serializer.data)
+    except:
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
 
 @api_view(['POST'])
@@ -180,11 +181,12 @@ def rename_branch(request, id):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_all_commits(request):
-    commits = Commit.objects.all()
-    if len(commits) == 0:
-        raise Http404('No commits found that matches the given query.')
-    serializer = CommitSerializer(commits, many=True)
-    return Response(serializer.data)
+    try:
+        commits = Commit.objects.all()
+        serializer = CommitSerializer(commits, many=True)
+        return Response(serializer.data)
+    except:
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
 
 @api_view(['GET'])
@@ -234,12 +236,12 @@ def get_commit_hash(request, commit_id):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_all_commits_by_author(request, user_id):
-    commits = Commit.objects.filter(author=user_id)
-    if len(commits) == 0:
-        raise Http404('No commits found by that author.')
-
-    author_commits = []
-    for commit in commits:
-        author_commits.append(commit.branch)
-    serializer = CommitSerializer(commits, many=True)
-    return Response(serializer.data)
+    try:
+        commits = Commit.objects.filter(author=user_id)
+        author_commits = []
+        for commit in commits:
+            author_commits.append(commit.branch)
+        serializer = CommitSerializer(commits, many=True)
+        return Response(serializer.data)
+    except:
+        return Response(status=status.HTTP_404_NOT_FOUND)

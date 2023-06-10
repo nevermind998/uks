@@ -40,7 +40,7 @@ const Label = () => {
       repository:0
     },
     validationSchema: LABEL_SCHEMA,
-    onSubmit: (values) => {
+    onSubmit: (values:any) => {
       const body: LabelDto = {
         name:values.name,
         description:values.description,

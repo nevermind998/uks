@@ -1,5 +1,6 @@
-from django.http import HttpResponse
-from rest_framework.permissions import AllowAny
+from django.http import HttpResponse, Http404
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import generics, permissions
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
@@ -10,6 +11,8 @@ from django.http import Http404
 
 from .models import User
 from .serializers import UserSerializer, CustomTokenObtainPairSerializer
+from versioning_management_app.models import Repository
+
 
 # Create your views here.
 
@@ -45,3 +48,24 @@ def GetAllUsers(request,id=None):
     if(len(users) == 0): raise Http404('No users found that matches the given query.')
     serializers = UserSerializer(users,many=True)
     return Response(serializers.data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user_by_id(request, id):
+    user = User.objects.filter(id=id)
+    if len(user) == 0:
+        raise Http404('No users found with that id.')
+    serializer = UserSerializer(user, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_pr_assignees(request, id):
+    try:
+        repository = Repository.objects.get(id=id)
+        assignees = repository.collaborators.all()
+        serializer = UserSerializer(assignees, many=True)
+        return Response(serializer.data)
+    except Repository.DoesNotExist:
+        raise Http404('No pull request found with that id.')

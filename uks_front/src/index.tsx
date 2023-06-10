@@ -10,7 +10,13 @@ import { ThemeProvider } from '@mui/material';
 import theme from './utils/theme';
 import { PersistGate } from 'redux-persist/integration/react';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 

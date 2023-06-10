@@ -9,4 +9,5 @@ export type CommitDto = {
 export type BranchDto = {
     id: number;
     name: string;
+    repository: number;
 };

@@ -16,17 +16,16 @@ const Milestone = () => {
   const [toastOptions, setToastOptions] = useState<ToastOptions>({ message: '', type: 'info' });
   const [selectedDate, setSelectedDate] = useState(null);
   const { id } = useParams();
-  const repositoryId = id ?  parseInt(id, 10) : 0;
+  const repositoryId = id ? parseInt(id, 10) : 0;
 
-
-  const handleDateChange = (date:any) => {
+  const handleDateChange = (date: any) => {
     formik.setFieldValue('due_date', date);
     setSelectedDate(date);
   };
 
   const { mutate, isLoading } = useMutation(createMilestone, {
     onSuccess: (res) => {
-      setToastOptions({ message: 'Milestone successfully created', type: 'success'});
+      setToastOptions({ message: 'Milestone successfully created', type: 'success' });
       setOpen(true);
     },
     onError: () => {
@@ -37,19 +36,19 @@ const Milestone = () => {
 
   const formik = useFormik({
     initialValues: {
-      title:'',
+      title: '',
       due_date: null,
-      description:'',
-      status:'',
-      repository:0
+      description: '',
+      status: '',
+      repository: 0,
     },
     validationSchema: MILESTONE_SCHEMA,
-    onSubmit: (values) => {
+    onSubmit: (values:any) => {
       const body: MilestoneDto = {
-        title:values.title,
+        title: values.title,
         due_date: values.due_date,
-        description:values.description,
-        status:values.status,
+        description: values.description,
+        status: values.status,
         repository: repositoryId,
       };
 
@@ -63,42 +62,44 @@ const Milestone = () => {
       <div className="add-update-form__content-wrapper">
         <h3>Create a new milestone</h3>
         <form onSubmit={formik.handleSubmit} className="add-update-form__form">
-            <TextField
-              id="title"
-              label="Title"
-              variant="outlined"
-              value={formik.values.title}
-              onChange={formik.handleChange}
-              name="title"
-              error={formik.touched.title && Boolean(formik.errors.title)}
-              helperText={formik.errors.title && formik.touched.title}
-              required
-              className="add-update-form__form--field"
-              size="small"
-            />
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DatePicker
+          <TextField
+            id="title"
+            label="Title"
+            variant="outlined"
+            value={formik.values.title}
+            onChange={formik.handleChange}
+            name="title"
+            error={formik.touched.title && Boolean(formik.errors.title)}
+            helperText={formik.errors.title && formik.touched.title}
+            required
+            className="add-update-form__form--field"
+            size="small"
+          />
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DatePicker
               label="Due date (optional)"
               value={selectedDate}
               onChange={handleDateChange}
-              renderInput={(params) => <TextField className="add-update-form__form--field" {...params} />} disableHighlightToday={undefined} showDaysOutsideCurrentMonth={undefined} allowSameDateSelection={undefined}            />
-            </LocalizationProvider>
-            <TextField
-              id="description"
-              label="Description"
-              variant="outlined"
-              value={formik.values.description}
-              onChange={formik.handleChange}
-              name="description"
-              error={formik.touched.description && Boolean(formik.errors.description)}
-              helperText={formik.errors.description && formik.touched.description}
-              required
-              className="add-update-form__form--field"
-              size="small"
-            />
-            <Button type="submit" className="add-update__button" variant="contained">
-              Create milestone
-            </Button>
+              disableHighlightToday={undefined}
+              showDaysOutsideCurrentMonth={undefined}
+              allowSameDateSelection={undefined} />
+          <TextField
+            id="description"
+            label="Description"
+            variant="outlined"
+            value={formik.values.description}
+            onChange={formik.handleChange}
+            name="description"
+            error={formik.touched.description && Boolean(formik.errors.description)}
+            helperText={formik.errors.description && formik.touched.description}
+            required
+            className="add-update-form__form--field"
+            size="small"
+          />
+          </LocalizationProvider>
+          <Button type="submit" className="add-update__button" variant="contained">
+            Create milestone
+          </Button>
         </form>
       </div>
     </div>
