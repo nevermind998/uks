@@ -5,7 +5,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useState } from 'react';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
-import { ToastOptions } from '../../../Components/Common/Toast';
+import Toast, { ToastOptions } from '../../../Components/Common/Toast';
 import { deleteComment, editComment } from '../../../api/comments';
 import CommentReactions from '../CommentReactions';
 
@@ -59,6 +59,7 @@ const Comment = ({ comment, refetch }: any) => {
 
   return (
     <CommentContainer elevation={1}>
+      <Toast open={open} setOpen={setOpen} toastOptions={toastOptions} />
       {isEditing ? (
         <div>
           <form onSubmit={handleSave}>

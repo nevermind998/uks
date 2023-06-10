@@ -1,7 +1,7 @@
 import { IconButton, Badge, Popover, Grid } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Favorite as FavoriteIcon, ThumbUp as ThumbUpIcon, ThumbDown as ThumbDownIcon } from '@mui/icons-material';
-import { ToastOptions } from '../../../Components/Common/Toast';
+import Toast, { ToastOptions } from '../../../Components/Common/Toast';
 import { ReactionDto } from '../../../Types/action.types';
 import { useQuery } from 'react-query';
 import { addNewReaction, deleteReaction, getCommentReactions } from '../../../api/comments';
@@ -127,6 +127,7 @@ const CommentReactions = ({ comment }: any) => {
 
   return (
     <div>
+      <Toast open={open} setOpen={setOpen} toastOptions={toastOptions} />
       <IconButton color="primary" onClick={handleLikeReaction}>
         <Badge badgeContent={likes.length} color="secondary">
           <ThumbUpIcon className="repository__blue" />

@@ -25,7 +25,7 @@ class UpdateCollaborationSerializer(serializers.ModelSerializer):
 
 class GetFullRepository(serializers.ModelSerializer):
     description = serializers.CharField(required=False, allow_blank=True)
-
+    owner = UserProfileSerializer()
     class Meta:
         model = Repository
         fields = ['id', 'name', 'owner', 'description', 'created_at', 'visibility', 'default_branch', 'collaborators']

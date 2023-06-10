@@ -122,4 +122,11 @@
     &__comment-buttons {
         display: flex;
     }
+
+    &__review_btn {
+        padding-top: 20px;
+        width: 100%;
+        justify-content: center;
+        display: flex;
+    }
 }

@@ -6,7 +6,7 @@ export enum VisibilityEnum {
 export type RepositoryDto = {
   id: number;
   name: string;
-  owner: number;
+  owner: any;
   description: string;
   created_at: Date;
   visibility: VisibilityEnum;
