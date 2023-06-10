@@ -46,10 +46,10 @@ class BranchTests(TestCase):
 
     def test_add_new_branch(self):
         repository = Repository.objects.filter(name='UKS').first()
-        new_branch = Branch.objects.create(name="Test branch", repository=repository)
+        new_branch = Branch.objects.create(name="Test branch 1", repository=repository)
         new_branch.save()
 
-        self.assertEqual(new_branch.name, "Test branch")
+        self.assertEqual(new_branch.name, "Test branch 1")
         self.assertEqual(new_branch.repository.name, "UKS")
 
 class CommitTests(TestCase):

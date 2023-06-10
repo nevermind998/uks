@@ -9,7 +9,7 @@ import { BRANCH_SCHEMA } from './branchValidationSchema';
 import { BranchDto } from '../../Types/branch.types';
 import {AddCircleOutline} from '@mui/icons-material';
 
-const Branch = () => {
+const Branch = ({refetch}: any) => {
     const [toastOptions, setToastOptions] = useState<ToastOptions>({ message: '', type: 'info' });
     const { id } = useParams();
     const repositoryId = id ? parseInt(id, 10) : 0;
@@ -28,6 +28,7 @@ const Branch = () => {
             setToastOptions({ message: 'Branch successfully created', type: 'success' });
             setOpenToast(true);
             handleClose();
+            refetch();
         },
         onError: () => {
             setToastOptions({ message: 'A branch with this name already exists!', type: 'error' });

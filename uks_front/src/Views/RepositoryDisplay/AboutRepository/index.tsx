@@ -105,7 +105,7 @@ const AboutRepository = ({ repo, setToastOptions, setOpen }: any) => {
                                     <b>{branches?.length}</b> &nbsp; branches
                                 </Button>
                                 |
-                                <Branch />
+                                <Branch refetch={refetch}/>
                             </div>
                         </div>
                     </Grid>
@@ -166,7 +166,7 @@ const AboutRepository = ({ repo, setToastOptions, setOpen }: any) => {
             {tab === 'stargazers' && <Stargazers stargazers={stargazers}></Stargazers>}
             {tab === 'watchers' && <Watchers watchers={watchers}></Watchers>}
             {tab === 'forks' && <Forks forks={forks}></Forks>}
-            {tab === 'branch-settings' && <BranchSettings branches={branches} repo={repo} refetch={refetch} />}
+            {tab === 'branch-settings' && <BranchSettings branches={branches} repo={repo} refetch={refetch} setTab={setTab}/>}
         </>
     );
 };

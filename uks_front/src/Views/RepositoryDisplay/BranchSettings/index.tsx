@@ -25,7 +25,7 @@ import { BRANCH_SCHEMA } from '../../Branch/branchValidationSchema';
 import { getPullRequestsByRepo } from '../../../api/projectManagement';
 import { PullRequestDto } from '../../../Types/pull_request.types';
 
-const BranchSettings = ({ branches, repo, refetch }: any) => {
+const BranchSettings = ({ branches, repo, refetch, setTab }: any) => {
     const [editBranch, setEditBranch] = useState<BranchDto>();
     const [isOpen, setIsOpen] = useState(false);
 
@@ -58,6 +58,7 @@ const BranchSettings = ({ branches, repo, refetch }: any) => {
             setOpenToast(true);
             handleClose();
             refetch();
+            formik.resetForm();
         },
         onError: () => {
             setToastOptions({ message: 'A branch with this name already exists!', type: 'error' });
@@ -102,6 +103,11 @@ const BranchSettings = ({ branches, repo, refetch }: any) => {
     return (
         <div className="branch-settings">
             <Toast open={openToast} setOpen={setOpenToast} toastOptions={toastOptions} />
+            <div style={{width: '100%', display: 'flex'}}>
+                <button onClick={() => setTab('about')} className="create-repository__back-button">
+                    &#60; Back
+                </button>
+            </div>
             <p>Repository branches</p>
             <TableContainer component={Paper} className="branch-settings__table">
                 <Table aria-label="simple table">
@@ -142,7 +148,7 @@ const BranchSettings = ({ branches, repo, refetch }: any) => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {branches
+                        {branches.sort((a, b) => a.id - b.id)
                             .filter((b: any) => b.id !== defaultBranch.id)
                             .map((branch: BranchDto) => (
                                 <TableRow key={branch.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>

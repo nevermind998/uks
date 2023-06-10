@@ -58,7 +58,7 @@ export const getRepositoriesById = async (id: number) => {
 };
 
 export const getRepositoryBranches = async (id: number) => {
-  const response = await api.get(`/versioning/branch/${id}/repository`);
+  const response = await api.get(`/versioning/branches/repository/${id}`);
   return response.data;
 };
 
