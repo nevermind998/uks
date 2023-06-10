@@ -14,6 +14,7 @@ import { selectAuth } from '../../Store/slices/auth.slice';
 import AboutRepository from './AboutRepository';
 import { ActionDto } from '../../Types/action.types';
 import CreateFork from './CreateFork';
+import CommentsDisplay from '../CommentsDisplay';
 
 const Repository = () => {
   const user = useSelector(selectAuth);
@@ -51,10 +52,10 @@ const Repository = () => {
     }
   };
 
-  const handleWatchClick = () => {
+  const handleWatchClick = async () => {
     setWatching(!watching);
     if (watch?.id) {
-      deleteAction(watch.id);
+      await deleteAction(watch.id);
     } else if (repo?.id) {
       const body: ActionDto = {
         author: user.id,
@@ -165,7 +166,7 @@ const Repository = () => {
             <TabPanel value="1">
               {repo?.id !== undefined && <AboutRepository repo={repo} setOpen={setOpen} setToastOptions={setToastOptions}></AboutRepository>}
             </TabPanel>
-            <TabPanel value="2">Issues</TabPanel>
+            <TabPanel value="2">Issues </TabPanel>
             <TabPanel value="3">Pull Requests</TabPanel>
             <TabPanel value="4"></TabPanel>
             <TabPanel value="5">
