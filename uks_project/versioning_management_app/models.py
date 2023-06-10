@@ -9,7 +9,7 @@ from users_management_app.models import User
 # File for: Repository, Branch, Commit
 
 VISIBILITY = [("PUBLIC", "Public"), ("PRIVATE", "Private")]
-
+ACCESS = [("READ", "Read"), ("WRITE", "Write"), ("ADMIN", "Admin")]
 
 class Repository(models.Model):
     name = models.CharField(max_length=100, null=False)
@@ -21,7 +21,7 @@ class Repository(models.Model):
     visibility = models.CharField(max_length=10, choices=VISIBILITY, null=False)
     default_branch = models.CharField(max_length=100, default="main")
     collaborators = models.ManyToManyField(
-        User, null=True, related_name="collaborators"
+        User, null=True, through='Collaboration', related_name="collaborators"
     )
 
     class Meta:
@@ -44,3 +44,11 @@ class Commit(models.Model):
     message = models.CharField(max_length=250, null=True)
     created_at = models.DateTimeField(null=True, auto_now_add=True)
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE, null=False)
+
+class Collaboration(models.Model):
+    role = models.CharField(max_length=50, choices=ACCESS, default='READ')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    repository = models.ForeignKey(Repository, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ("user", "repository")

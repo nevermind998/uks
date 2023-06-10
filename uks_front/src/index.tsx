@@ -12,11 +12,14 @@ import { PersistGate } from 'redux-persist/integration/react';
 
 const queryClient = new QueryClient({
     defaultOptions: {
-      queries: {
-        retry: false,
-      },
+        queries: {
+            retry: false,
+            refetchOnMount: false,
+            enabled: true,
+            refetchOnWindowFocus: false,
+        },
     },
-  });
+});
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 

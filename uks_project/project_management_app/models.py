@@ -56,5 +56,3 @@ class PullRequest(models.Model):
     status = models.CharField(max_length=6, choices=STATUS, null=False)
     review = models.CharField(max_length=20, choices=REVIEW_STATUS, null=False)
     created_at = models.DateTimeField(null=False, auto_now_add=True)
-
-

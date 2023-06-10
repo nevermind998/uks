@@ -1,6 +1,6 @@
-import { ActionDto } from '../Types/action.types';
-import { CreateRepositoryDto } from '../Types/repository.types';
-import { api } from './apiBase';
+import { ActionDto } from "../Types/action.types";
+import { CreateRepositoryDto, RepositoryDto } from "../Types/repository.types";
+import { api } from "./apiBase";
 
 export const getRepositoriesForOwner = async (owner: number) => {
   const repos = await api.get(`/versioning/repository/owner/${owner}`);
@@ -53,8 +53,34 @@ export const deleteAction = async (action: number) => {
 };
 
 export const getRepositoriesById = async (id: number) => {
-    const repos = await api.get(`/versioning/get-repository/${id}`);
-    return repos.data;
+  const repos = await api.get(`/versioning/get-repository/${id}`);
+  return repos.data;
 };
 
+export const getRepositoryBranches = async (id: number) => {
+  const response = await api.get(`/versioning/branches/repository/${id}`);
+  return response.data;
+};
 
+export const editRepo = async (body: RepositoryDto) => {
+  const response = await api.put(`/versioning/repository/${body.id}`, body);
+  return response.data;
+};
+
+export const getCollaborators = async (repository: number, id: number) => {
+  const users = await api.get(`/versioning/role/${id}/repository/${repository}`);
+  return users.data;
+};
+
+export const updateRoles = async (body: any) => {
+  const roles = await api.put(`/versioning/edit-role/${body.user}/repository/${body.repository}`, body);
+  return roles.data;
+};
+
+export const deleteRepo = async (id: number) => {
+  await api.delete(`/versioning/repository/${id}`);
+};
+
+export const deleteCollaborator = async (params: any) => {
+  await api.delete(`/versioning/delete-collaborator/${params.id}/repository/${params.repository}`);
+};

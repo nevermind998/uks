@@ -1,18 +1,25 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance } from "axios";
 
-export const BASE_URL = 'http://localhost:8000';
+export const BASE_URL = "http://localhost:8000";
 export const api: AxiosInstance = axios.create({
-    baseURL: BASE_URL,
+  baseURL: BASE_URL,
 });
 
-const token = localStorage.getItem('access_token');
-
 api.interceptors.request.use(
-    config => {
-        config.headers['Authorization'] = `Bearer ${localStorage.getItem('access_token')}`;
-        return config;
-    },
-    error => {
-        Promise.reject(error);
-    }
+  config => {
+    if (localStorage.getItem("access_token")) config.headers["Authorization"] = `Bearer ${localStorage.getItem("access_token")}`;
+    return config;
+  },
+  error => {
+    Promise.reject(error);
+  }
+);
+
+api.interceptors.response.use(
+  response => response,
+  error => {
+    if (error.response && error.response.status === 401) window.location.href = "/sign-in";
+
+    return Promise.reject(error);
+  }
 );

@@ -9,7 +9,6 @@
         justify-content: space-between;
     }
 
-
     &__form {
         display: flex;
         width: 300px;
@@ -25,6 +24,6 @@
 
     &__button {
         width: auto;
+        height: 30px;
     }
-
 }
