@@ -3,7 +3,6 @@ import { useFormik } from 'formik';
 import { useState } from 'react';
 import Toast, { ToastOptions } from '../../../Components/Common/Toast';
 import { useParams } from 'react-router-dom';
-import { AssigneesDto, LabelDto, MilestoneDto, UserProfileDto } from '../../../Types/user.types';
 import { createPullRequest, fetchIssues, fetchLabels, fetchMilestones } from '../../../api/projectManagement';
 import { useMutation } from 'react-query';
 import { PULL_REQUEST_SCHEMA } from './pullRequestValidationSchema';
@@ -124,7 +123,7 @@ const PullRequest = () => {
               onChange={formik.handleChange}
               name="title"
               error={formik.touched.title && Boolean(formik.errors.title)}
-              helperText={formik.errors.title && formik.touched.title}
+              helperText={formik.errors.title && formik.touched.title ? "Error": null}
               required
               className="add-update-form__form--field"
               size="small"
@@ -137,7 +136,7 @@ const PullRequest = () => {
               onChange={formik.handleChange}
               name="description"
               error={formik.touched.description && Boolean(formik.errors.description)}
-              helperText={formik.errors.description && formik.touched.description}
+              helperText={formik.errors.description && formik.touched.description ? "Error": null}
               className="add-update-form__form--field"
               size="medium"
               multiline

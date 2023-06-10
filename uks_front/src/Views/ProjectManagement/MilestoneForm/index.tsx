@@ -1,4 +1,4 @@
-import { Button, StandardTextFieldProps, TextField, TextFieldProps } from '@mui/material';
+import { Button, TextField, TextFieldProps } from '@mui/material';
 import { useFormik } from 'formik';
 import { useState } from 'react';
 import Toast, { ToastOptions } from '../../../Components/Common/Toast';
@@ -6,10 +6,11 @@ import { useParams } from 'react-router-dom';
 import { MILESTONE_SCHEMA } from './milestoneSchema';
 import { createMilestone } from '../../../api/projectManagement';
 import { useMutation } from 'react-query';
-import DatePicker from '@mui/lab/DatePicker';
-import { LocalizationProvider } from '@mui/lab';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { MilestoneDto } from '../../../Types/milestone.types';
+import { DatePicker } from '@mui/x-date-pickers';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+
 
 const Milestone = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -76,18 +77,16 @@ const Milestone = () => {
               className="add-update-form__form--field"
               size="small"
             />
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DatePicker
-              label="Due date (optional)"
-              value={selectedDate}
-              onChange={handleDateChange}
-              renderInput={(params: any) => <TextField className="add-update-form__form--field" {...params} />}
-              disableHighlightToday={undefined}
-              showDaysOutsideCurrentMonth={undefined}
-              allowSameDateSelection={undefined}
-              TextFieldComponent={TextField}            
+
+            <LocalizationProvider dateAdapter={AdapterDayjs} >
+              <DatePicker 
+                  label="Due date (optional)"
+                  value={selectedDate}
+                  onChange={handleDateChange}
+                  className="add-update-form__form--field"
               />
             </LocalizationProvider>
+
             <TextField
               id="description"
               label="Description"
