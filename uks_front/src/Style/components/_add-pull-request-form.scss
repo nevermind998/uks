@@ -3,28 +3,11 @@
 
     width: 100%;
     display: flex;
+    flex-direction: column;
     justify-content: center;
-    align-items: center;
-    background-color: $light-gray;
-    position:absolute;
     bottom: 0;
-    top: 0;
-
-    img {
-        width: 50%;
-    }
-
-    &__content-wrapper {
-        background-color: white;
-        padding: 20px;
-        width:1000px;
-        border-radius: 30px;
-        box-shadow: 0 4px 8px 0 $gray;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: space-between;
-    }
+    padding-top: 0px;
+    position: relative;
 
     &__group {
         display: flex;
@@ -35,18 +18,26 @@
         display: flex;
         width: 100%;
         flex-direction: column;
-        gap: 15px;
+        gap: 20px;
         justify-content: center;
         align-items: center;
+        position: relative;
 
         &--field {
-            width: 100%;
+            width: 60%;
         }
 
         &--autocomplete {
             display:flex;
             flex-direction:row;
             gap:10px;
+        }
+
+        
+        &--autocomplete_branch {
+            display:flex;
+            flex-direction:row;
+            justify-content: center;
         }
 
         &--assigness {
