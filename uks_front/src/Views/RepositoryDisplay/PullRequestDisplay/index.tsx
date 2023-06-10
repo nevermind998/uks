@@ -1,6 +1,6 @@
 import { Divider } from "@mui/material";
 import { useState } from "react";
-import { Button, Card, CardContent, Typography } from "@mui/material";
+import { Button, Card, CardContent, Typography, CircularProgress } from "@mui/material";
 import { useQuery } from "react-query";
 import { PullRequestDto, StatusEnum } from "../../../Types/pull_request.types";
 import { fetchOpenedPrs } from "../../../api/projectManagement";
@@ -13,7 +13,6 @@ import { Link } from "@mui/material";
 import DisplaySelecterPR from "./DisplaySelectedPR";
 
 const PullRequestDisplay = ({ pr, setToastOptions, setOpen }: any) => {
-  const user = useSelector<RootState, AuthState>(state => state.auth);
   const { id } = useParams();
 
   const repositoryId = id ? parseInt(id, 10) : 0;
@@ -21,18 +20,22 @@ const PullRequestDisplay = ({ pr, setToastOptions, setOpen }: any) => {
   const [dispayPRInfo, setDispayPRInfo] = useState<boolean>(false);
   const [selectedPr, setSelectedPr] = useState<[] | null>(null);
 
-  let prAuthor;
-
-  const allOpenedPullRequest = useQuery({
-    queryKey: ["FETCH_PULL_REQUEST", createPR],
+  const {data, isLoading} = useQuery({
+    queryKey: ["FETCH_PULL_REQUEST", {createPR, dispayPRInfo}],
     queryFn: async () => {
       const openedPrs: PullRequestDto[] = await fetchOpenedPrs(StatusEnum.OPEN, repositoryId);
       return openedPrs;
     },
   });
 
+  
+
   return (
     <div>
+     {isLoading ? (
+        <CircularProgress />
+      ) : (
+      <>
       {!createPR ? (
         <div>
           {!dispayPRInfo ? (
@@ -45,8 +48,8 @@ const PullRequestDisplay = ({ pr, setToastOptions, setOpen }: any) => {
               <Divider light />
               <div className="pr__request-list">
                 <div>
-                  {allOpenedPullRequest.data?.length !== 0 ? (
-                    allOpenedPullRequest.data?.map((x: any) => (
+                  {data?.length !== 0 ? (
+                    data?.map((x: any) => (
                       <div className="pr__pr-display" key={x.id}>
                         <Card variant="outlined" className="pr__pr-display--card">
                           <CardContent>
@@ -86,7 +89,7 @@ const PullRequestDisplay = ({ pr, setToastOptions, setOpen }: any) => {
         </div>
       ) : (
         <PullRequest setCreatePR={setCreatePR}></PullRequest>
-      )}
+      )}</>)}
     </div>
   );
 };
