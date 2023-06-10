@@ -4,6 +4,7 @@ from users_management_app.models import User
 from users_management_app.serializers import UserProfileSerializer
 
 from .models import Milestone, Label, Issue, PullRequest
+from rest_framework_simplejwt.tokens import AccessToken
 
 class MilestoneSerializer(serializers.ModelSerializer):
     class Meta:

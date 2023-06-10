@@ -5,8 +5,12 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import Repository, Branch, Commit
-from .serializers import RepositorySerializer, BranchSerializer, CommitSerializer
+from django.db.models import Q
+
+from users_management_app.models import User
+
+from .models import Collaboration, Repository, Branch, Commit
+from .serializers import CollaborationSerializer, GetFullRepository, RepositorySerializer, BranchSerializer, CommitSerializer, UpdateCollaborationSerializer
 
 
 # Repo handling
@@ -44,7 +48,7 @@ def get_repo_by_id(request, id):
     repository = Repository.objects.filter(id=id)
     if len(repository) == 0:
         raise Http404('No repositories found with that id.')
-    serializer = RepositorySerializer(repository, many=True)
+    serializer = GetFullRepository(repository, many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])
@@ -62,17 +66,25 @@ def get_repos_by_owner(request, id):
 def add_new_repository(request):
     serializer = RepositorySerializer(data=request.data)
     if serializer.is_valid():
-        serializer.save()
+        repository = serializer.save()
+        default_branch = request.data.get('default_branch')
+        Branch.objects.create(name=default_branch, repository=repository)
+            
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+def contains_integers(arr):
+    for item in arr:
+        if isinstance(item, int):
+            return True
+    return False
 
 @api_view(['DELETE', 'PUT', 'GET'])
 @permission_classes([IsAuthenticated])
 def delete_or_edit_repository(request, id):
     if request.method == 'GET':
         repository = Repository.objects.get(id=id)
-        serializer = RepositorySerializer(repository)
+        serializer = GetFullRepository(repository)
         return Response(serializer.data)
     if request.method == 'DELETE':
         try:
@@ -93,6 +105,14 @@ def delete_or_edit_repository(request, id):
 
         if serializer.is_valid():
             serializer.save()
+
+            collaborators_data = request.data.get('collaborators', [])
+            if not contains_integers(collaborators_data):
+                for collaborator_data in collaborators_data:
+                    collaborator = User.objects.get(id=collaborator_data['id'])
+                    role = collaborator_data['role']
+                    Collaboration.objects.create(user=collaborator, repository=repository, role=role)
+
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -235,11 +255,49 @@ def get_commit_hash(request, commit_id):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_all_commits_by_author(request, user_id):
-    commits = Commit.objects.filter(author=user_id)
-    if len(commits) == 0:
-        raise Http404('No commits found by that author.')
-    author_commits = []
-    for commit in commits:
-        author_commits.append(commit.branch)
-    serializer = CommitSerializer(commits, many=True)
-    return Response(serializer.data)
+    try:
+        commits = Commit.objects.filter(author=user_id)
+        author_commits = []
+        for commit in commits:
+            author_commits.append(commit.branch)
+        serializer = CommitSerializer(commits, many=True)
+        return Response(serializer.data)
+    except:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_collaborator_role(request, id, repository):
+    try:
+        collaboration = Collaboration.objects.get(user_id=id, repository_id=repository)
+        serializer = CollaborationSerializer(collaboration)
+        return Response(serializer.data)
+    except:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def manage_roles(request, id, repository):
+    try:
+        collaboration = Collaboration.objects.get(user_id=id, repository_id=repository)
+    except Branch.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    serializer = UpdateCollaborationSerializer(collaboration, data=request.data)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_collaborator(request, user_id, repository):
+    try:
+        collaboration = Collaboration.objects.get(user_id=user_id, repository_id=repository)
+        collaboration.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    except Collaboration.DoesNotExist:
+        collaboration = None
+        return Response(status=status.HTTP_404_NOT_FOUND)

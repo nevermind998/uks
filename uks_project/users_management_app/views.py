@@ -69,3 +69,10 @@ def get_pr_assignees(request, id):
         return Response(serializer.data)
     except Repository.DoesNotExist:
         return Response([])
+    
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_all_users(request):
+    user = User.objects.all()
+    serializer = UserSerializer(user, many=True)
+    return Response(serializer.data)

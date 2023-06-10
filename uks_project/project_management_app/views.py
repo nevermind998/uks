@@ -328,6 +328,26 @@ def pull_requests_by_assignee(request,assignee):
         return Response(serializers.data)
     except:
         return Response(status=status.HTTP_404_NOT_FOUND)
+    
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def pull_requests_by_branch(request,branch):
+    try:
+        pull_requests = PullRequest.objects.filter(compare_branch=branch)
+        serializers = PullRequestSerializer(pull_requests,many=True)
+        return Response(serializers.data)
+    except:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def pull_requests_by_repository(request,repository):
+    try:
+        pull_requests = PullRequest.objects.filter(repository=repository)
+        serializers = PullRequestSerializer(pull_requests,many=True)
+        return Response(serializers.data)
+    except:
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
