@@ -113,8 +113,8 @@ def get_branch_by_name(request, name):
 @permission_classes([IsAuthenticated])
 def get_branch_by_id(request, id):
     branch = Branch.objects.filter(id=id)
-    if len(branch) == 0:
-        raise Http404('No branch found with that id.')
+    if not branch:
+        return Response([])
     serializer = BranchSerializer(branch, many=True)
     return Response(serializer.data)
 
@@ -122,12 +122,11 @@ def get_branch_by_id(request, id):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_repository_branches(request, id):
-    try:
-        branches = Branch.objects.filter(repository=id)
-        serializer = BranchSerializer(branches, many=True)
-        return Response(serializer.data)
-    except:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+    branches = Branch.objects.filter(repository=id)
+    if not branches:
+        return Response([])
+    serializer = BranchSerializer(branches, many=True)
+    return Response(serializer.data)
 
 
 @api_view(['POST'])
@@ -192,11 +191,11 @@ def get_commit_message(request, message):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def get_commit_branch(request, commit_id):
-    commit = Commit.objects.filter(commit=commit_id)
-    if len(commit) == 0:
-        raise Http404('No commit found that matches given query.')
-    serializer = CommitSerializer(commit, many=True)
+def get_commit_branch(request, branch):
+    commits = Commit.objects.filter(branch=branch)
+    if len(commits) == 0:
+        return Response([])
+    serializer = CommitSerializer(commits, many=True)
     return Response(serializer.data)
 
 
@@ -227,12 +226,11 @@ def get_commit_hash(request, commit_id):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_all_commits_by_author(request, user_id):
-    try:
-        commits = Commit.objects.filter(author=user_id)
-        author_commits = []
-        for commit in commits:
-            author_commits.append(commit.branch)
-        serializer = CommitSerializer(commits, many=True)
-        return Response(serializer.data)
-    except:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+    commits = Commit.objects.filter(author=user_id)
+    if len(commits) == 0:
+        raise Http404('No commits found by that author.')
+    author_commits = []
+    for commit in commits:
+        author_commits.append(commit.branch)
+    serializer = CommitSerializer(commits, many=True)
+    return Response(serializer.data)

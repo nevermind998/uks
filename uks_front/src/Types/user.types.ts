@@ -61,3 +61,32 @@ export type AssigneesDto = {
   url: string;
   password: string;
 };
+
+export type MilestoneIdDto = {
+  title: string;
+  id: number;
+  due_date: Date | null ;
+  description: string;
+  status: string;
+  repository: number;
+};
+
+export type IssuesIdDto = {
+  id: number;
+  title: string,
+  created_at: Date | null,
+  status: string,
+  milestone: number,
+  labels: number,
+  repository: number,
+  author: number,
+  assignees: number[]
+}
+
+export type LabelIdDto = {
+  id: number;
+  name: string;
+  description: string;
+  color: string;
+  repository: number;
+};

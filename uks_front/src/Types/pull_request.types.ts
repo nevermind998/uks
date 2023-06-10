@@ -8,7 +8,6 @@ export enum ReviewStatusEnum {
     CHANGES_REQUESTED = 'CHANGES_REQUESTED',
 }
 
-
 export type PullRequestDto = {
     author: number;
     repository: number;

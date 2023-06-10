@@ -1,42 +1,46 @@
 .create-repository {
-    $self: &;
+  $self: &;
 
-    width: 50%;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: $light-gray;
+  padding: 0 40px;
+
+  &__back-button {
+    background-color: transparent;
+    color: $light-purple;
+    border: none;
+    font-size: 16px;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  &__form {
+    width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    background-color: $light-gray;
-    padding: 0 40px;
+    gap: 20px;
 
-    &__back-button {
-        background-color: transparent;
-        color: $light-purple;
-        border: none;
-        font-size: 16px;
+    &--field {
+      width: 550px;
     }
+  }
 
-    &__form {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
+  &__visibility {
+    flex-direction: row !important;
+  }
 
-        &--field {
-            width: 550px;
-        }
-    }
+  &__button-wrapper {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+  }
 
-    &__visibility {
-        flex-direction: row !important;
-    }
-
-    &__button-wrapper {
-        display: flex;
-        width: 100%;
-        justify-content: center;
-    }
-
-    &__button {
-        width: 250px;
-    }
+  &__button {
+    width: 250px;
+  }
 }

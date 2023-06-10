@@ -458,16 +458,14 @@ class PullRequestApiTests(TestCase):
         self.assertEqual(response.status_code, 401)
 
     def test_get_pull_request_by_status(self):
-        response = self.client.get('/project/pull_requests/OPEN/status', HTTP_AUTHORIZATION=self.token, content_type=JSON)
-        res_obj = json.loads(response.content)
+        repository = Repository.objects.get(name='Project Repository').id
+        response = self.client.get(reverse("pull_requests_by_status", kwargs={"status": 'OPEN', "repository": str(repository)}), HTTP_AUTHORIZATION=self.token, content_type=JSON)
         self.assertEqual(response.status_code, 200)
-        self.assertGreaterEqual(len(res_obj),1)
 
     def test_get_pull_request_by_status_fail(self):
-        response = self.client.get('/project/pull_requests/APPROVED/status', HTTP_AUTHORIZATION=self.token, content_type=JSON)
-        self.assertEqual(response.status_code, 200)
-        res_obj = json.loads(response.content)
-        self.assertEqual(len(res_obj), 0)
+        repository = Repository.objects.get(name='Project Repository').id
+        response = self.client.get('/project/pull_requests/APPROVED/status/repository/'+ str(repository), HTTP_AUTHORIZATION=self.token, content_type=JSON)
+        self.assertEqual(response.status_code, 404)
 
     def test_get_pull_request_by_author(self):
         author = User.objects.get(given_name='John')

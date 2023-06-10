@@ -3,9 +3,10 @@ from .models import Milestone, Label, Issue, PullRequest
 from django.http import Http404
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
-from .serializers import IssueSerializer, LabelSerializer, MilestoneSerializer, PullRequestSerializer
+from .serializers import GetFullPullRequestSerializer, IssueSerializer, LabelSerializer, MilestoneSerializer, PullRequestSerializer
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from django.db.models import Q
 
 #Milestone Handling
 @api_view(['GET'])
@@ -247,7 +248,7 @@ def delete_issue(request,id):
 def get_pull_request(request,id):
     try:
         pull_request= PullRequest.objects.get(id=id)
-        serializers = PullRequestSerializer(pull_request)
+        serializers = GetFullPullRequestSerializer(pull_request)
         return Response(serializers.data)
     except PullRequest.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
@@ -264,10 +265,10 @@ def get_all_pull_request(request,id=None):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def get_pull_request_by_status(request,status):
+def get_pull_request_by_status(request,status,repository):
     try:
-        pull_requests = PullRequest.objects.filter(status=status)
-        serializers = PullRequestSerializer(pull_requests,many=True)
+        pull_requests = PullRequest.objects.filter(Q(status=status) & Q(repository=repository))
+        serializers = GetFullPullRequestSerializer(pull_requests,many=True)
         return Response(serializers.data)
     except:
         return Response(status=status.HTTP_404_NOT_FOUND)
@@ -355,3 +356,21 @@ def delete_pull_request(request,id):
     except PullRequest.DoesNotExist:
         pull_request = None
         return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def change_pull_request_status(request, id):
+    try:
+        pull_request = PullRequest.objects.get(id=id)
+    except PullRequest.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.data.get('review'):
+        pull_request.review = request.data.get('review', pull_request.review)
+    elif request.data.get('status'):
+        pull_request.status = request.data.get('status', pull_request.status)
+
+    pull_request.save()
+    serializer = PullRequestSerializer(pull_request)
+    return Response(serializer.data)

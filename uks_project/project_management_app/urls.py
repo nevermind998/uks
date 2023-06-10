@@ -33,7 +33,7 @@ urlpatterns = [
     #pull request
     path('pull_request/<int:id>', views.get_pull_request, name='pull_request'),
     path('pull_requests/', views.get_all_pull_request, name='pull_requests'),
-    path('pull_requests/<str:status>/status', views.get_pull_request_by_status, name='pull_requests_by_status'),
+    path('pull_requests/<str:status>/repository/<int:repository>', views.get_pull_request_by_status, name='pull_requests_by_status'),    
     path('pull_requests/<str:review>/review', views.get_pull_request_by_review, name='pull_requests_by_review'),
     path('pull_requests/<int:author>/author', views.pull_requests_by_author, name='pull_requests_by_author'),
     path('pull_requests/<int:label>/label', views.pull_requests_by_label, name='pull_requests_by_label'),
@@ -42,5 +42,6 @@ urlpatterns = [
     path('new-pull_request', views.add_new_pull_request, name='new-pull_request'),
     path('update-pull_request/<int:id>', views.update_pull_request, name='update-pull_request'),
     path('delete-pull_request/<int:id>', views.delete_pull_request, name='delete-pull_request'),
+    path('change-pr-status/<int:id>', views.change_pull_request_status, name='change-pull-request-status'),
 
 ]

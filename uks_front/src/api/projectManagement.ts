@@ -47,16 +47,76 @@ export const createPullRequest = async (body: PullRequestDto) => {
 };
 
 export const fetchMilestones = async () => {
-  const milestones = await api.get(`${BASE_URL}/project/milestones/`);
+  const milestones = await api.get(`/project/milestones/`);
   return milestones.data;
 };
 
 export const fetchLabels = async () => {
-  const labels = await api.get(`${BASE_URL}/project/labels/`);
+  const labels = await api.get(`/project/labels/`);
   return labels.data;
 };
 
 export const fetchIssues = async () => {
-  const issues = await api.get(`${BASE_URL}/project/issues/`);
+  const issues = await api.get(`/project/issues/`);
   return issues.data;
 };
+
+export const fetchPullRequestsByAuthor = async (author:number) => {
+  const pull_requests = await api.get(`/project/pull_requests/${author}/author`);
+  return pull_requests.data;
+};
+
+export const fetchBranchesByRepo = async (id:number) => {
+  const branches = await api.get(`/versioning/branches/repository/${id}`);
+  return branches.data;
+};
+
+export const fetchOpenedPrs = async (status:StatusEnum, repository:number) => {
+  const openedPrs = await api.get(`/project/pull_requests/${status}/repository/${repository}`);
+  return openedPrs.data;
+};
+
+export const getPRbyId = async (id:number) => {
+  const pr = await api.get(`/project/pull_request/${id}`);
+  return pr.data;
+};
+
+export const getMilestoneById = async (id:number) => {
+  const milestone = await api.get(`/project/milestone/${id}`);
+  return milestone.data;
+};
+
+export const getIssuesIds = async (id:number) => {
+  const issue = await api.get(`/project/issue/${id}`);
+  return issue.data;
+};
+
+export const getLabelsById = async (id:number) => {
+  const label = await api.get(`/project/label/${id}`);
+  return label.data;
+};
+
+export const updatePullRequestReviewStatus = async (id:number) => {
+  try {
+    const response = await api.put(`/project/change-pr-status/${id}`, {
+      review: ReviewStatusEnum.APPROVED,
+    });
+      return response.data;
+  } catch (error) {
+    console.error('Error opening pull request:', error);
+    throw error;
+  }
+};
+
+export const updatePullRequestStatus = async (id:number) => {
+  try {
+    const response = await api.put(`/project/change-pr-status/${id}`, {
+      status: StatusEnum.CLOSED,
+    });
+      return response.data;
+  } catch (error) {
+    console.error('Error opening pull request:', error);
+    throw error;
+  }
+};
+
