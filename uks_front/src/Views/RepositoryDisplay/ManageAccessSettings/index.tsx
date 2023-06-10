@@ -99,6 +99,7 @@ const ManageAccess = ({ repo, refetchRepo }: any) => {
 
     const body = {
       ...repo,
+      owner: repo.owner.id,
       collaborators: selectedCollaborators.map((x: any) => {
         return { id: x.value, role: "READ" };
       }),
@@ -125,7 +126,7 @@ const ManageAccess = ({ repo, refetchRepo }: any) => {
 
   const possibleCollaborators = users?.filter((u: any) => {
     const isCollaborator = repo.collaborators.some((collaborator: any) => collaborator === u.id);
-    const isNotOwner = u.id !== repo.owner;
+    const isNotOwner = u.id !== repo.owner.id;
     return !isCollaborator && isNotOwner;
   });
 
@@ -137,6 +138,7 @@ const ManageAccess = ({ repo, refetchRepo }: any) => {
     onSubmit: values => {
       const body = {
         ...repo,
+        owner: repo.owner.id,
         name: values.name,
         visibility: values.visibility,
       };

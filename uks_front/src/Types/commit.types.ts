@@ -1,8 +1,9 @@
 
 export type CommitDto = {
-    author: number;
+    id?: number;
+    author: any;
     message: string;
-    hash: string;
+    hash?: string;
     created_at: Date;
     branch: number;
 };

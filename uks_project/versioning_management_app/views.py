@@ -1,3 +1,4 @@
+import uuid
 from django.shortcuts import render
 from django.http import HttpResponse, Http404
 from rest_framework import status
@@ -10,7 +11,7 @@ from django.db.models import Q
 from users_management_app.models import User
 
 from .models import Collaboration, Repository, Branch, Commit
-from .serializers import CollaborationSerializer, GetFullRepository, RepositorySerializer, BranchSerializer, CommitSerializer, UpdateCollaborationSerializer
+from .serializers import CollaborationSerializer, GetFullCommitSerializer, GetFullRepository, RepositorySerializer, BranchSerializer, CommitSerializer, UpdateCollaborationSerializer
 
 
 # Repo handling
@@ -140,6 +141,16 @@ def get_branch_by_name(request, name):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
+def get_branch_by_name_and_repository(request, repository):
+    name = request.GET.get('name')
+    branch = Branch.objects.get(name=name, repository=repository)
+    if not branch:
+        raise Http404('No branch found with that name.')
+    serializer = BranchSerializer(branch)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_branch_by_id(request, id):
     branch = Branch.objects.filter(id=id)
     if not branch:
@@ -224,7 +235,7 @@ def get_commit_branch(request, branch):
     commits = Commit.objects.filter(branch=branch)
     if len(commits) == 0:
         return Response([])
-    serializer = CommitSerializer(commits, many=True)
+    serializer = GetFullCommitSerializer(commits, many=True)
     return Response(serializer.data)
 
 
@@ -233,10 +244,8 @@ def get_commit_branch(request, branch):
 def add_new_commit(request):
     serializer = CommitSerializer(data=request.data)
     if serializer.is_valid():
-        hash_value = serializer.validated_data.get('hash')
-        import bcrypt
-        hashed_hash = bcrypt.hashpw(hash_value.encode('utf-8'), bcrypt.gensalt())
-        serializer.validated_data['hash'] = hashed_hash.decode('utf-8')
+        hash = uuid.uuid4().hex
+        serializer.validated_data['hash'] = hash
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

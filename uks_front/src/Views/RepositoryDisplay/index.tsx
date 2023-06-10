@@ -183,79 +183,78 @@ const Repository = () => {
   });
 
   return (
-    <>
-      <div className="repository">
-        <Toast open={open} setOpen={setOpen} toastOptions={toastOptions} />
-        <div className="repository__content-wrapper">
-          <Grid container spacing={2}>
-            <Grid item xs={9}>
-              <Breadcrumbs className="repository__breadcrumbs" aria-label="breadcrumb">
-                <Link underline="hover" color="inherit" href="/">
-                  {repo?.owner.username}
-                </Link>
-                <Typography color="text.primary">{repo?.name}</Typography>
-                <Chip label={repo?.visibility} variant="outlined" />
-              </Breadcrumbs>
-            </Grid>
-            <Grid item xs={3}>
-              <ButtonGroup className="repository__action-buttons" variant="outlined" aria-label="outlined button group">
-                <Button
-                  className="repository__action-button"
-                  variant={starred ? 'contained' : 'outlined'}
-                  startIcon={<StarIcon />}
-                  onClick={handleStarClick}
-                >
-                  {starred ? 'Unstar' : 'Star'}
-                </Button>
-                <Button
-                  className="repository__action-button"
-                  variant={watching ? 'contained' : 'outlined'}
-                  startIcon={<VisibilityIcon />}
-                  onClick={handleWatchClick}
-                >
-                  {watching ? 'Unwatch' : 'Watch'}
-                </Button>
-                <Button className="repository__action-button" startIcon={<GitHubIcon />} onClick={handleForkClick}>
-                  fork
-                </Button>
-              </ButtonGroup>
-            </Grid>
+    <div className="repository">
+      <Toast open={open} setOpen={setOpen} toastOptions={toastOptions} />
+      <div className="repository__content-wrapper">
+        <Grid container spacing={2}>
+          <Grid item xs={9}>
+            <Breadcrumbs className="repository__breadcrumbs" aria-label="breadcrumb">
+              <Link underline="hover" color="inherit" href="/">
+                {user?.username}
+              </Link>
+              <Typography color="text.primary">{repo?.name}</Typography>
+              <Chip label={repo?.visibility} variant="outlined" />
+            </Breadcrumbs>
           </Grid>
-          <TabContext value={tab}>
-            <Box sx={{ borderBottom: 1, borderTop: 1, borderColor: 'divider' }}>
-              <TabList onChange={handleChange}>
-                <Tab label="Code" value="1" />
-                <Tab label="Issues" value="2" />
-                <Tab label="Pull Requests" value="3" />
-                <Tab label="Settings" value="4" />
-              </TabList>
-            </Box>
-            <TabPanel value="1">
-              {repo?.id !== undefined && (
-                <AboutRepository
-                  repo={repo}
-                  setOpen={setOpen}
-                  setToastOptions={setToastOptions}
-                  stargazers={stargazers}
-                  watchers={watchers}
-                  forks={forks}
-                ></AboutRepository>
-              )}
-            </TabPanel>
-            <TabPanel value="2">Issues</TabPanel>
-            <TabPanel value="3">
-              <PullRequestDisplay setOpen={setOpen} setToastOptions={setToastOptions}></PullRequestDisplay>
-            </TabPanel>
-            <TabPanel value="4">
-              <ManageAccess repo={repo} refetchRepo={refetch} />
-            </TabPanel>
-            <TabPanel value="5">
-              <CreateFork repo={repo} user={user}></CreateFork>
-            </TabPanel>
-          </TabContext>
-        </div>
+          <Grid item xs={3}>
+            <ButtonGroup className="repository__action-buttons" variant="outlined" aria-label="outlined button group">
+              <Button
+                className="repository__action-button"
+                variant={starred ? "contained" : "outlined"}
+                startIcon={<StarIcon />}
+                onClick={handleStarClick}
+              >
+                {starred ? "Unstar" : "Star"}
+              </Button>
+              <Button
+                className="repository__action-button"
+                variant={watching ? "contained" : "outlined"}
+                startIcon={<VisibilityIcon />}
+                onClick={handleWatchClick}
+              >
+                {watching ? "Unwatch" : "Watch"}
+              </Button>
+              <Button className="repository__action-button" startIcon={<GitHubIcon />} onClick={handleForkClick}>
+                fork
+              </Button>
+            </ButtonGroup>
+          </Grid>
+        </Grid>
+        <TabContext value={tab}>
+          <Box sx={{ borderBottom: 1, borderTop: 1, borderColor: "divider" }}>
+            <TabList onChange={handleChange}>
+              <Tab label="Code" value="1" />
+              <Tab label="Issues" value="2" />
+              <Tab label="Pull Requests" value="3" />
+              <Tab label="Settings" value="4" />
+            </TabList>
+          </Box>
+          <TabPanel value="1">
+            {repo?.id !== undefined && (
+              <AboutRepository
+                repo={repo}
+                setOpen={setOpen}
+                setToastOptions={setToastOptions}
+                stargazers={stargazers}
+                watchers={watchers}
+                forks={forks}
+              ></AboutRepository>
+            )}
+          </TabPanel>
+          <TabPanel value="2">Issues</TabPanel>
+          <TabPanel value="3">
+            <PullRequestDisplay setOpen={setOpen} setToastOptions={setToastOptions}></PullRequestDisplay>
+          </TabPanel>
+          <TabPanel value="4">
+            <ManageAccess repo={repo} refetchRepo={refetch} />
+          </TabPanel>
+          <TabPanel value="5">
+            <CreateFork repo={repo} user={user}></CreateFork>
+          </TabPanel>
+        </TabContext>
       </div>
-    </>
+      <div className="empty-div"></div>
+    </div>
   );
 };
 export default Repository;

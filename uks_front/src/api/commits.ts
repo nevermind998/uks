@@ -31,3 +31,8 @@ export const fetchCommitsPerBranch = async (branch: number) => {
   const commits = await api.get(`/versioning/commit/${branch}/branch`);
   return commits.data;
 };
+
+export const getBranchByNameAndRepository = async (name: string, repository: number) => {
+    const branches = await api.get(`/versioning/branch/repository/${repository}?name=${encodeURIComponent(name)}`);
+    return branches.data;
+};

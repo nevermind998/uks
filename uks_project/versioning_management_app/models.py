@@ -40,7 +40,7 @@ class Commit(models.Model):
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, null=False, related_name="commit_author"
     )
-    hash = models.CharField(max_length=500, null=False)
+    hash = models.CharField(max_length=500, null=False, unique=True)
     message = models.CharField(max_length=250, null=True)
     created_at = models.DateTimeField(null=True, auto_now_add=True)
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE, null=False)
