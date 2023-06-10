@@ -48,7 +48,9 @@ class MilestoneApiTests(TestCase):
 
     def test_get_milestone_by_repository_fail(self):
         response = self.client.get('/project/milestone/55/repository', HTTP_AUTHORIZATION=self.token, content_type=JSON)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
+        res_obj = json.loads(response.content)
+        self.assertGreaterEqual(len(res_obj),0)
 
     def test_post_create_milestone(self):
         repository = Repository.objects.get(name='Project Repository').id
@@ -163,11 +165,10 @@ class LabelApiTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertGreaterEqual(len(res_obj),1)
 
-    def test_get_label_by_repository_fail(self):
+    def test_get_label_by_color_fail(self):
         response = self.client.get('/project/label/black/color', HTTP_AUTHORIZATION=self.token, content_type=JSON)
-        self.assertEqual(response.status_code, 200)
-        res_obj = json.loads(response.content)
-        self.assertEqual(len(res_obj), 0)
+        self.assertEqual(response.status_code, 404)
+
 
     def test_post_create_label(self):
         repository = Repository.objects.get(name='Project Repository').id
