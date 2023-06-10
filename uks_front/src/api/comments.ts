@@ -35,3 +35,8 @@ export const addNewReaction = async (body: ReactionDto) => {
   const action = await api.post(`/user-actions/new-reaction`, body);
   return action.data;
 };
+
+export const deleteReaction = async (reaction: number) => {
+  const repo = await api.delete(`/user-actions/reactions/${reaction}`);
+  return repo.data;
+};

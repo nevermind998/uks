@@ -4,7 +4,7 @@ import { Favorite as FavoriteIcon, ThumbUp as ThumbUpIcon, ThumbDown as ThumbDow
 import { ToastOptions } from '../../../Components/Common/Toast';
 import { ReactionDto } from '../../../Types/action.types';
 import { useQuery } from 'react-query';
-import { addNewReaction, getCommentReactions } from '../../../api/comments';
+import { addNewReaction, deleteReaction, getCommentReactions } from '../../../api/comments';
 import { useSelector } from 'react-redux';
 import { selectAuth } from '../../../Store/slices/auth.slice';
 
@@ -42,47 +42,86 @@ const CommentReactions = ({ comment }: any) => {
   };
 
   const handleLikeReaction = async (event: any) => {
-    try {
-      const body: ReactionDto = {
-        author: user.id,
-        comment: comment.id,
-        type: 'LIKE',
-      };
-      const newReaction = await addNewReaction(body);
-      refetch();
-    } catch (error) {
-      setToastOptions({ message: 'Error happened!', type: 'error' });
-      setOpen(true);
+    const like = likes.filter((like) => like.author === user.id);
+    if (like.length === 0) {
+      try {
+        const body: ReactionDto = {
+          author: user.id,
+          comment: comment.id,
+          type: 'LIKE',
+        };
+        const newReaction = await addNewReaction(body);
+        refetch();
+      } catch (error) {
+        setToastOptions({ message: 'Error happened!', type: 'error' });
+        setOpen(true);
+      }
+    } else {
+      try {
+        if (like[0].id) {
+          await deleteReaction(like[0].id);
+        }
+        refetch();
+      } catch (error) {
+        setToastOptions({ message: 'An error happened!', type: 'error' });
+        setOpen(true);
+      }
     }
   };
 
   const handleHeartReaction = async (event: any) => {
-    try {
-      const body: ReactionDto = {
-        author: user.id,
-        comment: comment.id,
-        type: 'LOVE',
-      };
-      const newReaction = await addNewReaction(body);
-      refetch();
-    } catch (error) {
-      setToastOptions({ message: 'Error happened!', type: 'error' });
-      setOpen(true);
+    const like = hearts.filter((like) => like.author === user.id);
+    if (like.length === 0) {
+      try {
+        const body: ReactionDto = {
+          author: user.id,
+          comment: comment.id,
+          type: 'LOVE',
+        };
+        const newReaction = await addNewReaction(body);
+        refetch();
+      } catch (error) {
+        setToastOptions({ message: 'Error happened!', type: 'error' });
+        setOpen(true);
+      }
+    } else {
+      try {
+        if (like[0].id) {
+          await deleteReaction(like[0].id);
+        }
+        refetch();
+      } catch (error) {
+        setToastOptions({ message: 'An error happened!', type: 'error' });
+        setOpen(true);
+      }
     }
   };
 
-  const handleDisikeReaction = async (event: any) => {
-    try {
-      const body: ReactionDto = {
-        author: user.id,
-        comment: comment.id,
-        type: 'DISLIKE',
-      };
-      const newReaction = await addNewReaction(body);
-      refetch();
-    } catch (error) {
-      setToastOptions({ message: 'Error happened!', type: 'error' });
-      setOpen(true);
+  const handleDislikeReaction = async (event: any) => {
+    const like = dislikes.filter((like) => like.author === user.id);
+    if (like.length === 0) {
+      try {
+        const body: ReactionDto = {
+          author: user.id,
+          comment: comment.id,
+          type: 'DISLIKE',
+        };
+        const newReaction = await addNewReaction(body);
+        refetch();
+      } catch (error) {
+        setToastOptions({ message: 'Error happened!', type: 'error' });
+        setOpen(true);
+      }
+    } else {
+      try {
+        if (like[0].id) {
+          await deleteReaction(like[0].id);
+        }
+        refetch();
+      } catch (error) {
+        setToastOptions({ message: 'An error happened!', type: 'error' });
+        setOpen(true);
+      }
     }
   };
 
@@ -98,7 +137,7 @@ const CommentReactions = ({ comment }: any) => {
           <FavoriteIcon className="repository__red" />
         </Badge>
       </IconButton>
-      <IconButton color="primary" onClick={handleDisikeReaction}>
+      <IconButton color="primary" onClick={handleDislikeReaction}>
         <Badge badgeContent={dislikes.length} color="secondary">
           <ThumbDownIcon />
         </Badge>
