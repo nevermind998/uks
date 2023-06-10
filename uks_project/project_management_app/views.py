@@ -356,3 +356,21 @@ def delete_pull_request(request,id):
     except PullRequest.DoesNotExist:
         pull_request = None
         return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def change_pull_request_status(request, id):
+    try:
+        pull_request = PullRequest.objects.get(id=id)
+    except PullRequest.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.data.get('review'):
+        pull_request.review = request.data.get('review', pull_request.review)
+    elif request.data.get('status'):
+        pull_request.status = request.data.get('status', pull_request.status)
+
+    pull_request.save()
+    serializer = PullRequestSerializer(pull_request)
+    return Response(serializer.data)

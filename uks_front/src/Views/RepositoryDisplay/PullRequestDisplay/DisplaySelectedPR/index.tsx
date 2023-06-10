@@ -1,16 +1,19 @@
 import { useState } from "react";
-import { Button, TextField, Card, CardContent, Typography, Divider, Avatar, List, ListItem, ListItemAvatar, ListItemText } from "@mui/material";
+import { Button,  TextField, Card, CardContent, Typography, Divider, Avatar, List, ListItem, ListItemAvatar, ListItemText, Dialog, DialogTitle, DialogContent, DialogActions, FormControl, FormLabel, FormControlLabel, Radio, RadioGroup} from "@mui/material";
 import { useQuery } from "react-query";
-import { PullRequestDto } from "../../../../Types/pull_request.types";
+import { PullRequestDto, ReviewStatusEnum } from "../../../../Types/pull_request.types";
 import { fetchCommitsPerBranch } from "../../../../api/commits";
 import { CommitDto } from "../../../../Types/commit.types";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import {AccountCircle} from "@mui/icons-material";
 import TaskIcon from "@mui/icons-material/Task";
 import LabelIcon from "@mui/icons-material/Label";
+import { Formik, Form, Field } from "formik";
+import {updatePullRequestReviewStatus, updatePullRequestStatus } from "../../../../api/projectManagement";
+import MergeTypeIcon from '@mui/icons-material/MergeType';
 
 const DisplaySelecterPR = ({ selectedPr, setDispayPRInfo }: any) => {
-  const [reviewStatus, setReviewStatus] = useState("");
-  const [updatedSelectedPr, setUpdatedSelectedPr] = useState<PullRequestDto | null>(null);
+  const [isMerged, setIsMerged] = useState(false);
+  const [isApproved, setIsApproved] = useState(false);
 
   const commitsQuery = useQuery({
     queryKey: ["FETCH_PULL_REQUEST"],
@@ -20,14 +23,17 @@ const DisplaySelecterPR = ({ selectedPr, setDispayPRInfo }: any) => {
     },
   });
 
-  // const changeReviewStatus = () => {
-  //     const updatedSelectedPr = { ...selectedPr, reviewStatus: ReviewStatusEnum.APPROVED };
-  //     setReviewStatus(ReviewStatusEnum.APPROVED );
-  //     setUpdatedSelectedPr(updatedSelectedPr);
-  // };
-  // console.log(selectedPr);
+  const handleApprove = () => {
+    updatePullRequestReviewStatus(selectedPr.id).then(() => setIsApproved(true));
+  };
+  
+  const handleMerge = () => {
+    updatePullRequestStatus(selectedPr.id).then(() => 
+        setIsMerged(true),
+        setDispayPRInfo(false))
+  };
 
-  // const milestoneData = milestone ? milestone[0].title : "";
+
   return (
     <>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -35,9 +41,18 @@ const DisplaySelecterPR = ({ selectedPr, setDispayPRInfo }: any) => {
           &#60; Back
         </button>
         <h3>{selectedPr ? selectedPr.title : "No PR info available"}</h3>
-        <Button style={{ height: "30px", borderRadius: "20px" }} variant="contained">
-          Add review
-        </Button>
+
+        {!isMerged && isApproved &&  
+            <Button style={{ height: "30px", borderRadius: "20px" }} variant="contained" onClick={handleMerge}>
+               <MergeTypeIcon/> Merge and close
+            </Button>
+        }
+        {!isApproved &&   selectedPr.review === ReviewStatusEnum.CHANGES_REQUESTED && 
+            <Button style={{ height: "30px", borderRadius: "20px" }} variant="contained" onClick={handleApprove}>
+                Add review
+            </Button>
+        }
+        
       </div>
       <Divider light />
       <br />
@@ -101,7 +116,7 @@ const DisplaySelecterPR = ({ selectedPr, setDispayPRInfo }: any) => {
                         {selectedPr.assignees.map((assignee: any) => (
                           <ListItem key={assignee.id}>
                             <ListItemAvatar>
-                              <AccountCircleIcon fontSize="large" />
+                              <AccountCircle fontSize="large" />
                             </ListItemAvatar>
                             <ListItemText primary={`${assignee.given_name} ${assignee.family_name}`}></ListItemText>
                           </ListItem>

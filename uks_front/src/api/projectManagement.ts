@@ -95,3 +95,28 @@ export const getLabelsById = async (id:number) => {
   const label = await api.get(`/project/label/${id}`);
   return label.data;
 };
+
+export const updatePullRequestReviewStatus = async (id:number) => {
+  try {
+    const response = await api.put(`/project/change-pr-status/${id}`, {
+      review: ReviewStatusEnum.APPROVED,
+    });
+      return response.data;
+  } catch (error) {
+    console.error('Error opening pull request:', error);
+    throw error;
+  }
+};
+
+export const updatePullRequestStatus = async (id:number) => {
+  try {
+    const response = await api.put(`/project/change-pr-status/${id}`, {
+      status: StatusEnum.CLOSED,
+    });
+      return response.data;
+  } catch (error) {
+    console.error('Error opening pull request:', error);
+    throw error;
+  }
+};
+
