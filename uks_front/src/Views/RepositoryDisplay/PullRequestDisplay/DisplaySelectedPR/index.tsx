@@ -15,6 +15,10 @@ import {
   TableContainer,
   Chip,
   Paper,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Table,
   TableBody,
   TableCell,
@@ -24,14 +28,14 @@ import {
   Radio,
   RadioGroup,
 } from '@mui/material';
-import { useQuery } from 'react-query';
-import { ReviewStatusEnum } from '../../../../Types/pull_request.types';
+import { useQuery, useMutation } from 'react-query';
+import { PullRequestDto, PullRequestEditDto, ReviewStatusEnum } from '../../../../Types/pull_request.types';
 import { fetchCommitsPerBranch } from '../../../../api/commits';
 import { CommitDto } from '../../../../Types/commit.types';
 import { AccountCircle } from '@mui/icons-material';
 import TaskIcon from '@mui/icons-material/Task';
 import LabelIcon from '@mui/icons-material/Label';
-import { updatePullRequestReviewStatus, updatePullRequestStatus } from '../../../../api/projectManagement';
+import { editPRDescription, updatePullRequestReviewStatus, updatePullRequestStatus } from '../../../../api/projectManagement';
 import MergeTypeIcon from '@mui/icons-material/MergeType';
 import CommentsDisplay from '../../../CommentsDisplay';
 import { CommentDto } from '../../../../Types/action.types';
@@ -39,8 +43,11 @@ import { addNewComment, getCommentsForPr } from '../../../../api/comments';
 import { useSelector } from 'react-redux';
 import { selectAuth } from '../../../../Store/slices/auth.slice';
 import Toast, { ToastOptions } from '../../../../Components/Common/Toast';
+import { useFormik } from 'formik';
+import { PULL_REQUEST_SCHEMA } from '../../../ProjectManagement/PullRequestForm/pullRequestValidationSchema';  
+import { Edit } from '@mui/icons-material';
 
-const DisplaySelecterPR = ({ selectedPr, setDispayPRInfo }: any) => {
+const DisplaySelecterPR = ({ selectedPr, setDispayPRInfo, refetchRepo}: any) => {
   const user = useSelector(selectAuth);
   const [isMerged, setIsMerged] = useState(false);
   const [isApproved, setIsApproved] = useState(false);
@@ -52,6 +59,9 @@ const DisplaySelecterPR = ({ selectedPr, setDispayPRInfo }: any) => {
     message: '',
     type: 'info',
   });
+  const [editPR, setEditPR] = useState<PullRequestEditDto>();
+  const [openModal, setModalEditOpen] = useState(false);
+  const [openToast, setOpenToast] = useState(false);
 
   const handleReviewTypeChange = (event) => {
     setReviewType(event.target.value);
@@ -86,6 +96,15 @@ const DisplaySelecterPR = ({ selectedPr, setDispayPRInfo }: any) => {
     setAnchorEl(null);
   };
 
+  const handleClickOpen = () => {
+    setEditPR(selectedPr); 
+    setModalEditOpen(true);
+  };
+
+  const handleCloseEditPR = () => {
+    setModalEditOpen(false);
+  };
+
   const openpop = Boolean(anchorEl);
   const id = openpop ? 'add-review-popover' : undefined;
 
@@ -115,6 +134,22 @@ const DisplaySelecterPR = ({ selectedPr, setDispayPRInfo }: any) => {
         setToastOptions({ message: 'Error happened!', type: 'error' });
         setOpen(true);
       }
+    }});
+
+  const formik = useFormik({
+    initialValues: {
+      description: selectedPr.description,
+    },
+    onSubmit: async (values) => {
+      const body = {
+        id: editPR?.id,
+        description: values.description,
+      };
+
+      await editPRDescription(body);
+      refetchRepo();
+      setModalEditOpen(false);
+      setOpenToast(true);
     },
   });
 
@@ -152,18 +187,27 @@ const DisplaySelecterPR = ({ selectedPr, setDispayPRInfo }: any) => {
               ''
             )}
           </Typography>
+          <div style={{ display: "flex", flexDirection: "row", width: "100%", gap: "10px" }}>
           <TextField
             variant="outlined"
             name="description"
             size="small"
             multiline
             rows={3}
-            value={selectedPr.description}
+            value={formik.values.description}
             InputProps={{
               readOnly: true,
             }}
             sx={{ width: '100%' }}
           />
+          <Edit
+                      onClick={() => {
+                        setEditPR(selectedPr.description);
+                        handleClickOpen();
+                      }}
+                      sx={{ cursor: 'pointer' }}
+                    />
+                    </div>
           <div>
             {commitsQuery?.length !== 0 ? (
               <TableContainer component={Paper} className="commit__table">
@@ -303,6 +347,39 @@ const DisplaySelecterPR = ({ selectedPr, setDispayPRInfo }: any) => {
           </div>
         </div>
       </Popover>
+
+      <Dialog open={openModal} onClose={handleCloseEditPR}>
+        <div className="modal-dialog-form__content-wrapper">
+          <h3>
+            Edit description
+          </h3>
+          <div className="modal-dialog-form__form">
+            <form onSubmit={formik.handleSubmit} className="modal-dialog-form__form">
+              <DialogContent>
+              <TextField
+                id="description"
+                variant="outlined"
+                value={formik.values.description}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                name="description"
+                error={formik.touched.description && Boolean(formik.errors.description)}
+                // helperText={formik.touched.description && formik.errors.description}
+                required
+                className="modal-dialog-form__form--field"
+                size="small"
+              />
+              </DialogContent>
+
+              <DialogActions>
+                <Button type="submit" className="add-update__button" variant="contained">
+                  Edit
+                </Button>
+              </DialogActions>
+            </form>
+          </div>
+        </div>
+      </Dialog>
     </>
   );
 };

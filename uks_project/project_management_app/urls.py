@@ -48,5 +48,6 @@ urlpatterns = [
     path('update-pull_request/<int:id>', views.update_pull_request, name='update-pull_request'),
     path('delete-pull_request/<int:id>', views.delete_pull_request, name='delete-pull_request'),
     path('change-pr-status/<int:id>', views.change_pull_request_status, name='change-pull-request-status'),
+    path('edit-pr/<int:id>', views.update_pull_request_description, name='update_pull_request_description'),
 
 ]
