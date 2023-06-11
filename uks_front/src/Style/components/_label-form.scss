@@ -1,0 +1,61 @@
+.label-form {
+    $self: &;
+
+    &__group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 40%;
+    }
+
+    &__form {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 15px;
+        justify-content: center;
+        align-items: center;
+
+        &--field {
+            width: 100%;
+        }
+
+        #{$self}__button {
+            width: 180px;
+        }
+    }
+}
+
+.chrome-picker {
+    width: 60% !important;
+}
+
+.css-ugtpnh-MuiFormLabel    -root-MuiInputLabel-root {
+    font-size: 14px !important;
+}
+
+.label {
+    &__title {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin: 20px 0;
+    }
+}
+
+.milestone {
+    &__date {
+        font-size: 12px;
+    }
+
+    &__card {
+        display: flex;
+        flex-direction: column;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+}

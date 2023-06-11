@@ -1,0 +1,141 @@
+@startuml
+
+enum STATUS {
+OPEN
+CLOSED
+}
+
+enum REVIEW_STATUS {
+APPROVED
+CHANGES_REQUESTED
+}
+
+enum VISIBILITY {
+PUBLIC
+PRIVATE
+}
+
+enum ACCESS {
+READ
+WRITE
+ADMIN
+}
+
+enum REACTION {
+LIKE
+DISLIKE
+LOVE
+}
+
+enum ACTION {
+FORK
+STAR
+WATCH
+}
+
+class User {
+username: String
+email: String
+given_name: String
+family_name: String
+bio: String
+url: String
+is_superuser: boolean
+is_staff: boolean
+is_active: boolean
+}
+
+class Milestone {
+title: String
+due_date: DateTime
+description: String
+status: STATUS 
+}
+
+class Label {
+name: String
+description: String
+color: String
+}
+
+class Issue {
+title: String
+created_at: DateTime
+status: STATUS
+}
+
+class PullRequest {
+title: String
+description: String
+status: STATUS
+review: REVIEW_STATUS
+created_at: DateTime
+}
+
+class Repository {
+name: String
+description: String
+created_at: DateTime
+visibility: VISIBILITY
+default_branch: String
+}
+
+class Branch {
+name: String
+}
+
+class Commit {
+hash: String
+message: String
+created_at: DateTime
+}
+
+class Collaboration {
+role: ACCESS
+}
+
+class Action {
+type: ACTION
+}
+
+class Comment {
+created_at: DateTime
+updated_at: DateTime
+content: String
+}
+
+class Reaction {
+type: REACTION
+}
+
+Milestone "0..*" -- "1" Repository
+Label "0..*" -- "1" Repository
+Issue "0..*" -- "0..1" Milestone
+Issue *-- "0..*" Label
+Issue "0..*" -- "0..1" Repository
+Issue "0..*" -- "1 author" User
+Issue *-- "0..* assignees" User
+PullRequest "0..*" -- "1 author" User
+PullRequest "0..*" -- "1" Repository
+PullRequest "0..*" -- "1 base" Branch
+PullRequest "0..*" -- "1 compare" Branch
+PullRequest *-- "0..*" Issue
+PullRequest "0..*" -- "0..1" Milestone
+PullRequest *-- "0..*" Label
+PullRequest *-- "0..* assignees" User
+Repository "0..*" -- "1 owner" User
+Branch "1..*" -- "1" Repository
+Commit "0..*" -- "1 author" User
+Commit "0..*" -- "1" Branch
+Collaboration "0..*" -- User
+Collaboration "0..*" -- Repository
+Action "0..*" -- "1 author" User
+Action -- "repository" Repository
+Action -- "forked repo" Repository
+Reaction "0..*" -- "1" Comment
+Reaction "0..*" -- "1 author" User
+Comment "0..*" -- "1 author" User
+Comment "0..*" -- "1" Issue
+Comment "0..*" -- "1" PullRequest
+
+@enduml

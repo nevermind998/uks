@@ -1,0 +1,12 @@
+.example {
+    $self: &;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    &__input {
+        width: 50%;
+    }
+}

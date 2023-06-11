@@ -1,0 +1,68 @@
+.pr {
+  $self: &;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  background-color: $light-gray;
+  position: absolute;
+  top: 60px;
+  bottom: 0;
+  padding-top: 50px;
+
+  &__button-header {
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+  }
+
+  &__pr-display {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+
+    &--card {
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.12);
+      width: 80%;
+      height: 80px;
+      border-radius: 20px !important;
+    }
+  }
+
+  &__card-content {
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+    gap: 15px;
+
+    img {
+      max-height: 50px;
+    }
+  }
+
+  &__card-title {
+    letter-spacing: 1px !important;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  &__single-pr-display {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+  }
+
+  &__more-info {
+    margin-top: 30px;
+    width: 70%;
+    height: fit-content;
+  }
+
+  &__assignees {
+    font-size: 12px;
+    width: 50%;
+  }
+}

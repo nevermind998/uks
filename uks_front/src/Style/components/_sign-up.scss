@@ -1,0 +1,82 @@
+.sign-up {
+    $self: &;
+
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: $light-gray;
+    position: absolute;
+    bottom: 0;
+    top: 0;
+
+    img {
+        width: 50%;
+    }
+
+    &__content-wrapper {
+        background-color: white;
+        padding: 20px;
+        border-radius: 30px;
+        box-shadow: 0 4px 8px 0 $gray;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    &__group {
+        display: flex;
+        gap: 10px;
+    }
+
+    &__form {
+        display: flex;
+        width: 100%;
+        flex-direction: column;
+        gap: 15px;
+        justify-content: center;
+        align-items: center;
+
+        &--field {
+            width: 100%;
+        }
+
+        &--textarea {
+            width: 100%;
+            padding: 10px;
+            font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+            font-weight: 400;
+            font-size: 1rem;
+            line-height: 1.4375em;
+            letter-spacing: 0.00938em;
+            color: $primary-gray;
+            box-sizing: border-box;
+            position: relative;
+            cursor: text;
+            display: inline-flex;
+            align-items: center;
+            position: relative;
+            border-radius: 4px;
+            border-color: $secondary-gray;
+            background-color: transparent;
+
+            &:hover {
+                border-color: $primary-gray;
+            }
+
+            &:focus {
+                border-color: $primary-gray;
+                box-shadow: 0 0 0 3px $secondary-gray;
+            }
+        }
+
+        #{$self}__button {
+            width: 180px;
+        }
+    }
+}
+
+.css-ugtpnh-MuiFormLabel -root-MuiInputLabel-root {
+    font-size: 14px !important;
+}

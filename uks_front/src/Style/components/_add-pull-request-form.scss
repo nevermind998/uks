@@ -1,0 +1,87 @@
+.add-pull-request-form {
+    $self: &;
+
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    bottom: 0;
+    padding-top: 0px;
+    position: relative;
+
+    &__group {
+        display: flex;
+        gap: 10px;
+    }
+
+    &__form {
+        display: flex;
+        width: 100%;
+        flex-direction: column;
+        gap: 20px;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+
+        &--field {
+            width: 60%;
+        }
+
+        &--autocomplete {
+            display:flex;
+            flex-direction:row;
+            gap:10px;
+        }
+
+        
+        &--autocomplete_branch {
+            display:flex;
+            flex-direction:row;
+            justify-content: center;
+        }
+
+        &--assigness {
+            width: 1000px;
+        }
+
+        &--textarea {
+            width: 100%;
+            padding: 10px;
+            font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+            font-weight: 400;
+            font-size: 1rem;
+            line-height: 1.4375em;
+            letter-spacing: 0.00938em;
+            color: $primary-gray;
+            box-sizing: border-box;
+            position: relative;
+            cursor: text;
+            display: inline-flex;
+            align-items: center;
+            position: relative;
+            border-radius: 4px;
+            border-color: $secondary-gray;
+
+            &:hover {
+                border-color: $primary-gray;
+            }
+
+            &:focus {
+                border-color: $primary-gray;
+                box-shadow: 0 0 0 3px $secondary-gray;
+            }
+        }
+
+        #{$self}__button {
+            width: 180px;
+        }
+        #{$self}__commit_button {
+            width: 100%;
+        }
+    }
+}
+
+.css-ugtpnh-MuiFormLabel    -root-MuiInputLabel-root {
+    font-size: 14px !important;
+
+}

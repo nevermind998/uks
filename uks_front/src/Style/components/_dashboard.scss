@@ -1,0 +1,75 @@
+.dashboard {
+    $self: &;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: $light-gray;
+    position: absolute;
+    top: 60px;
+    bottom: 0;
+    padding-top: 50px;
+
+    &__sidebar {
+        height: 100%;
+        border-right: 1px solid $gray;
+        padding: 0 20px;
+
+        &--user {
+            width: 200px;
+        }
+
+        p {
+            margin-bottom: 0;
+        }
+
+        &--label {
+            margin: 5px 0;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        &--url {
+            font-weight: 400;
+            margin: 0 5px;
+            width: 100%;
+        }
+
+        h3 {
+            margin-top: 15px;
+        }
+
+        &--name {
+            margin: 0;
+        }
+    }
+
+    &__repositories {
+        padding: 20px;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 20px;
+
+        &--card {
+            background-color: $light-gray !important;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.12);
+            width: 450px;
+            min-height: 100px;
+        }
+
+        &--card-title {
+            display: flex;
+            justify-content: space-between;
+        }
+    }
+
+    &__create-repo {
+        margin-left: 20px !important;
+        border-radius: 20px !important;
+    }
+}
+
+.layout-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}

@@ -1,0 +1,54 @@
+name: Our GitHub App Test
+
+on: 
+  pull_request:
+    branches:
+    - develop
+    - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15.1
+        env:
+          POSTGRES_DB: test_db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: 123
+          POSTGRES_HOST: 127.0.0.1
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    defaults: 
+      run: 
+        working-directory: ./uks_project/
+    
+    strategy:
+      matrix:
+        db: [postgres]
+        python-version: [3.9]
+        include:
+          - db: postgres
+            db_port: 5432
+    
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      
+      - name: Install dependencies 
+        run: |
+          pip install -r requirements.txt
+      - name: Test App Code
+        env:
+          POSTGRES_DB: test_db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: 123
+          POSTGRES_HOST: 127.0.0.1
+        run: |
+          python manage.py migrate
+          python manage.py test --noinput

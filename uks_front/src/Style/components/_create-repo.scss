@@ -1,0 +1,46 @@
+.create-repository {
+  $self: &;
+
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: $light-gray;
+  padding: 0 40px;
+
+  &__back-button {
+    background-color: transparent;
+    color: $light-purple;
+    border: none;
+    font-size: 16px;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  &__form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    &--field {
+      width: 550px;
+    }
+  }
+
+  &__visibility {
+    flex-direction: row !important;
+  }
+
+  &__button-wrapper {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+  }
+
+  &__button {
+    width: 250px;
+  }
+}

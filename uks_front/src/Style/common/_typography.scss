@@ -1,0 +1,82 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap");
+
+body {
+  font-family: "Montserrat", sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: $light-gray;
+  overflow-x: hidden;
+}
+
+h1,
+.heading-1 {
+  font-size: 64px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+
+  @media (max-width: 768px) {
+    font-size: 48px;
+  }
+
+  @media (max-width: 500px) {
+    font-size: 32px;
+  }
+}
+
+h2,
+.heading-2 {
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+h3,
+.heading-3 {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  font-size: 24px;
+  font-weight: 400;
+}
+
+p,
+.medium {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 140%;
+}
+
+b,
+.bold {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+small,
+.small {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.pre-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+button,
+.button-text {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+a,
+.link {
+  font-weight: 700;
+  font-size: 16px;
+  text-decoration: underline;
+}
