@@ -178,3 +178,13 @@ export const updatePullRequestStatus = async (id: number) => {
     throw error;
   }
 };
+
+export const editPRDescription = async (body: any) => {
+  try {
+    const response = await api.put(`/project/edit-pr/${body.id}`, body);
+    return response.data;
+  } catch (error) {
+    console.error("Error editing pull request", error);
+    throw error;
+  }
+};
