@@ -188,6 +188,29 @@ def issues_by_status(request,status):
         return Response(serializers.data)
     except:
         return Response(status=status.HTTP_404_NOT_FOUND)
+    
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def issues_by_name(request,name):
+    try:
+        isuess = Issue.objects.filter(name=name)
+        serializers = IssueSerializer(isuess,many=True)
+        return Response(serializers.data)
+    except:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def issues_by_name_status(request,name,status):
+    try:
+        isuess = Issue.objects.filter(Q(status=status) & Q(title=name))
+        serializers = IssueSerializer(isuess,many=True)
+        return Response(serializers.data)
+    except:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+
+      
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])

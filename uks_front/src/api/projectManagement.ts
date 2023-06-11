@@ -140,6 +140,20 @@ export const getLabelsById = async (id:number) => {
   return label.data;
 };
 
+export const advanceSearchForIssue = async (status:string, name:string) => {
+  if (status!='' && name === '') {
+    const issuesByStatus = await api.get(`/project/issues/${status}/status`);
+    return issuesByStatus.data;
+  }
+  if (name!='' && status === '') {
+    var issuesByName = await api.get(`/project/issues/${name}/name`);
+    return issuesByName.data;
+  }else if(name != '' && status != ''){
+    const issues = await api.get(`/project/issues/${name}/name/${status}/status`);
+    return issues.data;
+  }
+};
+
 export const updateIssue = async (body: IssuesDto) => {
   const issue = await api.put(`/project/update-issue/${body.id}`,body);
   return issue.data;
@@ -178,3 +192,5 @@ export const updatePullRequestStatus = async (id: number) => {
     throw error;
   }
 };
+
+
