@@ -47,7 +47,7 @@ import { useFormik } from 'formik';
 import { PULL_REQUEST_SCHEMA } from '../../../ProjectManagement/PullRequestForm/pullRequestValidationSchema';  
 import { Edit } from '@mui/icons-material';
 
-const DisplaySelecterPR = ({ selectedPr, setDispayPRInfo}: any) => {
+const DisplaySelecterPR = ({ selectedPr, setDispayPRInfo, refetchRepo}: any) => {
   const user = useSelector(selectAuth);
   const [isMerged, setIsMerged] = useState(false);
   const [isApproved, setIsApproved] = useState(false);
@@ -140,13 +140,15 @@ const DisplaySelecterPR = ({ selectedPr, setDispayPRInfo}: any) => {
     initialValues: {
       description: selectedPr.description,
     },
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       const body = {
         id: editPR?.id,
         description: values.description,
       };
-      editPRDescription(body); 
-      setDispayPRInfo(false);  
+
+      await editPRDescription(body);
+      refetchRepo();
+      setModalEditOpen(false);
       setOpenToast(true);
     },
   });
@@ -192,7 +194,7 @@ const DisplaySelecterPR = ({ selectedPr, setDispayPRInfo}: any) => {
             size="small"
             multiline
             rows={3}
-            value={selectedPr.description}
+            value={formik.values.description}
             InputProps={{
               readOnly: true,
             }}

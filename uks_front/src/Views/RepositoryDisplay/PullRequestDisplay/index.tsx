@@ -12,7 +12,7 @@ import PullRequest from "../../ProjectManagement/PullRequestForm";
 import { Link } from "@mui/material";
 import DisplaySelecterPR from "./DisplaySelectedPR";
 
-const PullRequestDisplay = ({ pr, setToastOptions, setOpen }: any) => {
+const PullRequestDisplay = ({ pr, setToastOptions, setOpen, refetch }: any) => {
   const { id } = useParams();
 
   const repositoryId = id ? parseInt(id, 10) : 0;
@@ -84,7 +84,7 @@ const PullRequestDisplay = ({ pr, setToastOptions, setOpen }: any) => {
               </div>
             </>
           ) : (
-            <DisplaySelecterPR selectedPr={selectedPr} setDispayPRInfo={setDispayPRInfo} />
+            <DisplaySelecterPR selectedPr={selectedPr} setDispayPRInfo={setDispayPRInfo} refetchRepo={refetch}/>
           )}
         </div>
       ) : (
