@@ -127,7 +127,7 @@ export const getLabelsById = async (id: number) => {
 export const updatePullRequestReviewStatus = async (id: number, status: ReviewStatusEnum) => {
   try {
     const response = await api.put(`/project/change-pr-status/${id}`, {
-      review: ReviewStatusEnum.APPROVED,
+      review: status,
     });
     return response.data;
   } catch (error) {
