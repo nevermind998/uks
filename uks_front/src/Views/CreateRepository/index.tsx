@@ -9,7 +9,7 @@ import { createNewRepository } from '../../api/repositories';
 import { selectAuth } from '../../Store/slices/auth.slice';
 import { CREATE_REPO_SCHEMA } from './createRepositorySchema';
 
-const CreateRepository = ({ setCreateRepo }: any) => {
+const CreateRepository = ({ setCreateRepo, refetch }: any) => {
   const [open, setOpen] = useState<boolean>(false);
   const [toastOptions, setToastOptions] = useState<ToastOptions>({ message: '', type: 'info' });
 
@@ -19,6 +19,7 @@ const CreateRepository = ({ setCreateRepo }: any) => {
     onSuccess: (res) => {
       setToastOptions({ message: 'Successfully created a new repository!', type: 'success' });
       setOpen(true);
+      refetch();
       setTimeout(() => {
         setCreateRepo(false);
       }, 300)
