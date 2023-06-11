@@ -6,16 +6,20 @@ services:
     build:
       context: ./uks_front/
       dockerfile: Dockerfile
+    env_file:
+      - ./uks_front/.env.prod
     ports:
-      - 3000:3000  # Map host port to React frontend port
+      - 3000:3000
 
   backend:
     container_name: backend
     build:
       context: ./uks_project/
       dockerfile: Dockerfile
+    env_file:
+      - .env
     ports:
-      - 8000:8000  # Map host port to Django backend port
+      - 8000:8000
     depends_on:
       - db
     command: sh -c "/bin/bash ./wait-for-it.sh && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
@@ -23,15 +27,29 @@ services:
   db:
     image: postgres:15.1
     container_name: db
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=123
-      - POSTGRES_DB=uks_database
-      - POSTGRES_HOST=db
+    env_file:
+      - .env
     ports:
       - 5432:5432
     volumes:
       - db_data:/var/lib/postgresql/data
+
+  nginx:
+    image: nginx:1.23-alpine
+    container_name: uks_nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+    depends_on:
+      - backend
+      - frontend
+
+  redis:
+    image: redis:latest
+    container_name: uks_redis
+    ports:
+      - "6379:6379"
 
 volumes:
   db_data:

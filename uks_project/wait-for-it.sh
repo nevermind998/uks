@@ -1,9 +1,20 @@
 #!/bin/bash
 
-RETRIES=10
-export PGPASSWORD=123
+host="db"
+port="5432"
+timeout="${3:-15}"
 
-until psql -h db -U postgres -d uks_database -c "select 1" > /dev/null 2>&1 || [ $RETRIES -eq 0 ]; do
-    echo "Waiting for postgres, $((RETRIES--)) remaining attempts"
+wait_for_postgres() {
+  while !</dev/tcp/"$host"/"$port"; do
+    echo "Waiting for PostgreSQL to become available..."
     sleep 1
-done
+    timeout=$((timeout-1))
+    if [[ "$timeout" -eq 0 ]]; then
+      echo "Timeout occurred. PostgreSQL is not available."
+      exit 1
+    fi
+  done
+  echo "PostgreSQL is now available."
+}
+
+wait_for_postgres
