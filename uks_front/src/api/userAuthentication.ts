@@ -23,3 +23,7 @@ export const getAllUsers = async () => {
   const users = await api.get(`/user/users`);
   return users.data;
 };
+
+export const editProfile = async (body: any) => {
+  return await api.put(`/user/edit`, body);
+};

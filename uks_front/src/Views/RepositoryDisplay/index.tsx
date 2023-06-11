@@ -4,10 +4,11 @@ import StarIcon from '@mui/icons-material/Star';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { useQuery } from 'react-query';
-import { RepositoryDto } from '../../Types/repository.types';
+import { RepositoryDto, VisibilityEnum } from '../../Types/repository.types';
 import {
   createNewRepositoryAction,
   deleteAction,
+  getCollaborators,
   getRepositoryById,
   getRepositoryForks,
   getRepositoryStargazers,
@@ -16,7 +17,7 @@ import {
   getWatchActionForUser,
 } from '../../api/repositories';
 import { useParams } from 'react-router-dom';
-import { SyntheticEvent, useState } from 'react';
+import { SyntheticEvent, useEffect, useState } from 'react';
 import Toast, { ToastOptions } from '../../Components/Common/Toast';
 import { useSelector } from 'react-redux';
 import { selectAuth } from '../../Store/slices/auth.slice';
@@ -30,6 +31,7 @@ import IssueDisplay from '../ProjectManagmentDisplay/IssueDisplay';
 import LabelDisplay from '../ProjectManagmentDisplay/LabelDisplay';
 import MilestoneDisplay from '../ProjectManagmentDisplay/MilestoneDisplay';
 import Insights from '../Insights';
+import { getAllUsers } from '../../api/userAuthentication';
 
 const Repository = () => {
   const user = useSelector(selectAuth);
@@ -186,6 +188,19 @@ const Repository = () => {
     },
   });
 
+  useEffect(() => {
+    if (repo?.visibility === VisibilityEnum.PRIVATE) {
+      if (repo.owner !== user.id && !repo.collaborators.some(x => x ===user.id)) {
+        setToastOptions({ message: 'You have no access to this repo!', type: 'error' });
+        setOpen(true);
+
+        setTimeout(() => {
+          window.location.href = `/user/${user.id}`
+        }, 300)
+      }  
+    }
+  }, [repo])
+
   return (
     <div className="repository">
       <Toast open={open} setOpen={setOpen} toastOptions={toastOptions} />
@@ -193,8 +208,8 @@ const Repository = () => {
         <Grid container spacing={2}>
           <Grid item xs={9}>
             <Breadcrumbs className="repository__breadcrumbs" aria-label="breadcrumb">
-              <Link underline="hover" color="inherit" href="/">
-                {user?.username}
+              <Link underline="hover" color="inherit" href={`/user/${repo?.owner.id}`}>
+                {repo?.owner.username}
               </Link>
               <Typography color="text.primary">{repo?.name}</Typography>
               <Chip label={repo?.visibility} variant="outlined" />
@@ -230,7 +245,9 @@ const Repository = () => {
               <Tab label="Code" value="1" />
               <Tab label="Issues" value="2" />
               <Tab label="Pull Requests" value="3" />
-              <Tab label="Settings" value="4" />
+              {repo?.owner === user.id &&
+                <Tab label="Settings" value="4" />
+              }
               <Tab label="Labels" value="6" />
               <Tab label="Milestones" value="7" />
               <Tab label="Insights" value="8" />
@@ -254,9 +271,11 @@ const Repository = () => {
           <TabPanel value="3">
             <PullRequestDisplay setOpen={setOpen} setToastOptions={setToastOptions}></PullRequestDisplay>
           </TabPanel>
-          <TabPanel value="4">
-            <ManageAccess repo={repo} refetchRepo={refetch} />
-          </TabPanel>
+          {repo?.owner === user.id &&
+            <TabPanel value="4">
+              <ManageAccess repo={repo} refetchRepo={refetch} />
+            </TabPanel>
+          }
           <TabPanel value="5">
             <CreateFork repo={repo} user={user}></CreateFork>
           </TabPanel>

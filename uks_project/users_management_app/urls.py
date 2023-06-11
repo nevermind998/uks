@@ -11,5 +11,6 @@ urlpatterns = [
     path('get-user/<int:id>', views.get_user_by_id, name='user-id'),
     path('get-assignees/<int:id>', views.get_pr_assignees, name='assignees'),
     path('users', views.get_all_users, name='get_all'),
+    path('edit', views.edit_user, name='edit_user'),
 
 ]

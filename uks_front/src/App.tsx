@@ -6,11 +6,7 @@ import { RootState } from './Store';
 import { AuthState } from './Store/slices/auth.slice';
 import { useSelector } from 'react-redux';
 import Dashboard from './Views/Dashboard';
-import Milestone from './Views/ProjectManagement/MilestoneForm';
-import Label from './Views/ProjectManagement/LabelForm';
-import Issue from './Views/ProjectManagement/IssuesForm';
 import Layout from './Components/Layout';
-import Commit from './Views/Commit';
 import PullRequest from './Views/ProjectManagement/PullRequestForm';
 import CreateRepository from './Views/CreateRepository';
 import Repository from './Views/RepositoryDisplay';
@@ -38,7 +34,7 @@ function App() {
           <Route path="sign-up" element={<SignUp />}></Route>
           <Route element={<IsSignedIn />}>
             <Route element={<Layout />}>
-              <Route path="/" element={<Dashboard />} />
+              <Route path="/user/:id" element={<Dashboard />} />
               <Route path="repository/:id" element={<Repository />} />
               <Route path="/new-repository" element={<CreateRepository />} />
               <Route path="/repository/:id/new-branch" element={<Branch />} />
