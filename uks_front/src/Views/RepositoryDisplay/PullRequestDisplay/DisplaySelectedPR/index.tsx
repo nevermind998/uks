@@ -34,13 +34,24 @@ import LabelIcon from '@mui/icons-material/Label';
 import { updatePullRequestReviewStatus, updatePullRequestStatus } from '../../../../api/projectManagement';
 import MergeTypeIcon from '@mui/icons-material/MergeType';
 import CommentsDisplay from '../../../CommentsDisplay';
+import { CommentDto } from '../../../../Types/action.types';
+import { addNewComment, getCommentsForPr } from '../../../../api/comments';
+import { useSelector } from 'react-redux';
+import { selectAuth } from '../../../../Store/slices/auth.slice';
+import Toast, { ToastOptions } from '../../../../Components/Common/Toast';
 
 const DisplaySelecterPR = ({ selectedPr, setDispayPRInfo }: any) => {
+  const user = useSelector(selectAuth);
   const [isMerged, setIsMerged] = useState(false);
   const [isApproved, setIsApproved] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [reviewType, setReviewType] = useState('approve');
   const [comment, setComment] = useState('');
+  const [open, setOpen] = useState<boolean>(false);
+  const [toastOptions, setToastOptions] = useState<ToastOptions>({
+    message: '',
+    type: 'info',
+  });
 
   const handleReviewTypeChange = (event) => {
     setReviewType(event.target.value);
@@ -50,14 +61,25 @@ const DisplaySelecterPR = ({ selectedPr, setDispayPRInfo }: any) => {
     setComment(event.target.value);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (reviewType === 'approve') {
       updatePullRequestReviewStatus(selectedPr.id, ReviewStatusEnum.APPROVED).then(() => setIsApproved(true));
     } else {
       updatePullRequestReviewStatus(selectedPr.id, ReviewStatusEnum.CHANGES_REQUESTED);
     }
     //create comment if needed
+    if (comment !== '') {
+      const body: CommentDto = {
+        author: user.id,
+        content: ' requested changes: ' + comment,
+        pull_request: selectedPr.id,
+      };
+      const newComment = await addNewComment(body);
+    }
+    refetch();
     handleClose();
+    setComment('');
+    setReviewType('approve');
   };
 
   const handleClose = () => {
@@ -67,7 +89,7 @@ const DisplaySelecterPR = ({ selectedPr, setDispayPRInfo }: any) => {
   const openpop = Boolean(anchorEl);
   const id = openpop ? 'add-review-popover' : undefined;
 
-  const {data: commitsQuery} = useQuery({
+  const { data: commitsQuery } = useQuery({
     queryKey: ['FETCH_PULL_REQUEST'],
     queryFn: async () => {
       const commits: CommitDto[] = await fetchCommitsPerBranch(selectedPr.compare_branch);
@@ -83,21 +105,35 @@ const DisplaySelecterPR = ({ selectedPr, setDispayPRInfo }: any) => {
     updatePullRequestStatus(selectedPr.id).then(() => setIsMerged(true), setDispayPRInfo(false));
   };
 
+  const { data: comments, refetch } = useQuery({
+    queryKey: ['FETCH_COMMENTS'],
+    queryFn: async () => {
+      try {
+        const data: CommentDto[] = await getCommentsForPr(selectedPr.id);
+        return data;
+      } catch {
+        setToastOptions({ message: 'Error happened!', type: 'error' });
+        setOpen(true);
+      }
+    },
+  });
+
   return (
     <>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <button onClick={() => setDispayPRInfo(false)} className="create-repository__back-button" style={{ color: "black" }}>
+      <Toast open={open} setOpen={setOpen} toastOptions={toastOptions} />
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <button onClick={() => setDispayPRInfo(false)} className="create-repository__back-button" style={{ color: 'black' }}>
           &#60; Back
         </button>
-        <h3>{selectedPr ? selectedPr.title : "No PR info available"}</h3>
+        <h3>{selectedPr ? selectedPr.title : 'No PR info available'}</h3>
 
         {!isMerged && (isApproved || selectedPr.review === ReviewStatusEnum.APPROVED) && (
-          <Button style={{ height: "30px", borderRadius: "20px" }} variant="contained" onClick={handleMerge}>
+          <Button style={{ height: '30px', borderRadius: '20px' }} variant="contained" onClick={handleMerge}>
             <MergeTypeIcon /> Merge and close
           </Button>
         )}
         {!isApproved && selectedPr.review === ReviewStatusEnum.CHANGES_REQUESTED && (
-          <Button style={{ height: "30px", borderRadius: "20px" }} variant="contained" onClick={handleApprove}>
+          <Button style={{ height: '30px', borderRadius: '20px' }} variant="contained" onClick={handleApprove}>
             Add review
           </Button>
         )}
@@ -106,14 +142,14 @@ const DisplaySelecterPR = ({ selectedPr, setDispayPRInfo }: any) => {
       <br />
 
       <div className="pr__single-pr-display">
-        <div style={{ display: "flex", flexDirection: "column", width: "100%", gap: "10px" }}>
+        <div style={{ display: 'flex', flexDirection: 'column', width: '100%', gap: '10px' }}>
           <Typography variant="body1">
             {selectedPr.author ? (
               <span>
                 Author <i>{selectedPr.author.username}</i> has opened a pull request
               </span>
             ) : (
-              ""
+              ''
             )}
           </Typography>
           <TextField
@@ -126,7 +162,7 @@ const DisplaySelecterPR = ({ selectedPr, setDispayPRInfo }: any) => {
             InputProps={{
               readOnly: true,
             }}
-            sx={{ width: "100%" }}
+            sx={{ width: '100%' }}
           />
           <div>
             {commitsQuery?.length !== 0 ? (
@@ -143,8 +179,8 @@ const DisplaySelecterPR = ({ selectedPr, setDispayPRInfo }: any) => {
                   <TableBody>
                     {commitsQuery
                       ?.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-                      .map(commit => (
-                        <TableRow key={commit.id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                      .map((commit) => (
+                        <TableRow key={commit.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                           <TableCell component="th" scope="row">
                             <Chip label={commit.author?.username} variant="filled" />
                           </TableCell>
@@ -234,8 +270,8 @@ const DisplaySelecterPR = ({ selectedPr, setDispayPRInfo }: any) => {
         )}
       </div>
       <Grid marginTop={2}>
-        <Divider variant='fullWidth' style={{marginTop: '40px'}}/> 
-        <CommentsDisplay obj_id={selectedPr.id} isPr={true}></CommentsDisplay>
+        <Divider variant="fullWidth" style={{ marginTop: '40px' }} />
+        <CommentsDisplay obj_id={selectedPr.id} isPr={true} comments={comments} refetch={refetch}></CommentsDisplay>
       </Grid>
       <Popover
         id={id}
