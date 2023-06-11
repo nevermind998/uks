@@ -269,7 +269,7 @@ const Repository = () => {
             <IssueDisplay />
           </TabPanel>
           <TabPanel value="3">
-            <PullRequestDisplay setOpen={setOpen} setToastOptions={setToastOptions}></PullRequestDisplay>
+            <PullRequestDisplay setOpen={setOpen} setToastOptions={setToastOptions} refetch={refetch}></PullRequestDisplay>
           </TabPanel>
           {repo?.owner === user.id &&
             <TabPanel value="4">
