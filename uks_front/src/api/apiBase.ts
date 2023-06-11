@@ -1,11 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 
-let BASE_URL = "";
-if (process.env.REACT_APP_ENV === 'development')
-  BASE_URL = 'http://localhost:8000/api'
-else
-  BASE_URL = 'http://localhost/api'
-
+const BASE_URL = process.env.REACT_APP_SERVER_URL || 'http://localhost:8000/';
 export const api: AxiosInstance = axios.create({
   baseURL: BASE_URL,
 });
