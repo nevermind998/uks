@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CommentDto } from '../../Types/action.types';
 import { addNewComment, getCommentsForIssue, getCommentsForPr } from '../../api/comments';
 import { useQuery } from 'react-query';
@@ -8,7 +8,7 @@ import { Button, Grid, TextField } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { selectAuth } from '../../Store/slices/auth.slice';
 
-const CommentsDisplay = ({ obj_id, isPr }: any) => {
+const CommentsDisplay = ({ obj_id, isPr, comments, refetch }: any) => {
   const user = useSelector(selectAuth);
   const [open, setOpen] = useState<boolean>(false);
   const [comment, setComment] = useState('');
@@ -16,24 +16,6 @@ const CommentsDisplay = ({ obj_id, isPr }: any) => {
   const [toastOptions, setToastOptions] = useState<ToastOptions>({
     message: '',
     type: 'info',
-  });
-
-  const { data: comments, refetch } = useQuery({
-    queryKey: ['FETCH_COMMENTS'],
-    queryFn: async () => {
-      try {
-        if (isPr === false) {
-          const data: CommentDto[] = await getCommentsForIssue(obj_id);
-          return data;
-        } else {
-          const data: CommentDto[] = await getCommentsForPr(obj_id);
-          return data;
-        }
-      } catch {
-        setToastOptions({ message: 'Error happened!', type: 'error' });
-        setOpen(true);
-      }
-    },
   });
 
   const handleChange = (e: any) => {
@@ -65,10 +47,14 @@ const CommentsDisplay = ({ obj_id, isPr }: any) => {
     }
   };
 
+  useEffect(() => {
+    refetch();
+  }, [comments]);
+
   return (
     <div>
       <Toast open={open} setOpen={setOpen} toastOptions={toastOptions} />
-      <div style={{ maxHeight: '350px', overflow: 'auto', marginTop: '30px'}}>
+      <div style={{ maxHeight: '350px', overflow: 'auto', marginTop: '30px' }}>
         {comments?.length === 0 ? (
           <div>
             <p>No comments yet.</p>
@@ -77,7 +63,7 @@ const CommentsDisplay = ({ obj_id, isPr }: any) => {
           comments?.map((comment: any) => <Comment comment={comment} refetch={refetch} key={comment.id} />)
         )}
       </div>
-      <Grid container spacing={2} alignItems="flex-end" style={{marginTop: '30px'}}>
+      <Grid container spacing={2} alignItems="flex-end" style={{ marginTop: '30px' }}>
         <Grid item xs={10}>
           <TextField label="Write a comment" value={comment} onChange={handleChange} fullWidth multiline rows={4} />
         </Grid>

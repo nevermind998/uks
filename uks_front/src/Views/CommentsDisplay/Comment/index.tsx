@@ -2,7 +2,7 @@ import { styled } from '@mui/system';
 import { Avatar, Box, Grid, IconButton, Paper, TextField, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 import Toast, { ToastOptions } from '../../../Components/Common/Toast';
@@ -42,7 +42,11 @@ const Comment = ({ comment, refetch }: any) => {
     try {
       comment.content = updatedComment;
       comment.updated_at = new Date();
-      await editComment(comment.id, comment);
+      const body = {
+        ...comment,
+        author: comment.author.id,
+      };
+      await editComment(body, comment.id);
       refetch();
     } catch (error) {
       setToastOptions({ message: 'An error happened while editing!', type: 'error' });
@@ -56,6 +60,10 @@ const Comment = ({ comment, refetch }: any) => {
   const handleCancel = () => {
     setIsEditing(false);
   };
+
+  useEffect(() => {
+    refetch();
+  }, [comment]);
 
   return (
     <CommentContainer elevation={1}>

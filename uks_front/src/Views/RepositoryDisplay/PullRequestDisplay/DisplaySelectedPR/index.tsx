@@ -35,9 +35,10 @@ import { updatePullRequestReviewStatus, updatePullRequestStatus } from '../../..
 import MergeTypeIcon from '@mui/icons-material/MergeType';
 import CommentsDisplay from '../../../CommentsDisplay';
 import { CommentDto } from '../../../../Types/action.types';
-import { addNewComment } from '../../../../api/comments';
+import { addNewComment, getCommentsForPr } from '../../../../api/comments';
 import { useSelector } from 'react-redux';
 import { selectAuth } from '../../../../Store/slices/auth.slice';
+import Toast, { ToastOptions } from '../../../../Components/Common/Toast';
 
 const DisplaySelecterPR = ({ selectedPr, setDispayPRInfo }: any) => {
   const user = useSelector(selectAuth);
@@ -46,6 +47,11 @@ const DisplaySelecterPR = ({ selectedPr, setDispayPRInfo }: any) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [reviewType, setReviewType] = useState('approve');
   const [comment, setComment] = useState('');
+  const [open, setOpen] = useState<boolean>(false);
+  const [toastOptions, setToastOptions] = useState<ToastOptions>({
+    message: '',
+    type: 'info',
+  });
 
   const handleReviewTypeChange = (event) => {
     setReviewType(event.target.value);
@@ -70,6 +76,7 @@ const DisplaySelecterPR = ({ selectedPr, setDispayPRInfo }: any) => {
       };
       const newComment = await addNewComment(body);
     }
+    refetch();
     handleClose();
     setComment('');
     setReviewType('approve');
@@ -98,8 +105,22 @@ const DisplaySelecterPR = ({ selectedPr, setDispayPRInfo }: any) => {
     updatePullRequestStatus(selectedPr.id).then(() => setIsMerged(true), setDispayPRInfo(false));
   };
 
+  const { data: comments, refetch } = useQuery({
+    queryKey: ['FETCH_COMMENTS'],
+    queryFn: async () => {
+      try {
+        const data: CommentDto[] = await getCommentsForPr(selectedPr.id);
+        return data;
+      } catch {
+        setToastOptions({ message: 'Error happened!', type: 'error' });
+        setOpen(true);
+      }
+    },
+  });
+
   return (
     <>
+      <Toast open={open} setOpen={setOpen} toastOptions={toastOptions} />
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <button onClick={() => setDispayPRInfo(false)} className="create-repository__back-button" style={{ color: 'black' }}>
           &#60; Back
@@ -250,7 +271,7 @@ const DisplaySelecterPR = ({ selectedPr, setDispayPRInfo }: any) => {
       </div>
       <Grid marginTop={2}>
         <Divider variant="fullWidth" style={{ marginTop: '40px' }} />
-        <CommentsDisplay obj_id={selectedPr.id} isPr={true}></CommentsDisplay>
+        <CommentsDisplay obj_id={selectedPr.id} isPr={true} comments={comments} refetch={refetch}></CommentsDisplay>
       </Grid>
       <Popover
         id={id}
