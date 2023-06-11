@@ -8,9 +8,10 @@ from rest_framework.views import APIView
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from django.http import Http404
+from rest_framework import status
 
 from .models import User
-from .serializers import UserSerializer, CustomTokenObtainPairSerializer
+from .serializers import UserProfileSerializer, UserSerializer, CustomTokenObtainPairSerializer
 from versioning_management_app.models import Repository
 
 
@@ -49,7 +50,6 @@ def GetAllUsers(request,id=None):
     serializers = UserSerializer(users,many=True)
     return Response(serializers.data)
 
-
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_user_by_id(request, id):
@@ -76,3 +76,19 @@ def get_all_users(request):
     user = User.objects.all()
     serializer = UserSerializer(user, many=True)
     return Response(serializer.data)
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def edit_user(request):
+    try:
+        user = User.objects.get(email=request.user)
+    except User.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    serializer = UserProfileSerializer(user, data=request.data)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

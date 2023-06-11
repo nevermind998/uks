@@ -21,7 +21,7 @@ const SignIn = () => {
       setToastOptions({ message: 'Successful login!', type: 'success' });
       setOpen(true);
       dispatch(addAuth(res.data.user));
-      navigate('/');
+      navigate(`/user/${res.data.user.id}`);
     },
     onError: () => {
       setToastOptions({ message: 'Invalid credentials!', type: 'error' });

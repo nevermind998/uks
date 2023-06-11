@@ -66,6 +66,25 @@
         margin-left: 20px !important;
         border-radius: 20px !important;
     }
+
+    &__edit-profile {
+        margin: 5px 0 20px !important;
+        border-radius: 20px !important;
+    }
+}
+
+.edit-profile {
+    $self: &;
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    background-color: $light-gray;
+    padding: 0 40px;
+
+    &__content-wrapper {
+        width: 80%;
+    }
 }
 
 .layout-wrapper {
