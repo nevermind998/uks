@@ -4,7 +4,7 @@ export enum StatusEnum {
 }
 
 export type MilestoneDto = {
-    id: number | null;
+    id?: number | null;
     title: string;
     due_date: Date | null ;
     description: string;

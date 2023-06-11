@@ -103,7 +103,6 @@ def label_by_color(request,color):
 @permission_classes([IsAuthenticated])
 def label_by_repository(request,id):
     label = Label.objects.filter(repository=id)
-    if(len(label) == 0): raise Http404('No label found that matches the given query.')
     serializers = LabelSerializer(label,many=True)
     return Response(serializers.data)
 

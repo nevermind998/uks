@@ -1,46 +1,29 @@
-import { Box, Divider, Link, Tab } from "@mui/material";
-import { SyntheticEvent, useState } from "react";
+import {Divider, Link } from "@mui/material";
+import { useState } from "react";
 import { Button, Card, CardContent, Typography } from "@mui/material";
 import { useQuery } from "react-query";
 import { StatusEnum } from "../../../Types/issue.types";
 import { fetchOpenedIssue } from "../../../api/projectManagement";
-import { RootState } from "../../../Store";
-import { AuthState } from "../../../Store/slices/auth.slice";
-import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import Issue from "../../ProjectManagement/IssuesForm";
 import { IssuesDto } from "../../../Types/issue.types";
-import { Link as LinkTo} from 'react-router-dom';
 import DisplaySelectedIssue from "./DisplaySelectedIssue";
-import { TabContext, TabList, TabPanel } from '@mui/lab';
-import LabelDisplay from "../LabelDisplay";
-import MilestoneDisplay from "../MilestoneDisplay";
 
-
-
-const IssueDisplay = ({ pr, setToastOptions, setOpen }: any) => {
-  const user = useSelector<RootState, AuthState>(state => state.auth);
+const IssueDisplay = () => {
   const { id } = useParams();
 
   const repositoryId = id ? parseInt(id, 10) : 0;
   const [createIssue, setCreateIssue] = useState<boolean>(false);
   const [dispayInfo, setDispayInfo] = useState<boolean>(false);
   const [selectedPr, setSelectedPr] = useState<[] | null>(null);
-  const [tab, setTab] = useState('');
 
-
-  const allOpenedIssue = useQuery({
+  const {data: allOpenedIssue, refetch} = useQuery({
     queryKey: ["FETCH_ISSUE", createIssue],
     queryFn: async () => {
       const openedIssues: IssuesDto[] = await fetchOpenedIssue(StatusEnum.OPEN, repositoryId);
       return openedIssues;
     },
   });
-
-  
-  const handleChange = (event: SyntheticEvent, newTab: string) => {
-    setTab(newTab);
-};
 
   return (
     <div>
@@ -49,33 +32,15 @@ const IssueDisplay = ({ pr, setToastOptions, setOpen }: any) => {
           {!dispayInfo ? (
             <>
               <div className="issues__button-header">
-
-               <TabContext value={tab}>
-                        <Box sx={{ borderBottom: 1, borderTop: 1, borderColor: 'divider' }}>
-                            <TabList onChange={handleChange}>
-                                <Tab label="Label" value="1" />
-                                <Tab label="Milestone" value="2" />
-                            </TabList>
-                        </Box>
-                        <TabPanel value="1">
-                          <LabelDisplay setOpen={setOpen} setToastOptions={setToastOptions}></LabelDisplay>
-                        </TabPanel>
-                        <TabPanel value="2">
-                          <MilestoneDisplay setOpen={setOpen} setToastOptions={setToastOptions}></MilestoneDisplay>
-                        </TabPanel>
-                </TabContext>
-
-                <LinkTo to={`/issue/new/${repositoryId}`}>
-                <Button className="dashboard__create-repo" onClick={() => setCreateIssue(true)} variant="contained">
-                  New issues
-                </Button>
-                </LinkTo>              
+                  <Button className="dashboard__create-repo" onClick={() => setCreateIssue(true)} variant="contained">
+                    New issue
+                  </Button>
               </div>
               <Divider light />
               <div className="issues__request-list">
                 <div>
-                  {allOpenedIssue.data?.length !== 0 ? (
-                    allOpenedIssue.data?.map((x: any) => (
+                  {allOpenedIssue?.length !== 0 ? (
+                    allOpenedIssue?.map((x: any) => (
                       <div className="issues__pr-display" key={x.id}>
                         <Card variant="outlined" className="pr__pr-display--card">
                           <CardContent>
@@ -110,11 +75,10 @@ const IssueDisplay = ({ pr, setToastOptions, setOpen }: any) => {
               </div>
             </>
           ) : (
-            <DisplaySelectedIssue selectedIssue={selectedPr} setDispaylInfo={setDispayInfo} />
+            <DisplaySelectedIssue selectedIssue={selectedPr} setDispayInfo={setDispayInfo} refetch={refetch}/>
           )}
         </div>
       ) : (
-   
         <Issue setCreateIssue={setCreateIssue}></Issue>
       )}
     </div>

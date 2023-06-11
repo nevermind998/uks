@@ -1,30 +1,24 @@
-import { Divider, Link } from "@mui/material";
-import { SyntheticEvent, useState } from "react";
+import { Chip, Divider, Link } from "@mui/material";
+import { useState } from "react";
 import { Button, Card, CardContent } from "@mui/material";
 import { useQuery } from "react-query";
 import { fetchLabel } from "../../../api/projectManagement";
-import { RootState } from "../../../Store";
-import { AuthState } from "../../../Store/slices/auth.slice";
-import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import Issue from "../../ProjectManagement/IssuesForm";
-import { Link as LinkTo} from 'react-router-dom';
 import { LabelDto } from "../../../Types/label.types";
 import DisplaySelectedLabel from "./DisplaySelectedLabel";
+import Label from "../../ProjectManagement/LabelForm";
 
 
-const LabelDisplay = ({ pr, setToastOptions, setOpen }: any) => {
-  const user = useSelector<RootState, AuthState>(state => state.auth);
+const LabelDisplay = ({setOpen, setToastOptions}) => {
   const { id } = useParams();
 
   const repositoryId = id ? parseInt(id, 10) : 0;
   const [createLabel, setCreateLabel] = useState<boolean>(false);
   const [dispayInfo, setDispayInfo] = useState<boolean>(false);
   const [selectedLabel, setSelectedLabel] = useState<[] | null>(null);
-  const [tab, setTab] = useState('');
 
 
-  const allLabel = useQuery({
+  const {data: allLabel, refetch} = useQuery({
     queryKey: ["FETCH_LABEL", createLabel],
     queryFn: async () => {
       const allLabel: LabelDto[] = await fetchLabel(repositoryId);
@@ -34,26 +28,25 @@ const LabelDisplay = ({ pr, setToastOptions, setOpen }: any) => {
 
   return (
     <div>
+      {!createLabel ? (
         <div>
           {!dispayInfo ? (
             <>
               <div className="issues__button-header">
-                <LinkTo to={`/label/new/${repositoryId}`}>
-                <Button className="dashboard__create-repo" variant="contained">
+                <Button className="dashboard__create-repo" onClick={() => setCreateLabel(true)} variant="contained">
                   New label
-                </Button>
-                </LinkTo>              
+                </Button>             
               </div>
               <Divider light />
               <div className="issues__request-list">
                 <div>
-                  {allLabel.data?.length !== 0 ? (
-                    allLabel.data?.map((x: any) => (
+                  {allLabel?.length !== 0 ? (
+                    allLabel?.map((x: any) => (
                       <div className="issues__pr-display" key={x.id}>
                         <Card variant="outlined" className="pr__pr-display--card">
                           <CardContent>
                             <div className="issues__card-content">
-                              <img src="/img/comparing-branch.png" alt="User icon" />
+                              <img src="/img/label.png" alt="Label icon" />
                               <div>
                                 <Link
                                   className="issues__card-title"
@@ -65,7 +58,7 @@ const LabelDisplay = ({ pr, setToastOptions, setOpen }: any) => {
                                     setDispayInfo(true);
                                   }}
                                 >
-                                  {x.name}
+                                  <Chip label={x.name}></Chip>
                                 </Link>
                               </div>
                             </div>
@@ -80,9 +73,13 @@ const LabelDisplay = ({ pr, setToastOptions, setOpen }: any) => {
               </div>
             </>
           ) : (
-            <DisplaySelectedLabel selectedLabel={selectedLabel} setDispayInfo={setDispayInfo} />
+            <DisplaySelectedLabel selectedLabel={selectedLabel} setDispayInfo={setDispayInfo} refetch={refetch}/>
           )}
         </div>
+        )
+      :
+       <Label setCreateLabel={setCreateLabel}/>
+      }
     </div>
   );
 };

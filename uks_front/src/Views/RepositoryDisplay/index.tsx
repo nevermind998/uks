@@ -27,6 +27,8 @@ import CreateFork from './CreateFork';
 import ManageAccess from './ManageAccessSettings';
 import { UserProfileDto } from '../../Types/user.types';
 import IssueDisplay from '../ProjectManagmentDisplay/IssueDisplay';
+import LabelDisplay from '../ProjectManagmentDisplay/LabelDisplay';
+import MilestoneDisplay from '../ProjectManagmentDisplay/MilestoneDisplay';
 
 const Repository = () => {
   const user = useSelector(selectAuth);
@@ -228,6 +230,8 @@ const Repository = () => {
               <Tab label="Issues" value="2" />
               <Tab label="Pull Requests" value="3" />
               <Tab label="Settings" value="4" />
+              <Tab label="Labels" value="6" />
+              <Tab label="Milestones" value="7" />
             </TabList>
           </Box>
           <TabPanel value="1">
@@ -243,7 +247,7 @@ const Repository = () => {
             )}
           </TabPanel>
           <TabPanel value="2">
-            <IssueDisplay setOpen={setOpen} setToastOptions={setToastOptions}></IssueDisplay>
+            <IssueDisplay />
           </TabPanel>
           <TabPanel value="3">
             <PullRequestDisplay setOpen={setOpen} setToastOptions={setToastOptions}></PullRequestDisplay>
@@ -253,6 +257,12 @@ const Repository = () => {
           </TabPanel>
           <TabPanel value="5">
             <CreateFork repo={repo} user={user}></CreateFork>
+          </TabPanel>
+          <TabPanel value="6">
+            <LabelDisplay setOpen={setOpen} setToastOptions={setToastOptions}/>
+          </TabPanel>
+          <TabPanel value="7">
+            <MilestoneDisplay setOpen={setOpen} setToastOptions={setToastOptions}/>
           </TabPanel>
         </TabContext>
       </div>

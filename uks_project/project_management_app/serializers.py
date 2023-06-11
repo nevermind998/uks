@@ -19,6 +19,10 @@ class LabelSerializer(serializers.ModelSerializer):
         read_only_field = ['id']
 
 class IssueSerializer(serializers.ModelSerializer):
+    assignees = serializers.PrimaryKeyRelatedField(many=True, queryset=User.objects.all(), required=False)
+    milestone = serializers.PrimaryKeyRelatedField(queryset=Milestone.objects.all(), required=False)
+    labels = serializers.PrimaryKeyRelatedField(many=True, queryset=Label.objects.all(), required=False)
+    
     class Meta:
         model = Issue
         fields = ['id','title', 'created_at', 'status', 'milestone', 'labels', 'repository', 'author','assignees']

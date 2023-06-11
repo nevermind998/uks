@@ -28,6 +28,7 @@ const Issue = ( {setCreateIssue}: any ) => {
     onSuccess: (res) => {
       setToastOptions({ message: 'Issue successfully created', type: 'success' });
       setOpen(true);
+      setCreateIssue(false);
     },
     onError: () => {
       setToastOptions({ message: 'Error creating issue', type: 'error' });
@@ -37,15 +38,14 @@ const Issue = ( {setCreateIssue}: any ) => {
 
   const formik = useFormik({
     initialValues: {
-      id:0,
-      title:'',
-      created_at:new Date(),
-      status:'',
-      milestone:0,
-      labels:[],
-      repository:0,
-      author:0,
-      assignees:[]
+      title: '',
+      created_at: new Date(),
+      status: '',
+      milestone: '',
+      labels: [],
+      repository: '',
+      author: '',
+      assignees: []
     },
     validationSchema: ISSUES_SCHEMA,
     onSubmit: (values) => {
@@ -73,9 +73,9 @@ const Issue = ( {setCreateIssue}: any ) => {
   }
 
   return (
-    <div className="add-update-form">
+    <div style={{display: 'flex', width: '100%', justifyContent: 'center'}}>
       <Toast open={open} setOpen={setOpen} toastOptions={toastOptions} />
-      <div className="add-update-form__content-wrapper">
+      <div style={{ textAlign: 'center', display: 'flex', width: '100%', flexDirection: 'column', justifyContent: 'center'}}>
         <h3>Create a new issue</h3>
         <form onSubmit={formik.handleSubmit} className="add-update-form__form">
           <TextField
@@ -93,14 +93,13 @@ const Issue = ( {setCreateIssue}: any ) => {
           />
 
           <Autocomplete
+            className="add-update-form__form--field"
             disablePortal
             multiple
             id="assignees"
             options={assignees.data?.map((b: any) => ({ value: b.id, label: b.given_name + ' ' + b.family_name })) || []}
             isOptionEqualToValue={isOptionEqualToValue}
-            getOptionLabel={(option: any) => option.label}
             onChange={(event, value: any) => formik.setFieldValue('assignees', value)}
-            sx={{ width: 490 }}
             renderInput={(params: any) => <TextField {...params} label="Select assignees" />}
           />
 
@@ -109,8 +108,8 @@ const Issue = ( {setCreateIssue}: any ) => {
             disablePortal
             id="labels"
             options={allLabelsQuery.data?.map((label: any) => ({ value: label.id, label: label.name })) || []}
-            value={formik.values.labels}
-            sx={{ width: 495 }}
+            // value={formik.values.labels}
+            className="add-update-form__form--field"
             onChange={(event, value) => formik.setFieldValue('labels', value)}
             renderInput={(params) => <TextField {...params} label="Labels" placeholder="Select labels" />}
           />
@@ -119,9 +118,9 @@ const Issue = ( {setCreateIssue}: any ) => {
             disablePortal
             id="milestone"
             options={allMilestonesQuery.data?.map((m: any) => ({ value: m.id, label: m.title })) || []}
-            value={formik.values.milestone}
+            // value={formik.values.milestone}
             onChange={(event, value: any) => formik.setFieldValue('milestone', value)}
-            sx={{ width: 495 }}
+            className="add-update-form__form--field"
             renderInput={(params: any) => <TextField {...params} label="Milestone" />}
           />
 
