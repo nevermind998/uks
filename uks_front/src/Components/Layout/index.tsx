@@ -1,9 +1,11 @@
 import { AppBar, Toolbar, Typography, Button } from '@mui/material';
 import { Outlet, useNavigate } from 'react-router-dom';
 import GitHubIcon from '@mui/icons-material/GitHub';
-import { clearUser } from '../../Store/slices/auth.slice';
+import { clearUser, selectAuth } from '../../Store/slices/auth.slice';
+import { useSelector } from 'react-redux';
 
 const Layout = () => {
+    const user = useSelector(selectAuth);
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -21,6 +23,9 @@ const Layout = () => {
                         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                             GithubClone
                         </Typography>
+                        <Button color="inherit" onClick={() => navigate(`/user/${user.id}`)}>
+                            Profile
+                        </Button>
                         <Button color="inherit" onClick={() => handleLogout()}>
                             Logout
                         </Button>

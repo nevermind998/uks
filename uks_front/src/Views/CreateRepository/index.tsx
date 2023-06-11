@@ -2,7 +2,6 @@ import { TextField, Button, TextareaAutosize, FormLabel, RadioGroup, FormControl
 import { useFormik } from 'formik';
 import { useState } from 'react';
 import { useMutation } from 'react-query';
-import { useNavigate } from 'react-router';
 import Toast, { ToastOptions } from '../../Components/Common/Toast';
 import { CreateRepositoryDto, VisibilityEnum } from '../../Types/repository.types';
 import { useSelector } from 'react-redux';
@@ -10,18 +9,20 @@ import { createNewRepository } from '../../api/repositories';
 import { selectAuth } from '../../Store/slices/auth.slice';
 import { CREATE_REPO_SCHEMA } from './createRepositorySchema';
 
-const CreateRepository = ({ setCreateRepo }: any) => {
+const CreateRepository = ({ setCreateRepo, refetch }: any) => {
   const [open, setOpen] = useState<boolean>(false);
   const [toastOptions, setToastOptions] = useState<ToastOptions>({ message: '', type: 'info' });
-  const navigate = useNavigate();
 
   const user = useSelector(selectAuth);
 
-  const { mutate, isLoading } = useMutation(createNewRepository, {
+  const { mutate } = useMutation(createNewRepository, {
     onSuccess: (res) => {
       setToastOptions({ message: 'Successfully created a new repository!', type: 'success' });
       setOpen(true);
-      // setCreateRepo(false);
+      refetch();
+      setTimeout(() => {
+        setCreateRepo(false);
+      }, 300)
     },
     onError: () => {
       setToastOptions({ message: 'An error happened while creating a repository!', type: 'error' });
@@ -51,7 +52,7 @@ const CreateRepository = ({ setCreateRepo }: any) => {
   });
 
   return (
-    <div className="create-repository">
+    <div className="edit-profile">
       <Toast open={open} setOpen={setOpen} toastOptions={toastOptions} />
       <div className="create-repository__content-wrapper">
         <button onClick={() => setCreateRepo(false)} className="create-repository__back-button">

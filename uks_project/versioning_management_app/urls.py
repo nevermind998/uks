@@ -26,4 +26,6 @@ urlpatterns = [
     path('role/<int:id>/repository/<int:repository>', views.get_collaborator_role, name='collaborator_role'),
     path('edit-role/<int:id>/repository/<int:repository>', views.manage_roles, name='manage_roles'),
     path('delete-collaborator/<int:user_id>/repository/<int:repository>', views.delete_collaborator, name='delete-collaborator'),
+    path('commit-activity/<int:id>', views.commit_activity, name='commit_activity'),
+    path('commit-count/<int:id>', views.get_commit_counts, name='get_commit_counts'),
 ]

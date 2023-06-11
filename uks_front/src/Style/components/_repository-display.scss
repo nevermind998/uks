@@ -122,6 +122,14 @@
         justify-content: center;
         display: flex;
     }
+
+    &__period_btn {
+        padding-top: 20px;
+        width: 15%;
+        justify-content: space-between;
+        display: flex;
+        margin-left: 100px;
+    }
 }
 
 .empty-div {

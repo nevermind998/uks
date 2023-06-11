@@ -1,29 +1,42 @@
-import { Card, CardContent, Divider, List, ListItem, ListItemAvatar, ListItemText } from "@mui/material";
-import { AccountCircle } from "@mui/icons-material";
-import LabelIcon from "@mui/icons-material/Label";
-import EditIcon from "@mui/icons-material/Edit";
-import { useQuery } from "react-query";
-import { useState } from "react";
-import { fetchOptionsForAssigne, fetchOptionsForLabel, fetchOptionsForMilestone } from "../../../../api/projectManagement";
-import EditIssue from "./EditIssue";
+import { Card, CardContent, Divider, Grid, List, ListItem, ListItemAvatar, ListItemText } from '@mui/material';
+import { AccountCircle } from '@mui/icons-material';
+import LabelIcon from '@mui/icons-material/Label';
+import EditIcon from '@mui/icons-material/Edit';
+import { useQuery } from 'react-query';
+import { useState } from 'react';
+import { fetchOptionsForAssigne, fetchOptionsForLabel, fetchOptionsForMilestone } from '../../../../api/projectManagement';
+import EditIssue from './EditIssue';
+import CommentsDisplay from '../../../CommentsDisplay';
+import { getCommentsForIssue } from '../../../../api/comments';
+import { CommentDto } from '../../../../Types/action.types';
 
 const DisplaySelectedIssue = ({ selectedIssue, setDispayInfo, refetch }: any) => {
   const [editMode, setEditMode] = useState<boolean>(false);
-  
-    const {data: assigneesQuery}= useQuery(['FETCH_ASSIGNE_USERS'], async() => await fetchOptionsForAssigne(selectedIssue.repository));
-    const {data: allMilestonesQuery} = useQuery(['FETCH_MILESTONE'], async() => await fetchOptionsForMilestone(selectedIssue.repository));
-    const {data: allLabelsQuery} = useQuery(['FETCH_LABELS'], async() => await fetchOptionsForLabel(selectedIssue.repository));
+
+  const { data: assigneesQuery } = useQuery(['FETCH_ASSIGNE_USERS'], async () => await fetchOptionsForAssigne(selectedIssue.repository));
+  const { data: allMilestonesQuery } = useQuery(['FETCH_MILESTONE'], async () => await fetchOptionsForMilestone(selectedIssue.repository));
+  const { data: allLabelsQuery } = useQuery(['FETCH_LABELS'], async () => await fetchOptionsForLabel(selectedIssue.repository));
+
+  const { data: comments, refetch: refetchComments } = useQuery({
+    queryKey: ['FETCH_COMMENTS'],
+    queryFn: async () => {
+      try {
+        const data: CommentDto[] = await getCommentsForIssue(selectedIssue.id);
+        return data;
+      } catch {}
+    },
+  });
 
   return (
     <>
       {!editMode ? (
         <>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <button onClick={() => setDispayInfo(false)} className="create-repository__back-button" style={{ color: "black" }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <button onClick={() => setDispayInfo(false)} className="create-repository__back-button" style={{ color: 'black' }}>
               &#60; Back
             </button>
           </div>
-          <div style={{ textAlign: "center", display: "flex", width: "100%", justifyContent: "center", alignItems: "center", gap: "20px" }}>
+          <div style={{ textAlign: 'center', display: 'flex', width: '100%', justifyContent: 'center', alignItems: 'center', gap: '20px' }}>
             <h3>{selectedIssue.title}</h3>
             <EditIcon onClick={() => setEditMode(true)} />
           </div>
@@ -82,9 +95,21 @@ const DisplaySelectedIssue = ({ selectedIssue, setDispayInfo, refetch }: any) =>
               </>
             )}
           </div>
+          <Grid marginTop={2}>
+            <Divider variant="fullWidth" style={{ marginTop: '40px' }} />
+            <CommentsDisplay obj_id={selectedIssue.id} isPr={false} comments={comments} refetch={refetchComments}></CommentsDisplay>
+          </Grid>
         </>
       ) : (
-        <EditIssue setDispayInfo={setDispayInfo} assigneesQuery={assigneesQuery} allLabelsQuery={allLabelsQuery} allMilestonesQuery={allMilestonesQuery} selectedIssue={selectedIssue} setEditMode={setEditMode} refetch={refetch}/>
+        <EditIssue
+          setDispayInfo={setDispayInfo}
+          assigneesQuery={assigneesQuery}
+          allLabelsQuery={allLabelsQuery}
+          allMilestonesQuery={allMilestonesQuery}
+          selectedIssue={selectedIssue}
+          setEditMode={setEditMode}
+          refetch={refetch}
+        />
       )}
     </>
   );

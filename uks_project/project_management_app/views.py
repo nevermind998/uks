@@ -110,7 +110,6 @@ def label_by_repository(request,id):
 @permission_classes([IsAuthenticated])
 def issues_by_status_repository(request,status,repository):
     isuess = Issue.objects.filter(Q(status=status) & Q(repository=repository))
-    if(len(isuess) == 0): raise Http404('No label found that matches the given query.')
     serializers = GetFullIssueSerializer(isuess,many=True)
     return Response(serializers.data)
         

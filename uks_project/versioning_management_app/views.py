@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 import uuid
 from django.shortcuts import render
 from django.http import HttpResponse, Http404
@@ -5,6 +6,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from collections import Counter
 
 from django.db.models import Q
 
@@ -310,3 +312,51 @@ def delete_collaborator(request, user_id, repository):
     except Collaboration.DoesNotExist:
         collaboration = None
         return Response(status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def commit_activity(request, id):
+    branches = Branch.objects.filter(repository_id=id)
+    allCommits = []
+    for branch in branches:
+        commits = Commit.objects.filter(branch_id=branch.id)
+        for commit in commits:
+            var = {'user' : commit.author.username, 'commit' : commit.id}
+            allCommits.append(var)
+    
+    commit_counts = Counter(commit['user'] for commit in allCommits)
+    commit_activity = [{'username': username, 'commits': count} for username, count in commit_counts.items()]
+    return Response(commit_activity)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_commit_counts(request, id):
+    # Calculate the date range for the past seven days
+    end_date = datetime.now().date()
+    start_date = end_date - timedelta(days=6)
+
+    # Create a dictionary to store commit counts for each day
+    commit_counts = {}
+
+    branches = Branch.objects.filter(repository_id=id)
+    allCommits = []
+    for branch in branches:
+        commits = Commit.objects.filter(branch_id=branch.id)
+        for commit in commits:
+            var = {'created_at' : commit.created_at, 'commit' : commit.id}
+            allCommits.append(var)
+
+    # Iterate through the commits and count them based on the created_at date
+    for commit in allCommits:
+        created_at = commit['created_at'].date()
+
+        if start_date <= created_at <= end_date:
+            if created_at in commit_counts:
+                commit_counts[created_at] += 1
+            else:
+                commit_counts[created_at] = 1
+
+    # Create an array of objects with date and commit count
+    commit_data = [{'date': date, 'commit_count': count} for date, count in commit_counts.items()]
+
+    return Response(commit_data)
