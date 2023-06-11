@@ -38,8 +38,8 @@ const PulseComponent = ({ repo }: any) => {
     setSelectedPeriod(e.target.value);
     filterDataByTimePeriod();
     if (openPrs && closedPrs) {
-      setOpenPrsCount(openPrs.filter((pr) => pr.created_at >= startDate).length);
-      setClosedPrsCount(closedPrs.filter((pr) => pr.created_at >= startDate).length);
+      setOpenPrsCount(openPrs.filter((pr) => new Date(pr.created_at).getTime() >= startDate.getTime()).length);
+      setClosedPrsCount(closedPrs.filter((pr) => new Date(pr.created_at).getTime() >= startDate.getTime()).length);
     }
   };
 
@@ -47,7 +47,7 @@ const PulseComponent = ({ repo }: any) => {
     queryKey: ['FETCH_OPEN_PULL_REQUEST', repo],
     queryFn: async () => {
       const data: PullRequestDto[] = await fetchOpenedPrs(StatusEnum.OPEN, repo.id);
-      setOpenPrsCount(data.filter((pr) => pr.created_at >= startDate).length);
+      setOpenPrsCount(data.filter((pr) => new Date(pr.created_at).getTime() >= startDate.getTime()).length);
       return data;
     },
   });
@@ -56,7 +56,7 @@ const PulseComponent = ({ repo }: any) => {
     queryKey: ['FETCH_CLOSED_PULL_REQUEST', repo],
     queryFn: async () => {
       const data: PullRequestDto[] = await fetchOpenedPrs(StatusEnum.CLOSED, repo.id);
-      setClosedPrsCount(data.filter((pr) => pr.created_at >= startDate).length);
+      setClosedPrsCount(data.filter((pr) => new Date(pr.created_at).getTime() >= startDate.getTime()).length);
       return data;
     },
   });
