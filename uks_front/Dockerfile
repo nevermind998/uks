@@ -1,15 +1,11 @@
-# Specify the base image
 FROM node:16-alpine
 
-# Set the working directory
 WORKDIR /frontend
 
-# Copy the application files
-COPY . /frontend
+COPY ./package*.json  ./
+RUN npm install
 
-# Install dependencies
-COPY ./package*.json  /frontend/
-RUN npm ci
+COPY . .
+EXPOSE 3000
 
-# Specify the command to run the application
 CMD ["npm", "start"]
