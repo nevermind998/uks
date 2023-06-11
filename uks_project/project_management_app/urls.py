@@ -5,6 +5,7 @@ urlpatterns = [
     #milestone
     path('milestone/<int:id>', views.get_milestone, name='milestone'),
     path('milestone/<int:id>/repository', views.get_milestone_by_repository, name='milestone_by_repository'),
+    path('milestone/<str:status>/status/<int:repository>/repository', views.milestone_by_status_repository, name='milestone_by_status_repo'),
     path('milestones/', views.get_all_milestone, name='milestones'),
     path('new-milestone', views.add_new_milestone, name='new-milestone'),
     path('update-milestone/<int:id>', views.update_milestone, name='update-milestone'),
@@ -23,6 +24,7 @@ urlpatterns = [
     path('issue/<int:id>', views.get_issue, name='issue'),
     path('issues/', views.get_all_issue, name='issues'),
     path('issues/<str:status>/status', views.issues_by_status, name='issues_by_status'),
+    path('issues/<str:status>/status/<int:repository>/repository', views.issues_by_status_repository, name='issues_by_status_repo'),
     path('issues/<int:author>/author', views.issues_by_author, name='issues_by_author'),
     path('issues/<int:label>/label', views.issues_by_label, name='issues_by_label'),
     path('issues/<int:milestone>/milestone', views.issues_by_milestone, name='issues_by_milestone'),

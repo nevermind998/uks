@@ -3,7 +3,7 @@ from .models import Milestone, Label, Issue, PullRequest
 from django.http import Http404
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
-from .serializers import GetFullPullRequestSerializer, IssueSerializer, LabelSerializer, MilestoneSerializer, PullRequestSerializer
+from .serializers import GetFullIssueSerializer, GetFullPullRequestSerializer, IssueSerializer, LabelSerializer, MilestoneSerializer, PullRequestSerializer
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import Q
@@ -28,6 +28,14 @@ def get_milestone_by_repository(request,id):
         return Response(serializers.data)
     except Milestone.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
+    
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def milestone_by_status_repository(request,status,repository):
+    milestones = Milestone.objects.filter(Q(status=status) & Q(repository=repository))
+    if(len(milestones) == 0): raise Http404('No milestone found that matches the given query.')
+    serializers = MilestoneSerializer(milestones,many=True)
+    return Response(serializers.data) 
         
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -95,8 +103,15 @@ def label_by_color(request,color):
 @permission_classes([IsAuthenticated])
 def label_by_repository(request,id):
     label = Label.objects.filter(repository=id)
-    if(len(label) == 0): raise Http404('No label found that matches the given query.')
     serializers = LabelSerializer(label,many=True)
+    return Response(serializers.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def issues_by_status_repository(request,status,repository):
+    isuess = Issue.objects.filter(Q(status=status) & Q(repository=repository))
+    if(len(isuess) == 0): raise Http404('No label found that matches the given query.')
+    serializers = GetFullIssueSerializer(isuess,many=True)
     return Response(serializers.data)
         
 @api_view(['GET'])
@@ -228,6 +243,7 @@ def add_new_issue(request,id=None):
 def update_issue(request,id):
     try:
         issue= Issue.objects.get(id=id)
+        print(issue)
     except Issue.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     serializer = IssueSerializer(issue, data=request.data)

@@ -1,4 +1,4 @@
-import { Button, TextField, TextFieldProps } from '@mui/material';
+import { Button, TextField } from '@mui/material';
 import { useFormik } from 'formik';
 import { useState } from 'react';
 import Toast, { ToastOptions } from '../../../Components/Common/Toast';
@@ -12,7 +12,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 
-const Milestone = () => {
+const Milestone = ({setCreateMilestone, refetch}) => {
   const [open, setOpen] = useState<boolean>(false);
   const [toastOptions, setToastOptions] = useState<ToastOptions>({ message: '', type: 'info' });
   const [selectedDate, setSelectedDate] = useState(null);
@@ -29,6 +29,8 @@ const Milestone = () => {
     onSuccess: (res) => {
       setToastOptions({ message: 'Milestone successfully created', type: 'success'});
       setOpen(true);
+      refetch();
+      setCreateMilestone(false);
     },
     onError: () => {
       setToastOptions({ message: 'Error creating milestone', type: 'error' });
@@ -59,9 +61,9 @@ const Milestone = () => {
   });
 
   return (
-    <div className="add-update-form">
+    <div>
       <Toast open={open} setOpen={setOpen} toastOptions={toastOptions} />
-      <div className="add-update-form__content-wrapper">
+      <div style={{textAlign: 'center'}}>
         <h3>Create a new milestone</h3>
         <form onSubmit={formik.handleSubmit} className="add-update-form__form">
             <TextField

@@ -1,3 +1,4 @@
+
 import { IssuesDto } from '../Types/issue.types';
 import { LabelDto } from '../Types/label.types';
 import { MilestoneDto } from '../Types/milestone.types';
@@ -12,7 +13,7 @@ export const createIssue = async (body: IssuesDto) => {
 
 export const fetchOptionsForAssigne = async (repositoryId: number) => {
   const repository = await api.get(`/versioning/repository/id/${repositoryId}`);
-  if (repository.data.visibility == 'PRIVATE') {
+  if (repository.data.visibility === 'PRIVATE') {
     const users = await api.get(`/versioning/repository/${repositoryId}/collaborators`);
     users.data.push(repository.data.owner);
     return users.data;
@@ -89,7 +90,22 @@ export const getPullRequestsByRepo = async (id: number) => {
   return prs.data;
 };
 
-export const fetchPullRequestsByAuthor = async (author: number) => {
+export const fetchLabel = async (repositoryId: number) =>{
+  const labels = await api.get(`/project/label/${repositoryId}/repository`);
+  return labels.data;
+}
+
+export const fetchOpenedIssue = async (status:StatusEnum, repository:number) => {
+  const openedIssue = await api.get(`/project/issues/${status}/status/${repository}/repository`);
+  return openedIssue.data;
+};
+
+export const fetchOpenedMilestone = async (status:StatusEnum, repository:number) => {
+  const openedMilestone = await api.get(`/project/milestone/${status}/status/${repository}/repository`);
+  return openedMilestone.data;
+};
+
+export const fetchPullRequestsByAuthor = async (author:number) => {
   const pull_requests = await api.get(`/project/pull_requests/${author}/author`);
   return pull_requests.data;
 };
@@ -114,14 +130,29 @@ export const getMilestoneById = async (id: number) => {
   return milestone.data;
 };
 
-export const getIssuesIds = async (id: number) => {
+export const getIssuesById = async (id:number) => {
   const issue = await api.get(`/project/issue/${id}`);
   return issue.data;
 };
 
-export const getLabelsById = async (id: number) => {
+export const getLabelsById = async (id:number) => {
   const label = await api.get(`/project/label/${id}`);
   return label.data;
+};
+
+export const updateIssue = async (body: IssuesDto) => {
+  const issue = await api.put(`/project/update-issue/${body.id}`,body);
+  return issue.data;
+};
+
+export const updateLabel = async (body: LabelDto) => {
+  const issue = await api.put(`/project/update-label/${body.id}`,body);
+  return issue.data;
+};
+
+export const updateMilestone = async (body: MilestoneDto) => {
+  const issue = await api.put(`/project/update-milestone/${body.id}`,body);
+  return issue.data;
 };
 
 export const updatePullRequestReviewStatus = async (id: number, status: ReviewStatusEnum) => {

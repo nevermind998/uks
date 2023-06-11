@@ -40,9 +40,6 @@ function App() {
             <Route element={<Layout />}>
               <Route path="/" element={<Dashboard />} />
               <Route path="repository/:id" element={<Repository />} />
-              <Route path="/milestone/new/:id" element={<Milestone />} />
-              <Route path="/label/new/:id" element={<Label />} />
-              <Route path="/issue/new/:id" element={<Issue />} />
               <Route path="/new-repository" element={<CreateRepository />} />
               <Route path="/repository/:id/new-branch" element={<Branch />} />
               <Route path="/repository/:id/new-pull-request" element={<PullRequest />} />

@@ -11,7 +11,7 @@ import { RootState } from '../../../Store';
 import { AuthState } from '../../../Store/slices/auth.slice';
 import { IssuesDto } from '../../../Types/issue.types';
 
-const Issue = () => {
+const Issue = ( {setCreateIssue}: any ) => {
   const [open, setOpen] = useState<boolean>(false);
   const [toastOptions, setToastOptions] = useState<ToastOptions>({ message: '', type: 'info' });
   const { id } = useParams();
@@ -28,6 +28,7 @@ const Issue = () => {
     onSuccess: (res) => {
       setToastOptions({ message: 'Issue successfully created', type: 'success' });
       setOpen(true);
+      setCreateIssue(false);
     },
     onError: () => {
       setToastOptions({ message: 'Error creating issue', type: 'error' });
@@ -40,18 +41,18 @@ const Issue = () => {
       title: '',
       created_at: new Date(),
       status: '',
-      milestone: 0,
-      labels: [0],
-      repository: 0,
-      author: 0,
-      assignees: [0],
+      milestone: '',
+      labels: [],
+      repository: '',
+      author: '',
+      assignees: []
     },
     validationSchema: ISSUES_SCHEMA,
     onSubmit: (values) => {
       const body: IssuesDto = {
-        title: values.title,
-        created_at: values.created_at,
-        status: values.status,
+        title:values.title,
+        created_at:values.created_at,
+        status:values.status,
         milestone: milestone ? milestone.id : '',
         labels: values.labels?.map((a: any) => {
           return a.value;
@@ -72,9 +73,9 @@ const Issue = () => {
   }
 
   return (
-    <div className="add-update-form">
+    <div style={{display: 'flex', width: '100%', justifyContent: 'center'}}>
       <Toast open={open} setOpen={setOpen} toastOptions={toastOptions} />
-      <div className="add-update-form__content-wrapper">
+      <div style={{ textAlign: 'center', display: 'flex', width: '100%', flexDirection: 'column', justifyContent: 'center'}}>
         <h3>Create a new issue</h3>
         <form onSubmit={formik.handleSubmit} className="add-update-form__form">
           <TextField
@@ -92,14 +93,13 @@ const Issue = () => {
           />
 
           <Autocomplete
+            className="add-update-form__form--field"
             disablePortal
             multiple
             id="assignees"
             options={assignees.data?.map((b: any) => ({ value: b.id, label: b.given_name + ' ' + b.family_name })) || []}
             isOptionEqualToValue={isOptionEqualToValue}
-            getOptionLabel={(option: any) => option.label}
             onChange={(event, value: any) => formik.setFieldValue('assignees', value)}
-            sx={{ width: 490 }}
             renderInput={(params: any) => <TextField {...params} label="Select assignees" />}
           />
 
@@ -108,8 +108,8 @@ const Issue = () => {
             disablePortal
             id="labels"
             options={allLabelsQuery.data?.map((label: any) => ({ value: label.id, label: label.name })) || []}
-            value={formik.values.labels}
-            sx={{ width: 495 }}
+            // value={formik.values.labels}
+            className="add-update-form__form--field"
             onChange={(event, value) => formik.setFieldValue('labels', value)}
             renderInput={(params) => <TextField {...params} label="Labels" placeholder="Select labels" />}
           />
@@ -118,9 +118,9 @@ const Issue = () => {
             disablePortal
             id="milestone"
             options={allMilestonesQuery.data?.map((m: any) => ({ value: m.id, label: m.title })) || []}
-            value={formik.values.milestone}
+            // value={formik.values.milestone}
             onChange={(event, value: any) => formik.setFieldValue('milestone', value)}
-            sx={{ width: 495 }}
+            className="add-update-form__form--field"
             renderInput={(params: any) => <TextField {...params} label="Milestone" />}
           />
 
