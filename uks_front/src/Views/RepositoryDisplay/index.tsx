@@ -29,6 +29,7 @@ import { UserProfileDto } from '../../Types/user.types';
 import IssueDisplay from '../ProjectManagmentDisplay/IssueDisplay';
 import LabelDisplay from '../ProjectManagmentDisplay/LabelDisplay';
 import MilestoneDisplay from '../ProjectManagmentDisplay/MilestoneDisplay';
+import Insights from '../Insights';
 
 const Repository = () => {
   const user = useSelector(selectAuth);
@@ -203,19 +204,19 @@ const Repository = () => {
             <ButtonGroup className="repository__action-buttons" variant="outlined" aria-label="outlined button group">
               <Button
                 className="repository__action-button"
-                variant={starred ? "contained" : "outlined"}
+                variant={starred ? 'contained' : 'outlined'}
                 startIcon={<StarIcon />}
                 onClick={handleStarClick}
               >
-                {starred ? "Unstar" : "Star"}
+                {starred ? 'Unstar' : 'Star'}
               </Button>
               <Button
                 className="repository__action-button"
-                variant={watching ? "contained" : "outlined"}
+                variant={watching ? 'contained' : 'outlined'}
                 startIcon={<VisibilityIcon />}
                 onClick={handleWatchClick}
               >
-                {watching ? "Unwatch" : "Watch"}
+                {watching ? 'Unwatch' : 'Watch'}
               </Button>
               <Button className="repository__action-button" startIcon={<GitHubIcon />} onClick={handleForkClick}>
                 fork
@@ -224,7 +225,7 @@ const Repository = () => {
           </Grid>
         </Grid>
         <TabContext value={tab}>
-          <Box sx={{ borderBottom: 1, borderTop: 1, borderColor: "divider" }}>
+          <Box sx={{ borderBottom: 1, borderTop: 1, borderColor: 'divider' }}>
             <TabList onChange={handleChange}>
               <Tab label="Code" value="1" />
               <Tab label="Issues" value="2" />
@@ -232,6 +233,7 @@ const Repository = () => {
               <Tab label="Settings" value="4" />
               <Tab label="Labels" value="6" />
               <Tab label="Milestones" value="7" />
+              <Tab label="Insights" value="8" />
             </TabList>
           </Box>
           <TabPanel value="1">
@@ -259,10 +261,13 @@ const Repository = () => {
             <CreateFork repo={repo} user={user}></CreateFork>
           </TabPanel>
           <TabPanel value="6">
-            <LabelDisplay setOpen={setOpen} setToastOptions={setToastOptions}/>
+            <LabelDisplay setOpen={setOpen} setToastOptions={setToastOptions} />
           </TabPanel>
           <TabPanel value="7">
-            <MilestoneDisplay setOpen={setOpen} setToastOptions={setToastOptions}/>
+            <MilestoneDisplay setOpen={setOpen} setToastOptions={setToastOptions} />
+          </TabPanel>
+          <TabPanel value="8">
+            <Insights repo={repo}></Insights>
           </TabPanel>
         </TabContext>
       </div>
