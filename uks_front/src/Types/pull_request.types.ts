@@ -24,3 +24,10 @@ export type PullRequestDto = {
     review: ReviewStatusEnum;
     created_at: Date;
 };
+
+
+export type PullRequestEditDto = {
+    id?: number;
+    description: string | '';
+};
+

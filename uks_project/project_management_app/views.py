@@ -416,3 +416,17 @@ def change_pull_request_status(request, id):
     pull_request.save()
     serializer = PullRequestSerializer(pull_request)
     return Response(serializer.data)
+
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def update_pull_request_description(request, id):
+    try:
+        pull_request = PullRequest.objects.get(id=id)
+    except PullRequest.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    pull_request.description = request.data.get('description', pull_request.description)
+    pull_request.save()
+    serializer = PullRequestSerializer(pull_request)
+    return Response(serializer.data)
