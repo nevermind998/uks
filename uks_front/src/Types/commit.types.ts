@@ -15,3 +15,7 @@ export type CommitActivityDto = {
   username: string;
   commits: number;
 };
+export type CommitCountDto = {
+  date: string;
+  commit_count: number;
+};

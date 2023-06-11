@@ -17,6 +17,7 @@ const Contributors = ({ repo }: any) => {
       }
     },
   });
+
   return (
     <ResponsiveContainer width="100%" height={300}>
       <PieChart>

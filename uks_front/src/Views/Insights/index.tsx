@@ -30,7 +30,7 @@ const Insights = ({ repo }: any) => {
               <Contributors repo={repo}></Contributors>
             </TabPanel>
             <TabPanel value="3">
-              <CommitActivity></CommitActivity>
+              <CommitActivity repo={repo}></CommitActivity>
             </TabPanel>
           </Grid>
         </Grid>

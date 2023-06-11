@@ -41,3 +41,8 @@ export const getCommitActivityForRepository = async (repository: number) => {
   const response = await api.get(`/versioning/commit-activity/${repository}`);
   return response.data;
 };
+
+export const getCommitCountForRepository = async (repository: number) => {
+  const response = await api.get(`/versioning/commit-count/${repository}`);
+  return response.data;
+};
