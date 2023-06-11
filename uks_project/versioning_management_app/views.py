@@ -5,6 +5,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from collections import Counter
 
 from django.db.models import Q
 
@@ -310,3 +311,18 @@ def delete_collaborator(request, user_id, repository):
     except Collaboration.DoesNotExist:
         collaboration = None
         return Response(status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def commit_activity(request, id):
+    branches = Branch.objects.filter(repository_id=id)
+    allCommits = []
+    for branch in branches:
+        commits = Commit.objects.filter(branch_id=branch.id)
+        for commit in commits:
+            var = {'user' : commit.author.username, 'commit' : commit.id}
+            allCommits.append(var)
+    
+    commit_counts = Counter(commit['user'] for commit in allCommits)
+    commit_activity = [{'username': username, 'commits': count} for username, count in commit_counts.items()]
+    return Response(commit_activity)

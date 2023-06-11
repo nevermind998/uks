@@ -27,7 +27,7 @@ const Insights = ({ repo }: any) => {
               <PulseComponent repo={repo}></PulseComponent>
             </TabPanel>
             <TabPanel value="2">
-              <Contributors></Contributors>
+              <Contributors repo={repo}></Contributors>
             </TabPanel>
             <TabPanel value="3">
               <CommitActivity></CommitActivity>
