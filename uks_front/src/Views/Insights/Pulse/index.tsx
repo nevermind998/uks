@@ -13,6 +13,11 @@ const PulseComponent = ({ repo }: any) => {
   const [selectedPeriod, setSelectedPeriod] = useState('1m');
   const [startDate, setStartDate] = useState(new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000));
 
+  const [openIssues, setOpenedIssues] = useState<any[]>([]);
+  const [closedIsses, setClosedIssues] = useState<any[]>([]);
+  const [openPrs, setOpenPrs] = useState<any[]>([]);
+  const [closedPrs, setClosedPrs] = useState<any[]>([]);
+
   // Function to filter data based on the selected time period
   const filterDataByTimePeriod = () => {
     const currentDate = new Date();
@@ -46,41 +51,26 @@ const PulseComponent = ({ repo }: any) => {
     }
   };
 
-  const { data: openPrs } = useQuery({
-    queryKey: ['FETCH_OPEN_PULL_REQUEST', repo],
-    queryFn: async () => {
-      const data: PullRequestDto[] = await fetchOpenedPrs(StatusEnum.OPEN, repo.id);
-      setOpenPrsCount(data.filter((pr) => new Date(pr.created_at).getTime() >= startDate.getTime()).length);
-      return data;
-    },
-  });
+  useEffect(() => {
+    const func = async () => {
+      if (repo) {
+        const openedIssues: any[] = await fetchOpenedIssue(StatusEnum.OPEN, repo.id);
+        setOpenIssuesCount(openedIssues.filter((issue) => new Date(issue.created_at).getTime() >= startDate.getTime()).length);
+        setOpenedIssues(openedIssues);
+        const closedIssues: any[] = await fetchOpenedIssue(StatusEnum.CLOSED, repo.id);
+        setClosedIssuesCount(closedIssues.filter((issue) => new Date(issue.created_at).getTime() >= startDate.getTime()).length);
+        setClosedIssues(closedIsses);
+        const openPrs: PullRequestDto[] = await fetchOpenedPrs(StatusEnum.OPEN, repo.id);
+        setOpenPrsCount(openPrs.filter((pr) => new Date(pr.created_at).getTime() >= startDate.getTime()).length);
+        setOpenPrs(openPrs);
+        const closedPrs: PullRequestDto[] = await fetchOpenedPrs(StatusEnum.CLOSED, repo.id);
+        setClosedPrsCount(closedPrs.filter((pr) => new Date(pr.created_at).getTime() >= startDate.getTime()).length);
+        setClosedIssues(closedPrs);
+      }
+    };
 
-  const { data: closedPrs } = useQuery({
-    queryKey: ['FETCH_CLOSED_PULL_REQUEST', repo],
-    queryFn: async () => {
-      const data: PullRequestDto[] = await fetchOpenedPrs(StatusEnum.CLOSED, repo.id);
-      setClosedPrsCount(data.filter((pr) => new Date(pr.created_at).getTime() >= startDate.getTime()).length);
-      return data;
-    },
-  });
-
-  const { data: openIssues } = useQuery({
-    queryKey: ['FETCH_OPEN_ISSUES', repo],
-    queryFn: async () => {
-      const data: IssuesDto[] = await fetchOpenedIssue(StatusEnum.OPEN, repo.id);
-      setOpenIssuesCount(data.filter((issue) => issue.created_at!.getTime() >= startDate.getTime()).length);
-      return data;
-    },
-  });
-
-  const { data: closedIsses } = useQuery({
-    queryKey: ['FETCH_CLOSED_ISSUES', repo],
-    queryFn: async () => {
-      const data: IssuesDto[] = await fetchOpenedIssue(StatusEnum.CLOSED, repo.id);
-      setClosedIssuesCount(data.filter((issue) => issue.created_at!.getTime() >= startDate.getTime()).length);
-      return data;
-    },
-  });
+    func();
+  }, []);
 
   return (
     <>
