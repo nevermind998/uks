@@ -25,6 +25,19 @@ export const IsSignedIn = () => {
   return <Outlet />;
 };
 
+export const Redirect = () => {
+  const user = useSelector<RootState, AuthState>((state) => state.auth);
+
+  const token = localStorage.getItem('access_token');
+  const condition = user.data.email !== '' && user.data.email !== undefined && token;
+
+  if (!condition) {
+    return <Navigate to={'/sign-in'} />;
+  }
+
+  return <Navigate to={`/user/${user.data.id}`} />;
+};
+
 function App() {
   return (
     <div className="App">
@@ -34,6 +47,7 @@ function App() {
           <Route path="sign-up" element={<SignUp />}></Route>
           <Route element={<IsSignedIn />}>
             <Route element={<Layout />}>
+              <Route path="/" element={<Redirect />} />
               <Route path="/user/:id" element={<Dashboard />} />
               <Route path="repository/:id" element={<Repository />} />
               <Route path="/new-repository" element={<CreateRepository />} />

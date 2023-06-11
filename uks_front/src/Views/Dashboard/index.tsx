@@ -31,7 +31,7 @@ const Dashboard = () => {
         },
     });
 
-    const { data } = useQuery({
+    const { data, refetch: refetchRepos } = useQuery({
         queryKey: ['FETCH_REPOS', user],
         queryFn: async () => {
             if (params.id){
@@ -67,7 +67,7 @@ const Dashboard = () => {
                         </a>
                     </div>
                     {createRepo ? (
-                        <CreateRepository setCreateRepo={setCreateRepo} />
+                        <CreateRepository setCreateRepo={setCreateRepo} refetch={refetchRepos}/>
                     ) : editProfile ? (
                         <EditProfile setEditProfile={setEditProfile} refetch={refetch}/>
                     ) : (
