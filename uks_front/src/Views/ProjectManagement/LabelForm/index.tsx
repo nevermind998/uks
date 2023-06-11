@@ -34,6 +34,7 @@ const Label = () => {
 
   const formik = useFormik({
     initialValues: {
+      id: 0,
       name:'',
       description:'',
       color:'',
@@ -42,6 +43,7 @@ const Label = () => {
     validationSchema: LABEL_SCHEMA,
     onSubmit: (values:any) => {
       const body: LabelDto = {
+        id: 0,
         name:values.name,
         description:values.description,
         color:values.color,

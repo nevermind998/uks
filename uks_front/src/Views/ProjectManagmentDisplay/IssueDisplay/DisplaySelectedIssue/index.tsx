@@ -8,7 +8,7 @@ import { useState } from "react";
 import { ToastOptions } from "../../../../Components/Common/Toast";
 import { fetchOptionsForAssigne, fetchOptionsForLabel, fetchOptionsForMilestone, updateIssue } from "../../../../api/projectManagement";
 
-const DisplaySelectedIssue = ({ selectedIssue, setDispayPRInfo, refetch }: any) => {
+const DisplaySelectedIssue = ({ selectedIssue, setDispayInfo, refetch }: any) => {
     const [open, setOpen] = useState<boolean>(false);
     const [openToast, setOpenToast] = useState(false);
     const [toastOptions, setToastOptions] = useState<ToastOptions>({ message: "", type: "info" });
@@ -94,7 +94,7 @@ const DisplaySelectedIssue = ({ selectedIssue, setDispayPRInfo, refetch }: any) 
   return (
     <>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <button onClick={() => setDispayPRInfo(false)} className="create-repository__back-button" style={{ color: "black" }}>
+        <button onClick={() => setDispayInfo(false)} className="create-repository__back-button" style={{ color: "black" }}>
           &#60; Back
         </button>
         </div>

@@ -28,6 +28,14 @@ def get_milestone_by_repository(request,id):
         return Response(serializers.data)
     except Milestone.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
+    
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def milestone_by_status_repository(request,status,repository):
+    milestones = Milestone.objects.filter(Q(status=status) & Q(repository=repository))
+    if(len(milestones) == 0): raise Http404('No milestone found that matches the given query.')
+    serializers = MilestoneSerializer(milestones,many=True)
+    return Response(serializers.data) 
         
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -234,7 +242,6 @@ def add_new_issue(request,id=None):
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def update_issue(request,id):
-    print("Id ejeeee",id)
     try:
         issue= Issue.objects.get(id=id)
         print(issue)

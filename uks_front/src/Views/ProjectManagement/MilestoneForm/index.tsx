@@ -38,6 +38,7 @@ const Milestone = () => {
 
   const formik = useFormik({
     initialValues: {
+      id: 0,
       title:'',
       due_date: null,
       description:'',
@@ -47,6 +48,7 @@ const Milestone = () => {
     validationSchema: MILESTONE_SCHEMA,
     onSubmit: (values) => {
       const body: MilestoneDto = {
+        id: 0,
         title:values.title,
         due_date: values.due_date,
         description:values.description,

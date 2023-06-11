@@ -24,9 +24,9 @@ const IssueDisplay = ({ pr, setToastOptions, setOpen }: any) => {
 
   const repositoryId = id ? parseInt(id, 10) : 0;
   const [createIssue, setCreateIssue] = useState<boolean>(false);
-  const [dispayPRInfo, setDispayPRInfo] = useState<boolean>(false);
+  const [dispayInfo, setDispayInfo] = useState<boolean>(false);
   const [selectedPr, setSelectedPr] = useState<[] | null>(null);
-  const [tab, setTab] = useState('1');
+  const [tab, setTab] = useState('');
 
 
   const allOpenedIssue = useQuery({
@@ -46,11 +46,11 @@ const IssueDisplay = ({ pr, setToastOptions, setOpen }: any) => {
     <div>
       {!createIssue ? (
         <div>
-          {!dispayPRInfo ? (
+          {!dispayInfo ? (
             <>
               <div className="issues__button-header">
 
-              <TabContext value={tab}>
+               <TabContext value={tab}>
                         <Box sx={{ borderBottom: 1, borderTop: 1, borderColor: 'divider' }}>
                             <TabList onChange={handleChange}>
                                 <Tab label="Label" value="1" />
@@ -58,13 +58,12 @@ const IssueDisplay = ({ pr, setToastOptions, setOpen }: any) => {
                             </TabList>
                         </Box>
                         <TabPanel value="1">
-                          <MilestoneDisplay setOpen={setOpen} setToastOptions={setToastOptions}></MilestoneDisplay>
-                        </TabPanel>
-                        <TabPanel value="2">
                           <LabelDisplay setOpen={setOpen} setToastOptions={setToastOptions}></LabelDisplay>
                         </TabPanel>
-                    </TabContext>
-
+                        <TabPanel value="2">
+                          <MilestoneDisplay setOpen={setOpen} setToastOptions={setToastOptions}></MilestoneDisplay>
+                        </TabPanel>
+                </TabContext>
 
                 <LinkTo to={`/issue/new/${repositoryId}`}>
                 <Button className="dashboard__create-repo" onClick={() => setCreateIssue(true)} variant="contained">
@@ -90,7 +89,7 @@ const IssueDisplay = ({ pr, setToastOptions, setOpen }: any) => {
                                   variant="h6"
                                   onClick={() => {
                                     setSelectedPr(x);
-                                    setDispayPRInfo(true);
+                                    setDispayInfo(true);
                                   }}
                                 >
                                   {x.title}
@@ -111,7 +110,7 @@ const IssueDisplay = ({ pr, setToastOptions, setOpen }: any) => {
               </div>
             </>
           ) : (
-            <DisplaySelectedIssue selectedIssue={selectedPr} setDispayPRInfo={setDispayPRInfo} />
+            <DisplaySelectedIssue selectedIssue={selectedPr} setDispaylInfo={setDispayInfo} />
           )}
         </div>
       ) : (
