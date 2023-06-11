@@ -3,7 +3,7 @@ import { Box, Grid, Tab, Tabs } from '@mui/material';
 import React, { SyntheticEvent, useState } from 'react';
 import PulseComponent from './Pulse';
 
-const Insights = () => {
+const Insights = ({ repo }: any) => {
   const [tab, setTab] = useState('1');
   const handleChange = (event: SyntheticEvent, newTab: string) => {
     setTab(newTab);
@@ -16,16 +16,14 @@ const Insights = () => {
           <Grid item xs={2}>
             <TabList orientation="vertical" value={tab} onChange={handleChange} sx={{ borderRight: 1, borderColor: 'divider' }}>
               <Tab label="Pulse" value="1" />
-              <Tab label="Contributors" value="2" />
-              <Tab label="Commits" value="3" />
+              <Tab label="Commits" value="2" />
             </TabList>
           </Grid>
           <Grid item xs={10}>
             <TabPanel value="1">
-              <PulseComponent></PulseComponent>
+              <PulseComponent repo={repo}></PulseComponent>
             </TabPanel>
             <TabPanel value="2">Item Two</TabPanel>
-            <TabPanel value="3">Item Three</TabPanel>
           </Grid>
         </Grid>
       </TabContext>

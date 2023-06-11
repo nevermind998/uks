@@ -1,14 +1,16 @@
 import { Box, Divider, FormControl, Grid, InputLabel, LinearProgress, MenuItem, Select, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
+import { useQuery } from 'react-query';
+import { fetchOpenedPrs } from '../../../api/projectManagement';
+import { PullRequestDto, StatusEnum } from '../../../Types/pull_request.types';
 
-const PulseComponent = () => {
-  const mergedCount = 10;
-  const openCount = 5;
-  const [data, setData] = useState([]);
-  const [selectedPeriod, setSelectedPeriod] = useState('1w');
-  const totalCount = mergedCount + openCount;
-  const mergedPercentage = (mergedCount / totalCount) * 100;
-  const openPercentage = (openCount / totalCount) * 100;
+const PulseComponent = ({ repo }: any) => {
+  const [openPrsCount, setOpenPrsCount] = useState(0);
+  const [closedPrsCount, setClosedPrsCount] = useState(0);
+  const [openIssuesCount, setOpenIssuesCount] = useState(0);
+  const [closedIssuesCount, setClosedIssuesCount] = useState(0);
+  const [selectedPeriod, setSelectedPeriod] = useState('1m');
+  const [startDate, setStartDate] = useState(new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000));
 
   // Function to filter data based on the selected time period
   const filterDataByTimePeriod = () => {
@@ -28,27 +30,36 @@ const PulseComponent = () => {
       default:
         startDate = null;
     }
-
-    const filteredData = data.filter((item) => {
-      //   const itemDate = new Date(item.timestamp);
-      //   return startDate && itemDate >= startDate && itemDate <= currentDate;
-    });
-
-    return filteredData;
+    setStartDate(startDate);
   };
 
   // Handle period selection change
   const handlePeriodChange = (e) => {
     setSelectedPeriod(e.target.value);
+    filterDataByTimePeriod();
+    if (openPrs && closedPrs) {
+      setOpenPrsCount(openPrs.filter((pr) => pr.created_at >= startDate).length);
+      setClosedPrsCount(closedPrs.filter((pr) => pr.created_at >= startDate).length);
+    }
   };
 
-  // Handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const filteredData = filterDataByTimePeriod();
-    // Perform further processing or calculations on the filteredData as needed
-    console.log(filteredData);
-  };
+  const { data: openPrs } = useQuery({
+    queryKey: ['FETCH_OPEN_PULL_REQUEST', repo],
+    queryFn: async () => {
+      const data: PullRequestDto[] = await fetchOpenedPrs(StatusEnum.OPEN, repo.id);
+      setOpenPrsCount(data.filter((pr) => pr.created_at >= startDate).length);
+      return data;
+    },
+  });
+
+  const { data: closedPrs } = useQuery({
+    queryKey: ['FETCH_CLOSED_PULL_REQUEST', repo],
+    queryFn: async () => {
+      const data: PullRequestDto[] = await fetchOpenedPrs(StatusEnum.CLOSED, repo.id);
+      setClosedPrsCount(data.filter((pr) => pr.created_at >= startDate).length);
+      return data;
+    },
+  });
 
   return (
     <>
@@ -63,32 +74,37 @@ const PulseComponent = () => {
       <Divider sx={{ width: '100%', mb: 5, mt: 5 }}></Divider>
       <Box sx={{ width: '100%', mb: 2, mt: 5 }}>
         <Typography variant="overline" gutterBottom>
-          Pull Requests ({totalCount} )
+          Pull Requests ( {openPrsCount + closedPrsCount} )
         </Typography>
-        <LinearProgress variant="determinate" value={mergedPercentage} color="success" sx={{ height: 15 }} />
+        <LinearProgress variant="determinate" value={(closedPrsCount / (openPrsCount + closedPrsCount)) * 100} color="success" sx={{ height: 15 }} />
         <Typography variant="overline" gutterBottom sx={{ mr: 2 }}>
-          Merged ({mergedCount})
+          Merged ( {closedPrsCount} )
         </Typography>
         <Typography variant="overline" gutterBottom sx={{ mr: 2 }}>
           /
         </Typography>
         <Typography variant="overline" gutterBottom>
-          Open({openCount})
+          Open ( {openPrsCount} )
         </Typography>
       </Box>
       <Box sx={{ width: '100%', mb: 5, mt: 5 }}>
         <Typography variant="overline" gutterBottom>
-          Issues ({totalCount} )
+          Issues ( {openIssuesCount + closedIssuesCount} )
         </Typography>
-        <LinearProgress variant="determinate" value={mergedPercentage} color="warning" sx={{ height: 15 }} />
+        <LinearProgress
+          variant="determinate"
+          value={(closedIssuesCount / (openIssuesCount + closedIssuesCount)) * 100}
+          color="warning"
+          sx={{ height: 15 }}
+        />
         <Typography variant="overline" gutterBottom sx={{ mr: 2 }}>
-          Closed ({mergedCount})
+          Closed ( {closedIssuesCount} )
         </Typography>
         <Typography variant="overline" gutterBottom sx={{ mr: 2 }}>
           /
         </Typography>
         <Typography variant="overline" gutterBottom>
-          Open({openCount})
+          Open ( {openIssuesCount} )
         </Typography>
       </Box>
     </>

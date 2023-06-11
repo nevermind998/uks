@@ -267,7 +267,7 @@ const Repository = () => {
             <MilestoneDisplay setOpen={setOpen} setToastOptions={setToastOptions} />
           </TabPanel>
           <TabPanel value="8">
-            <Insights></Insights>
+            <Insights repo={repo}></Insights>
           </TabPanel>
         </TabContext>
       </div>
